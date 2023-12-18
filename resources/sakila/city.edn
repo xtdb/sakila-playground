@@ -1,0 +1,600 @@
+{:city "A Coruña (La Coruña)", :country_id 87, :xt/id 1}
+{:city "Abha", :country_id 82, :xt/id 2}
+{:city "Abu Dhabi", :country_id 101, :xt/id 3}
+{:city "Acuña", :country_id 60, :xt/id 4}
+{:city "Adana", :country_id 97, :xt/id 5}
+{:city "Addis Abeba", :country_id 31, :xt/id 6}
+{:city "Aden", :country_id 107, :xt/id 7}
+{:city "Adoni", :country_id 44, :xt/id 8}
+{:city "Ahmadnagar", :country_id 44, :xt/id 9}
+{:city "Akishima", :country_id 50, :xt/id 10}
+{:city "Akron", :country_id 103, :xt/id 11}
+{:city "al-Ayn", :country_id 101, :xt/id 12}
+{:city "al-Hawiya", :country_id 82, :xt/id 13}
+{:city "al-Manama", :country_id 11, :xt/id 14}
+{:city "al-Qadarif", :country_id 89, :xt/id 15}
+{:city "al-Qatif", :country_id 82, :xt/id 16}
+{:city "Alessandria", :country_id 49, :xt/id 17}
+{:city "Allappuzha (Alleppey)", :country_id 44, :xt/id 18}
+{:city "Allende", :country_id 60, :xt/id 19}
+{:city "Almirante Brown", :country_id 6, :xt/id 20}
+{:city "Alvorada", :country_id 15, :xt/id 21}
+{:city "Ambattur", :country_id 44, :xt/id 22}
+{:city "Amersfoort", :country_id 67, :xt/id 23}
+{:city "Amroha", :country_id 44, :xt/id 24}
+{:city "Angra dos Reis", :country_id 15, :xt/id 25}
+{:city "Anápolis", :country_id 15, :xt/id 26}
+{:city "Antofagasta", :country_id 22, :xt/id 27}
+{:city "Aparecida de Goiânia", :country_id 15, :xt/id 28}
+{:city "Apeldoorn", :country_id 67, :xt/id 29}
+{:city "Araçatuba", :country_id 15, :xt/id 30}
+{:city "Arak", :country_id 46, :xt/id 31}
+{:city "Arecibo", :country_id 77, :xt/id 32}
+{:city "Arlington", :country_id 103, :xt/id 33}
+{:city "Ashdod", :country_id 48, :xt/id 34}
+{:city "Ashgabat", :country_id 98, :xt/id 35}
+{:city "Ashqelon", :country_id 48, :xt/id 36}
+{:city "Asunción", :country_id 73, :xt/id 37}
+{:city "Athenai", :country_id 39, :xt/id 38}
+{:city "Atšinsk", :country_id 80, :xt/id 39}
+{:city "Atlixco", :country_id 60, :xt/id 40}
+{:city "Augusta-Richmond County", :country_id 103, :xt/id 41}
+{:city "Aurora", :country_id 103, :xt/id 42}
+{:city "Avellaneda", :country_id 6, :xt/id 43}
+{:city "Bagé", :country_id 15, :xt/id 44}
+{:city "Bahía Blanca", :country_id 6, :xt/id 45}
+{:city "Baicheng", :country_id 23, :xt/id 46}
+{:city "Baiyin", :country_id 23, :xt/id 47}
+{:city "Baku", :country_id 10, :xt/id 48}
+{:city "Balašiha", :country_id 80, :xt/id 49}
+{:city "Balikesir", :country_id 97, :xt/id 50}
+{:city "Balurghat", :country_id 44, :xt/id 51}
+{:city "Bamenda", :country_id 19, :xt/id 52}
+{:city "Bandar Seri Begawan", :country_id 16, :xt/id 53}
+{:city "Banjul", :country_id 37, :xt/id 54}
+{:city "Barcelona", :country_id 104, :xt/id 55}
+{:city "Basel", :country_id 91, :xt/id 56}
+{:city "Bat Yam", :country_id 48, :xt/id 57}
+{:city "Batman", :country_id 97, :xt/id 58}
+{:city "Batna", :country_id 2, :xt/id 59}
+{:city "Battambang", :country_id 18, :xt/id 60}
+{:city "Baybay", :country_id 75, :xt/id 61}
+{:city "Bayugan", :country_id 75, :xt/id 62}
+{:city "Béchar", :country_id 2, :xt/id 63}
+{:city "Beira", :country_id 63, :xt/id 64}
+{:city "Bellevue", :country_id 103, :xt/id 65}
+{:city "Belém", :country_id 15, :xt/id 66}
+{:city "Benguela", :country_id 4, :xt/id 67}
+{:city "Beni-Mellal", :country_id 62, :xt/id 68}
+{:city "Benin City", :country_id 69, :xt/id 69}
+{:city "Bergamo", :country_id 49, :xt/id 70}
+{:city "Berhampore (Baharampur)", :country_id 44, :xt/id 71}
+{:city "Bern", :country_id 91, :xt/id 72}
+{:city "Bhavnagar", :country_id 44, :xt/id 73}
+{:city "Bhilwara", :country_id 44, :xt/id 74}
+{:city "Bhimavaram", :country_id 44, :xt/id 75}
+{:city "Bhopal", :country_id 44, :xt/id 76}
+{:city "Bhusawal", :country_id 44, :xt/id 77}
+{:city "Bijapur", :country_id 44, :xt/id 78}
+{:city "Bilbays", :country_id 29, :xt/id 79}
+{:city "Binzhou", :country_id 23, :xt/id 80}
+{:city "Birgunj", :country_id 66, :xt/id 81}
+{:city "Bislig", :country_id 75, :xt/id 82}
+{:city "Blumenau", :country_id 15, :xt/id 83}
+{:city "Boa Vista", :country_id 15, :xt/id 84}
+{:city "Boksburg", :country_id 85, :xt/id 85}
+{:city "Botosani", :country_id 78, :xt/id 86}
+{:city "Botshabelo", :country_id 85, :xt/id 87}
+{:city "Bradford", :country_id 102, :xt/id 88}
+{:city "Brasília", :country_id 15, :xt/id 89}
+{:city "Bratislava", :country_id 84, :xt/id 90}
+{:city "Brescia", :country_id 49, :xt/id 91}
+{:city "Brest", :country_id 34, :xt/id 92}
+{:city "Brindisi", :country_id 49, :xt/id 93}
+{:city "Brockton", :country_id 103, :xt/id 94}
+{:city "Bucuresti", :country_id 78, :xt/id 95}
+{:city "Buenaventura", :country_id 24, :xt/id 96}
+{:city "Bydgoszcz", :country_id 76, :xt/id 97}
+{:city "Cabuyao", :country_id 75, :xt/id 98}
+{:city "Callao", :country_id 74, :xt/id 99}
+{:city "Cam Ranh", :country_id 105, :xt/id 100}
+{:city "Cape Coral", :country_id 103, :xt/id 101}
+{:city "Caracas", :country_id 104, :xt/id 102}
+{:city "Carmen", :country_id 60, :xt/id 103}
+{:city "Cavite", :country_id 75, :xt/id 104}
+{:city "Cayenne", :country_id 35, :xt/id 105}
+{:city "Celaya", :country_id 60, :xt/id 106}
+{:city "Chandrapur", :country_id 44, :xt/id 107}
+{:city "Changhwa", :country_id 92, :xt/id 108}
+{:city "Changzhou", :country_id 23, :xt/id 109}
+{:city "Chapra", :country_id 44, :xt/id 110}
+{:city "Charlotte Amalie", :country_id 106, :xt/id 111}
+{:city "Chatsworth", :country_id 85, :xt/id 112}
+{:city "Cheju", :country_id 86, :xt/id 113}
+{:city "Chiayi", :country_id 92, :xt/id 114}
+{:city "Chisinau", :country_id 61, :xt/id 115}
+{:city "Chungho", :country_id 92, :xt/id 116}
+{:city "Cianjur", :country_id 45, :xt/id 117}
+{:city "Ciomas", :country_id 45, :xt/id 118}
+{:city "Ciparay", :country_id 45, :xt/id 119}
+{:city "Citrus Heights", :country_id 103, :xt/id 120}
+{:city "Città del Vaticano", :country_id 41, :xt/id 121}
+{:city "Ciudad del Este", :country_id 73, :xt/id 122}
+{:city "Clarksville", :country_id 103, :xt/id 123}
+{:city "Coacalco de Berriozábal", :country_id 60, :xt/id 124}
+{:city "Coatzacoalcos", :country_id 60, :xt/id 125}
+{:city "Compton", :country_id 103, :xt/id 126}
+{:city "Coquimbo", :country_id 22, :xt/id 127}
+{:city "Córdoba", :country_id 6, :xt/id 128}
+{:city "Cuauhtémoc", :country_id 60, :xt/id 129}
+{:city "Cuautla", :country_id 60, :xt/id 130}
+{:city "Cuernavaca", :country_id 60, :xt/id 131}
+{:city "Cumaná", :country_id 104, :xt/id 132}
+{:city "Czestochowa", :country_id 76, :xt/id 133}
+{:city "Dadu", :country_id 72, :xt/id 134}
+{:city "Dallas", :country_id 103, :xt/id 135}
+{:city "Datong", :country_id 23, :xt/id 136}
+{:city "Daugavpils", :country_id 54, :xt/id 137}
+{:city "Davao", :country_id 75, :xt/id 138}
+{:city "Daxian", :country_id 23, :xt/id 139}
+{:city "Dayton", :country_id 103, :xt/id 140}
+{:city "Deba Habe", :country_id 69, :xt/id 141}
+{:city "Denizli", :country_id 97, :xt/id 142}
+{:city "Dhaka", :country_id 12, :xt/id 143}
+{:city "Dhule (Dhulia)", :country_id 44, :xt/id 144}
+{:city "Dongying", :country_id 23, :xt/id 145}
+{:city "Donostia-San Sebastián", :country_id 87, :xt/id 146}
+{:city "Dos Quebradas", :country_id 24, :xt/id 147}
+{:city "Duisburg", :country_id 38, :xt/id 148}
+{:city "Dundee", :country_id 102, :xt/id 149}
+{:city "Dzerzinsk", :country_id 80, :xt/id 150}
+{:city "Ede", :country_id 67, :xt/id 151}
+{:city "Effon-Alaiye", :country_id 69, :xt/id 152}
+{:city "El Alto", :country_id 14, :xt/id 153}
+{:city "El Fuerte", :country_id 60, :xt/id 154}
+{:city "El Monte", :country_id 103, :xt/id 155}
+{:city "Elista", :country_id 80, :xt/id 156}
+{:city "Emeishan", :country_id 23, :xt/id 157}
+{:city "Emmen", :country_id 67, :xt/id 158}
+{:city "Enshi", :country_id 23, :xt/id 159}
+{:city "Erlangen", :country_id 38, :xt/id 160}
+{:city "Escobar", :country_id 6, :xt/id 161}
+{:city "Esfahan", :country_id 46, :xt/id 162}
+{:city "Eskisehir", :country_id 97, :xt/id 163}
+{:city "Etawah", :country_id 44, :xt/id 164}
+{:city "Ezeiza", :country_id 6, :xt/id 165}
+{:city "Ezhou", :country_id 23, :xt/id 166}
+{:city "Faaa", :country_id 36, :xt/id 167}
+{:city "Fengshan", :country_id 92, :xt/id 168}
+{:city "Firozabad", :country_id 44, :xt/id 169}
+{:city "Florencia", :country_id 24, :xt/id 170}
+{:city "Fontana", :country_id 103, :xt/id 171}
+{:city "Fukuyama", :country_id 50, :xt/id 172}
+{:city "Funafuti", :country_id 99, :xt/id 173}
+{:city "Fuyu", :country_id 23, :xt/id 174}
+{:city "Fuzhou", :country_id 23, :xt/id 175}
+{:city "Gandhinagar", :country_id 44, :xt/id 176}
+{:city "Garden Grove", :country_id 103, :xt/id 177}
+{:city "Garland", :country_id 103, :xt/id 178}
+{:city "Gatineau", :country_id 20, :xt/id 179}
+{:city "Gaziantep", :country_id 97, :xt/id 180}
+{:city "Gijón", :country_id 87, :xt/id 181}
+{:city "Gingoog", :country_id 75, :xt/id 182}
+{:city "Goiânia", :country_id 15, :xt/id 183}
+{:city "Gorontalo", :country_id 45, :xt/id 184}
+{:city "Grand Prairie", :country_id 103, :xt/id 185}
+{:city "Graz", :country_id 9, :xt/id 186}
+{:city "Greensboro", :country_id 103, :xt/id 187}
+{:city "Guadalajara", :country_id 60, :xt/id 188}
+{:city "Guarujá", :country_id 15, :xt/id 189}
+{:city "Águas Lindas de Goiás", :country_id 15, :xt/id 190}
+{:city "Gulbarga", :country_id 44, :xt/id 191}
+{:city "Hagonoy", :country_id 75, :xt/id 192}
+{:city "Haining", :country_id 23, :xt/id 193}
+{:city "Haiphong", :country_id 105, :xt/id 194}
+{:city "Haldia", :country_id 44, :xt/id 195}
+{:city "Halifax", :country_id 20, :xt/id 196}
+{:city "Halisahar", :country_id 44, :xt/id 197}
+{:city "Halle/Saale", :country_id 38, :xt/id 198}
+{:city "Hami", :country_id 23, :xt/id 199}
+{:city "Hamilton", :country_id 68, :xt/id 200}
+{:city "Hanoi", :country_id 105, :xt/id 201}
+{:city "Hidalgo", :country_id 60, :xt/id 202}
+{:city "Higashiosaka", :country_id 50, :xt/id 203}
+{:city "Hino", :country_id 50, :xt/id 204}
+{:city "Hiroshima", :country_id 50, :xt/id 205}
+{:city "Hodeida", :country_id 107, :xt/id 206}
+{:city "Hohhot", :country_id 23, :xt/id 207}
+{:city "Hoshiarpur", :country_id 44, :xt/id 208}
+{:city "Hsichuh", :country_id 92, :xt/id 209}
+{:city "Huai´an", :country_id 23, :xt/id 210}
+{:city "Hubli-Dharwad", :country_id 44, :xt/id 211}
+{:city "Huejutla de Reyes", :country_id 60, :xt/id 212}
+{:city "Huixquilucan", :country_id 60, :xt/id 213}
+{:city "Huánuco", :country_id 74, :xt/id 214}
+{:city "Ibirité", :country_id 15, :xt/id 215}
+{:city "Idfu", :country_id 29, :xt/id 216}
+{:city "Ife", :country_id 69, :xt/id 217}
+{:city "Ikerre", :country_id 69, :xt/id 218}
+{:city "Iligan", :country_id 75, :xt/id 219}
+{:city "Ilorin", :country_id 69, :xt/id 220}
+{:city "Imus", :country_id 75, :xt/id 221}
+{:city "Inegöl", :country_id 97, :xt/id 222}
+{:city "Ipoh", :country_id 59, :xt/id 223}
+{:city "Isesaki", :country_id 50, :xt/id 224}
+{:city "Ivanovo", :country_id 80, :xt/id 225}
+{:city "Iwaki", :country_id 50, :xt/id 226}
+{:city "Iwakuni", :country_id 50, :xt/id 227}
+{:city "Iwatsuki", :country_id 50, :xt/id 228}
+{:city "Izumisano", :country_id 50, :xt/id 229}
+{:city "Jaffna", :country_id 88, :xt/id 230}
+{:city "Jaipur", :country_id 44, :xt/id 231}
+{:city "Jakarta", :country_id 45, :xt/id 232}
+{:city "Jalib al-Shuyukh", :country_id 53, :xt/id 233}
+{:city "Jamalpur", :country_id 12, :xt/id 234}
+{:city "Jaroslavl", :country_id 80, :xt/id 235}
+{:city "Jastrzebie-Zdrój", :country_id 76, :xt/id 236}
+{:city "Jedda", :country_id 82, :xt/id 237}
+{:city "Jelets", :country_id 80, :xt/id 238}
+{:city "Jhansi", :country_id 44, :xt/id 239}
+{:city "Jinchang", :country_id 23, :xt/id 240}
+{:city "Jining", :country_id 23, :xt/id 241}
+{:city "Jinzhou", :country_id 23, :xt/id 242}
+{:city "Jodhpur", :country_id 44, :xt/id 243}
+{:city "Johannesburg", :country_id 85, :xt/id 244}
+{:city "Joliet", :country_id 103, :xt/id 245}
+{:city "José Azueta", :country_id 60, :xt/id 246}
+{:city "Juazeiro do Norte", :country_id 15, :xt/id 247}
+{:city "Juiz de Fora", :country_id 15, :xt/id 248}
+{:city "Junan", :country_id 23, :xt/id 249}
+{:city "Juárez", :country_id 60, :xt/id 250}
+{:city "Kabul", :country_id 1, :xt/id 251}
+{:city "Kaduna", :country_id 69, :xt/id 252}
+{:city "Kakamigahara", :country_id 50, :xt/id 253}
+{:city "Kaliningrad", :country_id 80, :xt/id 254}
+{:city "Kalisz", :country_id 76, :xt/id 255}
+{:city "Kamakura", :country_id 50, :xt/id 256}
+{:city "Kamarhati", :country_id 44, :xt/id 257}
+{:city "Kamjanets-Podilskyi", :country_id 100, :xt/id 258}
+{:city "Kamyšin", :country_id 80, :xt/id 259}
+{:city "Kanazawa", :country_id 50, :xt/id 260}
+{:city "Kanchrapara", :country_id 44, :xt/id 261}
+{:city "Kansas City", :country_id 103, :xt/id 262}
+{:city "Karnal", :country_id 44, :xt/id 263}
+{:city "Katihar", :country_id 44, :xt/id 264}
+{:city "Kermanshah", :country_id 46, :xt/id 265}
+{:city "Kilis", :country_id 97, :xt/id 266}
+{:city "Kimberley", :country_id 85, :xt/id 267}
+{:city "Kimchon", :country_id 86, :xt/id 268}
+{:city "Kingstown", :country_id 81, :xt/id 269}
+{:city "Kirovo-Tšepetsk", :country_id 80, :xt/id 270}
+{:city "Kisumu", :country_id 52, :xt/id 271}
+{:city "Kitwe", :country_id 109, :xt/id 272}
+{:city "Klerksdorp", :country_id 85, :xt/id 273}
+{:city "Kolpino", :country_id 80, :xt/id 274}
+{:city "Konotop", :country_id 100, :xt/id 275}
+{:city "Koriyama", :country_id 50, :xt/id 276}
+{:city "Korla", :country_id 23, :xt/id 277}
+{:city "Korolev", :country_id 80, :xt/id 278}
+{:city "Kowloon and New Kowloon", :country_id 42, :xt/id 279}
+{:city "Kragujevac", :country_id 108, :xt/id 280}
+{:city "Kütahya", :country_id 97, :xt/id 281}
+{:city "Kuching", :country_id 59, :xt/id 282}
+{:city "Kumbakonam", :country_id 44, :xt/id 283}
+{:city "Kurashiki", :country_id 50, :xt/id 284}
+{:city "Kurgan", :country_id 80, :xt/id 285}
+{:city "Kursk", :country_id 80, :xt/id 286}
+{:city "Kuwana", :country_id 50, :xt/id 287}
+{:city "La Paz", :country_id 60, :xt/id 288}
+{:city "La Plata", :country_id 6, :xt/id 289}
+{:city "La Romana", :country_id 27, :xt/id 290}
+{:city "Laiwu", :country_id 23, :xt/id 291}
+{:city "Lancaster", :country_id 103, :xt/id 292}
+{:city "Laohekou", :country_id 23, :xt/id 293}
+{:city "Lapu-Lapu", :country_id 75, :xt/id 294}
+{:city "Laredo", :country_id 103, :xt/id 295}
+{:city "Lausanne", :country_id 91, :xt/id 296}
+{:city "Le Mans", :country_id 34, :xt/id 297}
+{:city "Lengshuijiang", :country_id 23, :xt/id 298}
+{:city "Leshan", :country_id 23, :xt/id 299}
+{:city "Lethbridge", :country_id 20, :xt/id 300}
+{:city "Lhokseumawe", :country_id 45, :xt/id 301}
+{:city "Liaocheng", :country_id 23, :xt/id 302}
+{:city "Liepaja", :country_id 54, :xt/id 303}
+{:city "Lilongwe", :country_id 58, :xt/id 304}
+{:city "Lima", :country_id 74, :xt/id 305}
+{:city "Lincoln", :country_id 103, :xt/id 306}
+{:city "Linz", :country_id 9, :xt/id 307}
+{:city "Lipetsk", :country_id 80, :xt/id 308}
+{:city "Livorno", :country_id 49, :xt/id 309}
+{:city "Ljubertsy", :country_id 80, :xt/id 310}
+{:city "Loja", :country_id 28, :xt/id 311}
+{:city "London", :country_id 102, :xt/id 312}
+{:city "London", :country_id 20, :xt/id 313}
+{:city "Lublin", :country_id 76, :xt/id 314}
+{:city "Lubumbashi", :country_id 25, :xt/id 315}
+{:city "Lungtan", :country_id 92, :xt/id 316}
+{:city "Luziânia", :country_id 15, :xt/id 317}
+{:city "Madiun", :country_id 45, :xt/id 318}
+{:city "Mahajanga", :country_id 57, :xt/id 319}
+{:city "Maikop", :country_id 80, :xt/id 320}
+{:city "Malmö", :country_id 90, :xt/id 321}
+{:city "Manchester", :country_id 103, :xt/id 322}
+{:city "Mandaluyong", :country_id 75, :xt/id 323}
+{:city "Mandi Bahauddin", :country_id 72, :xt/id 324}
+{:city "Mannheim", :country_id 38, :xt/id 325}
+{:city "Maracaíbo", :country_id 104, :xt/id 326}
+{:city "Mardan", :country_id 72, :xt/id 327}
+{:city "Maringá", :country_id 15, :xt/id 328}
+{:city "Masqat", :country_id 71, :xt/id 329}
+{:city "Matamoros", :country_id 60, :xt/id 330}
+{:city "Matsue", :country_id 50, :xt/id 331}
+{:city "Meixian", :country_id 23, :xt/id 332}
+{:city "Memphis", :country_id 103, :xt/id 333}
+{:city "Merlo", :country_id 6, :xt/id 334}
+{:city "Mexicali", :country_id 60, :xt/id 335}
+{:city "Miraj", :country_id 44, :xt/id 336}
+{:city "Mit Ghamr", :country_id 29, :xt/id 337}
+{:city "Miyakonojo", :country_id 50, :xt/id 338}
+{:city "Mogiljov", :country_id 13, :xt/id 339}
+{:city "Molodetšno", :country_id 13, :xt/id 340}
+{:city "Monclova", :country_id 60, :xt/id 341}
+{:city "Monywa", :country_id 64, :xt/id 342}
+{:city "Moscow", :country_id 80, :xt/id 343}
+{:city "Mosul", :country_id 47, :xt/id 344}
+{:city "Mukatševe", :country_id 100, :xt/id 345}
+{:city "Munger (Monghyr)", :country_id 44, :xt/id 346}
+{:city "Mwanza", :country_id 93, :xt/id 347}
+{:city "Mwene-Ditu", :country_id 25, :xt/id 348}
+{:city "Myingyan", :country_id 64, :xt/id 349}
+{:city "Mysore", :country_id 44, :xt/id 350}
+{:city "Naçala-Porto", :country_id 63, :xt/id 351}
+{:city "Nabereznyje Tšelny", :country_id 80, :xt/id 352}
+{:city "Nador", :country_id 62, :xt/id 353}
+{:city "Nagaon", :country_id 44, :xt/id 354}
+{:city "Nagareyama", :country_id 50, :xt/id 355}
+{:city "Najafabad", :country_id 46, :xt/id 356}
+{:city "Naju", :country_id 86, :xt/id 357}
+{:city "Nakhon Sawan", :country_id 94, :xt/id 358}
+{:city "Nam Dinh", :country_id 105, :xt/id 359}
+{:city "Namibe", :country_id 4, :xt/id 360}
+{:city "Nantou", :country_id 92, :xt/id 361}
+{:city "Nanyang", :country_id 23, :xt/id 362}
+{:city "NDjamna", :country_id 21, :xt/id 363}
+{:city "Newcastle", :country_id 85, :xt/id 364}
+{:city "Nezahualcóyotl", :country_id 60, :xt/id 365}
+{:city "Nha Trang", :country_id 105, :xt/id 366}
+{:city "Niznekamsk", :country_id 80, :xt/id 367}
+{:city "Novi Sad", :country_id 108, :xt/id 368}
+{:city "Novotšerkassk", :country_id 80, :xt/id 369}
+{:city "Nuku´alofa", :country_id 95, :xt/id 370}
+{:city "Nuuk", :country_id 40, :xt/id 371}
+{:city "Nyeri", :country_id 52, :xt/id 372}
+{:city "Ocumare del Tuy", :country_id 104, :xt/id 373}
+{:city "Ogbomosho", :country_id 69, :xt/id 374}
+{:city "Okara", :country_id 72, :xt/id 375}
+{:city "Okayama", :country_id 50, :xt/id 376}
+{:city "Okinawa", :country_id 50, :xt/id 377}
+{:city "Olomouc", :country_id 26, :xt/id 378}
+{:city "Omdurman", :country_id 89, :xt/id 379}
+{:city "Omiya", :country_id 50, :xt/id 380}
+{:city "Ondo", :country_id 69, :xt/id 381}
+{:city "Onomichi", :country_id 50, :xt/id 382}
+{:city "Oshawa", :country_id 20, :xt/id 383}
+{:city "Osmaniye", :country_id 97, :xt/id 384}
+{:city "Šostka", :country_id 100, :xt/id 385}
+{:city "Otsu", :country_id 50, :xt/id 386}
+{:city "Oulu", :country_id 33, :xt/id 387}
+{:city "Ourense (Orense)", :country_id 87, :xt/id 388}
+{:city "Owo", :country_id 69, :xt/id 389}
+{:city "Oyo", :country_id 69, :xt/id 390}
+{:city "Ozamis", :country_id 75, :xt/id 391}
+{:city "Paarl", :country_id 85, :xt/id 392}
+{:city "Pachuca de Soto", :country_id 60, :xt/id 393}
+{:city "Pak Kret", :country_id 94, :xt/id 394}
+{:city "Palghat (Palakkad)", :country_id 44, :xt/id 395}
+{:city "Pangkal Pinang", :country_id 45, :xt/id 396}
+{:city "Papeete", :country_id 36, :xt/id 397}
+{:city "Parbhani", :country_id 44, :xt/id 398}
+{:city "Pathankot", :country_id 44, :xt/id 399}
+{:city "Patiala", :country_id 44, :xt/id 400}
+{:city "Patras", :country_id 39, :xt/id 401}
+{:city "Pavlodar", :country_id 51, :xt/id 402}
+{:city "Pemalang", :country_id 45, :xt/id 403}
+{:city "Peoria", :country_id 103, :xt/id 404}
+{:city "Pereira", :country_id 24, :xt/id 405}
+{:city "Phnom Penh", :country_id 18, :xt/id 406}
+{:city "Pingxiang", :country_id 23, :xt/id 407}
+{:city "Pjatigorsk", :country_id 80, :xt/id 408}
+{:city "Plock", :country_id 76, :xt/id 409}
+{:city "Poá", :country_id 15, :xt/id 410}
+{:city "Ponce", :country_id 77, :xt/id 411}
+{:city "Pontianak", :country_id 45, :xt/id 412}
+{:city "Poços de Caldas", :country_id 15, :xt/id 413}
+{:city "Portoviejo", :country_id 28, :xt/id 414}
+{:city "Probolinggo", :country_id 45, :xt/id 415}
+{:city "Pudukkottai", :country_id 44, :xt/id 416}
+{:city "Pune", :country_id 44, :xt/id 417}
+{:city "Purnea (Purnia)", :country_id 44, :xt/id 418}
+{:city "Purwakarta", :country_id 45, :xt/id 419}
+{:city "Pyongyang", :country_id 70, :xt/id 420}
+{:city "Qalyub", :country_id 29, :xt/id 421}
+{:city "Qinhuangdao", :country_id 23, :xt/id 422}
+{:city "Qomsheh", :country_id 46, :xt/id 423}
+{:city "Quilmes", :country_id 6, :xt/id 424}
+{:city "Rae Bareli", :country_id 44, :xt/id 425}
+{:city "Rajkot", :country_id 44, :xt/id 426}
+{:city "Rampur", :country_id 44, :xt/id 427}
+{:city "Rancagua", :country_id 22, :xt/id 428}
+{:city "Ranchi", :country_id 44, :xt/id 429}
+{:city "Richmond Hill", :country_id 20, :xt/id 430}
+{:city "Rio Claro", :country_id 15, :xt/id 431}
+{:city "Rizhao", :country_id 23, :xt/id 432}
+{:city "Roanoke", :country_id 103, :xt/id 433}
+{:city "Ríobamba", :country_id 28, :xt/id 434}
+{:city "Rockford", :country_id 103, :xt/id 435}
+{:city "Ruse", :country_id 17, :xt/id 436}
+{:city "Rustenburg", :country_id 85, :xt/id 437}
+{:city "´s-Hertogenbosch", :country_id 67, :xt/id 438}
+{:city "Saarbrücken", :country_id 38, :xt/id 439}
+{:city "Sagamihara", :country_id 50, :xt/id 440}
+{:city "Saint Louis", :country_id 103, :xt/id 441}
+{:city "Saint-Denis", :country_id 79, :xt/id 442}
+{:city "Salé", :country_id 62, :xt/id 443}
+{:city "Salala", :country_id 71, :xt/id 444}
+{:city "Salamanca", :country_id 60, :xt/id 445}
+{:city "Salinas", :country_id 103, :xt/id 446}
+{:city "Salzburg", :country_id 9, :xt/id 447}
+{:city "Sambhal", :country_id 44, :xt/id 448}
+{:city "San Bernardino", :country_id 103, :xt/id 449}
+{:city "San Felipe de Puerto Plata", :country_id 27, :xt/id 450}
+{:city "San Felipe del Progreso", :country_id 60, :xt/id 451}
+{:city "San Juan Bautista Tuxtepec", :country_id 60, :xt/id 452}
+{:city "San Lorenzo", :country_id 73, :xt/id 453}
+{:city "San Miguel de Tucumán", :country_id 6, :xt/id 454}
+{:city "Sanaa", :country_id 107, :xt/id 455}
+{:city "Santa Bárbara d´Oeste", :country_id 15, :xt/id 456}
+{:city "Santa Fé", :country_id 6, :xt/id 457}
+{:city "Santa Rosa", :country_id 75, :xt/id 458}
+{:city "Santiago de Compostela", :country_id 87, :xt/id 459}
+{:city "Santiago de los Caballeros", :country_id 27, :xt/id 460}
+{:city "Santo André", :country_id 15, :xt/id 461}
+{:city "Sanya", :country_id 23, :xt/id 462}
+{:city "Sasebo", :country_id 50, :xt/id 463}
+{:city "Satna", :country_id 44, :xt/id 464}
+{:city "Sawhaj", :country_id 29, :xt/id 465}
+{:city "Serpuhov", :country_id 80, :xt/id 466}
+{:city "Shahr-e Kord", :country_id 46, :xt/id 467}
+{:city "Shanwei", :country_id 23, :xt/id 468}
+{:city "Shaoguan", :country_id 23, :xt/id 469}
+{:city "Sharja", :country_id 101, :xt/id 470}
+{:city "Shenzhen", :country_id 23, :xt/id 471}
+{:city "Shikarpur", :country_id 72, :xt/id 472}
+{:city "Shimoga", :country_id 44, :xt/id 473}
+{:city "Shimonoseki", :country_id 50, :xt/id 474}
+{:city "Shivapuri", :country_id 44, :xt/id 475}
+{:city "Shubra al-Khayma", :country_id 29, :xt/id 476}
+{:city "Siegen", :country_id 38, :xt/id 477}
+{:city "Siliguri (Shiliguri)", :country_id 44, :xt/id 478}
+{:city "Simferopol", :country_id 100, :xt/id 479}
+{:city "Sincelejo", :country_id 24, :xt/id 480}
+{:city "Sirjan", :country_id 46, :xt/id 481}
+{:city "Sivas", :country_id 97, :xt/id 482}
+{:city "Skikda", :country_id 2, :xt/id 483}
+{:city "Smolensk", :country_id 80, :xt/id 484}
+{:city "São Bernardo do Campo", :country_id 15, :xt/id 485}
+{:city "São Leopoldo", :country_id 15, :xt/id 486}
+{:city "Sogamoso", :country_id 24, :xt/id 487}
+{:city "Sokoto", :country_id 69, :xt/id 488}
+{:city "Songkhla", :country_id 94, :xt/id 489}
+{:city "Sorocaba", :country_id 15, :xt/id 490}
+{:city "Soshanguve", :country_id 85, :xt/id 491}
+{:city "Sousse", :country_id 96, :xt/id 492}
+{:city "South Hill", :country_id 5, :xt/id 493}
+{:city "Southampton", :country_id 102, :xt/id 494}
+{:city "Southend-on-Sea", :country_id 102, :xt/id 495}
+{:city "Southport", :country_id 102, :xt/id 496}
+{:city "Springs", :country_id 85, :xt/id 497}
+{:city "Stara Zagora", :country_id 17, :xt/id 498}
+{:city "Sterling Heights", :country_id 103, :xt/id 499}
+{:city "Stockport", :country_id 102, :xt/id 500}
+{:city "Sucre", :country_id 14, :xt/id 501}
+{:city "Suihua", :country_id 23, :xt/id 502}
+{:city "Sullana", :country_id 74, :xt/id 503}
+{:city "Sultanbeyli", :country_id 97, :xt/id 504}
+{:city "Sumqayit", :country_id 10, :xt/id 505}
+{:city "Sumy", :country_id 100, :xt/id 506}
+{:city "Sungai Petani", :country_id 59, :xt/id 507}
+{:city "Sunnyvale", :country_id 103, :xt/id 508}
+{:city "Surakarta", :country_id 45, :xt/id 509}
+{:city "Syktyvkar", :country_id 80, :xt/id 510}
+{:city "Syrakusa", :country_id 49, :xt/id 511}
+{:city "Székesfehérvár", :country_id 43, :xt/id 512}
+{:city "Tabora", :country_id 93, :xt/id 513}
+{:city "Tabriz", :country_id 46, :xt/id 514}
+{:city "Tabuk", :country_id 82, :xt/id 515}
+{:city "Tafuna", :country_id 3, :xt/id 516}
+{:city "Taguig", :country_id 75, :xt/id 517}
+{:city "Taizz", :country_id 107, :xt/id 518}
+{:city "Talavera", :country_id 75, :xt/id 519}
+{:city "Tallahassee", :country_id 103, :xt/id 520}
+{:city "Tama", :country_id 50, :xt/id 521}
+{:city "Tambaram", :country_id 44, :xt/id 522}
+{:city "Tanauan", :country_id 75, :xt/id 523}
+{:city "Tandil", :country_id 6, :xt/id 524}
+{:city "Tangail", :country_id 12, :xt/id 525}
+{:city "Tanshui", :country_id 92, :xt/id 526}
+{:city "Tanza", :country_id 75, :xt/id 527}
+{:city "Tarlac", :country_id 75, :xt/id 528}
+{:city "Tarsus", :country_id 97, :xt/id 529}
+{:city "Tartu", :country_id 30, :xt/id 530}
+{:city "Tšeboksary", :country_id 80, :xt/id 531}
+{:city "Tegal", :country_id 45, :xt/id 532}
+{:city "Tel Aviv-Jaffa", :country_id 48, :xt/id 533}
+{:city "Tete", :country_id 63, :xt/id 534}
+{:city "Tianjin", :country_id 23, :xt/id 535}
+{:city "Tiefa", :country_id 23, :xt/id 536}
+{:city "Tieli", :country_id 23, :xt/id 537}
+{:city "Tokat", :country_id 97, :xt/id 538}
+{:city "Tonghae", :country_id 86, :xt/id 539}
+{:city "Tongliao", :country_id 23, :xt/id 540}
+{:city "Torreón", :country_id 60, :xt/id 541}
+{:city "Touliu", :country_id 92, :xt/id 542}
+{:city "Toulon", :country_id 34, :xt/id 543}
+{:city "Toulouse", :country_id 34, :xt/id 544}
+{:city "Tórshavn", :country_id 32, :xt/id 545}
+{:city "Tsaotun", :country_id 92, :xt/id 546}
+{:city "Tsuyama", :country_id 50, :xt/id 547}
+{:city "Tuguegarao", :country_id 75, :xt/id 548}
+{:city "Tychy", :country_id 76, :xt/id 549}
+{:city "Udaipur", :country_id 44, :xt/id 550}
+{:city "Udine", :country_id 49, :xt/id 551}
+{:city "Ueda", :country_id 50, :xt/id 552}
+{:city "Uijongbu", :country_id 86, :xt/id 553}
+{:city "Uluberia", :country_id 44, :xt/id 554}
+{:city "Urawa", :country_id 50, :xt/id 555}
+{:city "Uruapan", :country_id 60, :xt/id 556}
+{:city "Usak", :country_id 97, :xt/id 557}
+{:city "Usolje-Sibirskoje", :country_id 80, :xt/id 558}
+{:city "Uttarpara-Kotrung", :country_id 44, :xt/id 559}
+{:city "Vaduz", :country_id 55, :xt/id 560}
+{:city "Valencia", :country_id 104, :xt/id 561}
+{:city "Valle de la Pascua", :country_id 104, :xt/id 562}
+{:city "Valle de Santiago", :country_id 60, :xt/id 563}
+{:city "Valparai", :country_id 44, :xt/id 564}
+{:city "Vancouver", :country_id 20, :xt/id 565}
+{:city "Varanasi (Benares)", :country_id 44, :xt/id 566}
+{:city "Vicente López", :country_id 6, :xt/id 567}
+{:city "Vijayawada", :country_id 44, :xt/id 568}
+{:city "Vila Velha", :country_id 15, :xt/id 569}
+{:city "Vilnius", :country_id 56, :xt/id 570}
+{:city "Vinh", :country_id 105, :xt/id 571}
+{:city "Vitória de Santo Antão", :country_id 15, :xt/id 572}
+{:city "Warren", :country_id 103, :xt/id 573}
+{:city "Weifang", :country_id 23, :xt/id 574}
+{:city "Witten", :country_id 38, :xt/id 575}
+{:city "Woodridge", :country_id 8, :xt/id 576}
+{:city "Wroclaw", :country_id 76, :xt/id 577}
+{:city "Xi´angfan", :country_id 23, :xt/id 578}
+{:city "Xi´angtan", :country_id 23, :xt/id 579}
+{:city "Xintai", :country_id 23, :xt/id 580}
+{:city "Xinxiang", :country_id 23, :xt/id 581}
+{:city "Yamuna Nagar", :country_id 44, :xt/id 582}
+{:city "Yangor", :country_id 65, :xt/id 583}
+{:city "Yantai", :country_id 23, :xt/id 584}
+{:city "Yaoundé", :country_id 19, :xt/id 585}
+{:city "Yerevan", :country_id 7, :xt/id 586}
+{:city "Yinchuan", :country_id 23, :xt/id 587}
+{:city "Yingkou", :country_id 23, :xt/id 588}
+{:city "York", :country_id 102, :xt/id 589}
+{:city "Yuncheng", :country_id 23, :xt/id 590}
+{:city "Yuzhou", :country_id 23, :xt/id 591}
+{:city "Zalantun", :country_id 23, :xt/id 592}
+{:city "Zanzibar", :country_id 93, :xt/id 593}
+{:city "Zaoyang", :country_id 23, :xt/id 594}
+{:city "Zapopan", :country_id 60, :xt/id 595}
+{:city "Zaria", :country_id 69, :xt/id 596}
+{:city "Zeleznogorsk", :country_id 80, :xt/id 597}
+{:city "Zhezqazghan", :country_id 51, :xt/id 598}
+{:city "Zhoushan", :country_id 23, :xt/id 599}
+{:city "Ziguinchor", :country_id 83, :xt/id 600}

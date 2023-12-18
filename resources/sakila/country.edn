@@ -1,0 +1,109 @@
+{:country "Afghanistan", :xt/id 1}
+{:country "Algeria", :xt/id 2}
+{:country "American Samoa", :xt/id 3}
+{:country "Angola", :xt/id 4}
+{:country "Anguilla", :xt/id 5}
+{:country "Argentina", :xt/id 6}
+{:country "Armenia", :xt/id 7}
+{:country "Australia", :xt/id 8}
+{:country "Austria", :xt/id 9}
+{:country "Azerbaijan", :xt/id 10}
+{:country "Bahrain", :xt/id 11}
+{:country "Bangladesh", :xt/id 12}
+{:country "Belarus", :xt/id 13}
+{:country "Bolivia", :xt/id 14}
+{:country "Brazil", :xt/id 15}
+{:country "Brunei", :xt/id 16}
+{:country "Bulgaria", :xt/id 17}
+{:country "Cambodia", :xt/id 18}
+{:country "Cameroon", :xt/id 19}
+{:country "Canada", :xt/id 20}
+{:country "Chad", :xt/id 21}
+{:country "Chile", :xt/id 22}
+{:country "China", :xt/id 23}
+{:country "Colombia", :xt/id 24}
+{:country "Congo, The Democratic Republic of the", :xt/id 25}
+{:country "Czech Republic", :xt/id 26}
+{:country "Dominican Republic", :xt/id 27}
+{:country "Ecuador", :xt/id 28}
+{:country "Egypt", :xt/id 29}
+{:country "Estonia", :xt/id 30}
+{:country "Ethiopia", :xt/id 31}
+{:country "Faroe Islands", :xt/id 32}
+{:country "Finland", :xt/id 33}
+{:country "France", :xt/id 34}
+{:country "French Guiana", :xt/id 35}
+{:country "French Polynesia", :xt/id 36}
+{:country "Gambia", :xt/id 37}
+{:country "Germany", :xt/id 38}
+{:country "Greece", :xt/id 39}
+{:country "Greenland", :xt/id 40}
+{:country "Holy See (Vatican City State)", :xt/id 41}
+{:country "Hong Kong", :xt/id 42}
+{:country "Hungary", :xt/id 43}
+{:country "India", :xt/id 44}
+{:country "Indonesia", :xt/id 45}
+{:country "Iran", :xt/id 46}
+{:country "Iraq", :xt/id 47}
+{:country "Israel", :xt/id 48}
+{:country "Italy", :xt/id 49}
+{:country "Japan", :xt/id 50}
+{:country "Kazakstan", :xt/id 51}
+{:country "Kenya", :xt/id 52}
+{:country "Kuwait", :xt/id 53}
+{:country "Latvia", :xt/id 54}
+{:country "Liechtenstein", :xt/id 55}
+{:country "Lithuania", :xt/id 56}
+{:country "Madagascar", :xt/id 57}
+{:country "Malawi", :xt/id 58}
+{:country "Malaysia", :xt/id 59}
+{:country "Mexico", :xt/id 60}
+{:country "Moldova", :xt/id 61}
+{:country "Morocco", :xt/id 62}
+{:country "Mozambique", :xt/id 63}
+{:country "Myanmar", :xt/id 64}
+{:country "Nauru", :xt/id 65}
+{:country "Nepal", :xt/id 66}
+{:country "Netherlands", :xt/id 67}
+{:country "New Zealand", :xt/id 68}
+{:country "Nigeria", :xt/id 69}
+{:country "North Korea", :xt/id 70}
+{:country "Oman", :xt/id 71}
+{:country "Pakistan", :xt/id 72}
+{:country "Paraguay", :xt/id 73}
+{:country "Peru", :xt/id 74}
+{:country "Philippines", :xt/id 75}
+{:country "Poland", :xt/id 76}
+{:country "Puerto Rico", :xt/id 77}
+{:country "Romania", :xt/id 78}
+{:country "Réunion", :xt/id 79}
+{:country "Russian Federation", :xt/id 80}
+{:country "Saint Vincent and the Grenadines", :xt/id 81}
+{:country "Saudi Arabia", :xt/id 82}
+{:country "Senegal", :xt/id 83}
+{:country "Slovakia", :xt/id 84}
+{:country "South Africa", :xt/id 85}
+{:country "South Korea", :xt/id 86}
+{:country "Spain", :xt/id 87}
+{:country "Sri Lanka", :xt/id 88}
+{:country "Sudan", :xt/id 89}
+{:country "Sweden", :xt/id 90}
+{:country "Switzerland", :xt/id 91}
+{:country "Taiwan", :xt/id 92}
+{:country "Tanzania", :xt/id 93}
+{:country "Thailand", :xt/id 94}
+{:country "Tonga", :xt/id 95}
+{:country "Tunisia", :xt/id 96}
+{:country "Turkey", :xt/id 97}
+{:country "Turkmenistan", :xt/id 98}
+{:country "Tuvalu", :xt/id 99}
+{:country "Ukraine", :xt/id 100}
+{:country "United Arab Emirates", :xt/id 101}
+{:country "United Kingdom", :xt/id 102}
+{:country "United States", :xt/id 103}
+{:country "Venezuela", :xt/id 104}
+{:country "Vietnam", :xt/id 105}
+{:country "Virgin Islands, U.S.", :xt/id 106}
+{:country "Yemen", :xt/id 107}
+{:country "Yugoslavia", :xt/id 108}
+{:country "Zambia", :xt/id 109}

@@ -1,0 +1,21 @@
+;; deps.edn
+{:mvn/repos {"ossrh-snapshots" {:url "https://s01.oss.sonatype.org/content/repositories/snapshots"}}
+
+ :deps {org.clojure/clojure {:mvn/version "1.11.1"}
+        integrant/integrant {:mvn/version "0.8.1"}
+        integrant/repl {:mvn/version "0.3.3"}
+        com.xtdb/xtdb-api {:mvn/version "2.0.0-SNAPSHOT"}
+        com.xtdb/xtdb-core {:mvn/version "2.0.0-SNAPSHOT"}
+        ch.qos.logback/logback-classic {:mvn/version "1.4.11"}
+
+        org.clojure/data.xml {:mvn/version "0.2.0-alpha8"}}
+
+ :aliases {:xtdb {:jvm-opts
+                  ;; needed on JDK16+
+                  ["--add-opens=java.base/java.nio=ALL-UNNAMED"
+                   "-Dio.netty.tryReflectionSetAccessible=true"]}
+
+           :nrepl {:main-opts ["-m" "nrepl.cmdline"]
+                   :extra-deps {nrepl/nrepl {:mvn/version "1.0.0"}}} }
+
+ :paths ["src" "resources"]}
