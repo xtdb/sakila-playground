@@ -34,14 +34,18 @@
   clojure.lang.Var
   (GET [v request] (GET @v request))
   (HEAD [v request] (HEAD @v request))
+  (PUT [v request] (PUT @v request))
   (POST [v request] (POST @v request))
+  (DELETE [v request] (DELETE @v request))
   (OPTIONS [v request] (OPTIONS @v request))
 
   nil
-  (GET [v request] (GET not-found-resource request))
-  (HEAD [v request] (HEAD not-found-resource request))
-  (POST [v request] (POST not-found-resource request))
-  (OPTIONS [v request] (OPTIONS not-found-resource request)))
+  (GET [_ request] (GET not-found-resource request))
+  (HEAD [_ request] (HEAD not-found-resource request))
+  (PUT [_ request] (PUT not-found-resource request))
+  (POST [_ request] (POST not-found-resource request))
+  (DELETE [_ request] (DELETE not-found-resource request))
+  (OPTIONS [_ request] (OPTIONS not-found-resource request)))
 
 (defn html-resource [f]
   (map->Resource
