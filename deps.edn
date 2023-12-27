@@ -8,7 +8,12 @@
         com.xtdb/xtdb-core {:mvn/version "2.0.0-SNAPSHOT"}
         ch.qos.logback/logback-classic {:mvn/version "1.4.11"}
 
-        org.clojure/data.xml {:mvn/version "0.2.0-alpha8"}}
+        org.clojure/data.xml {:mvn/version "0.2.0-alpha8"}
+
+        ring/ring-jetty-adapter {:mvn/version "1.11.0"}
+        ring/ring-core {:mvn/version "1.11.0"}
+        hiccup/hiccup {:mvn/version "2.0.0-RC2"}
+        }
 
  :aliases {:xtdb {:jvm-opts
                   ;; needed on JDK16+
