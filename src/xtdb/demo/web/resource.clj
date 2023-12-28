@@ -1,7 +1,10 @@
 (ns xtdb.demo.web.resource
   (:require
    [xtdb.demo.web.protocols :refer [UniformInterface allowed-methods GET HEAD POST PUT DELETE OPTIONS]]
-   [xtdb.demo.web.methods :as methods]))
+   [xtdb.demo.web.methods :as methods]
+   [selmer.parser :as selmer]))
+
+(selmer/cache-off!)
 
 (defrecord Resource [m]
   UniformInterface
@@ -51,3 +54,17 @@
   (map->Resource
    {:representations
     [(with-meta f {:headers {"content-type" "text/html;charset=utf-8"}})]}))
+
+(defn html-templated-resource [{:keys [template template-model]}]
+  (let [template-model (clojure.core/update-vals template-model (fn [x] (if (fn? x) (x) x)))]
+    (map->Resource
+     {:representations
+      [^{:headers {"content-type" "text/html;charset=utf-8"}}
+       (fn []
+         (selmer/render-file template template-model))]})))
+
+(defn file-resource [file]
+  (map->Resource
+   {:representations
+    [^{:headers {"content-type" "text/css"}}
+     (fn [] file)]}))

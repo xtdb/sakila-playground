@@ -3,7 +3,7 @@
 (ns xtdb.demo.resources
   {:web-context "/"}
   (:require
-   [xtdb.demo.web.resource :refer [map->Resource html-resource]]
+   [xtdb.demo.web.resource :refer [map->Resource html-resource html-templated-resource]]
    [xtdb.demo.web.html :as html]
    [xtdb.demo.db :refer [xt-node]]
    [hiccup2.core :as h]
@@ -18,7 +18,7 @@
        ]})))
 
 (def select-films
-  "select film.title, film.description from film order by film.title")
+  "select film.title, film.description from film order by film.title limit 20")
 
 (def films
   (html-resource
@@ -28,3 +28,15 @@
       (html/html-table {:rowspecs [:title :description]})
       (h/html)
       (str "\r\n")))))
+
+(def test-page
+  (html-templated-resource
+   {:template "templates/basic.html"
+    :template-model
+    {"content"
+     (fn []
+       (->
+        (xt/q xt-node select-films)
+        (html/html-table {:rowspecs [:title :description]})
+        (h/html)
+        (str "\r\n")))}}))
