@@ -25,7 +25,7 @@
     (if representation
       {:ring.response/status 200
        :ring.response/headers (-> representation meta :headers)
-       :ring.response/body (representation)}
+       :ring.response/body (representation request)}
       {:ring.response/status 404})))
 
 (defn HEAD [resource request]

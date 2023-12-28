@@ -6,11 +6,11 @@
    [xtdb.demo.web.resource :refer [map->Resource file-resource]]
    [clojure.java.io :as io]))
 
-(def ^{:web-path "missing.css.css"} missing-css
+(defn ^{:web-path "missing.css.css"} missing-css [_]
   (file-resource (io/file "external/missing.css-1.1.1.css")))
 
-(def ^{:web-path "htmx.org.js"} htmx
+(defn ^{:web-path "htmx.org.js"} htmx [_]
   (file-resource (io/file "external/htmx.org-1.9.10.js")))
 
-(def ^{:web-path "hyperscript.js"} hyperscript
+(defn ^{:web-path "hyperscript.js"} hyperscript [_]
   (file-resource (io/file "external/hyperscript.org-0.9.12.js")))
