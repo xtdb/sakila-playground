@@ -33,7 +33,7 @@
   (html-templated-resource
    {:template "templates/basic.html"
     :template-model
-    {"content"
+    {"films"
      (fn []
        (->
         (xt/q xt-node select-films)
