@@ -2,7 +2,8 @@
   (:require [ring.adapter.jetty :refer [run-jetty]]
             xtdb.demo.web.server
             xtdb.demo.db
-            xtdb.demo.resources)
+            xtdb.demo.resources
+            xtdb.demo.static-resources)
   (:import java.io.File
            java.time.Instant))
 
