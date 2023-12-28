@@ -6,7 +6,8 @@
    [xtdb.demo.db :refer [xt-node]]
    [ring.util.codec :refer [form-decode]]
    [hiccup2.core :as h]
-   [xtdb.api :as xt]))
+   [xtdb.api :as xt]
+   [selmer.parser :as selmer]))
 
 (defn hello [_]
   (let [state (atom {:greeting "Hello"})]
@@ -42,3 +43,19 @@
            (filter (fn [row] (re-matches (re-pattern (str "(?i)" ".*" "\\Q" q "\\E" ".*")) (str (:title row) (:description row)))) rows)
            rows
            )))}}))
+
+(defn ^{:web-path "films/new"} films-new [_]
+  (let [template "templates/new.html"
+        template-model {}]
+    (map->Resource
+     {:representations
+      [^{:headers {"content-type" "text/html;charset=utf-8"}}
+       (fn [req]
+         (let [query-params (when-let [query (:ring.request/query req)]
+                              (form-decode query))]
+           (selmer/render-file
+            template
+            (cond-> template-model
+              query-params (assoc "query_params" query-params)))))]})))
+
+;;(xt/q xt-node "select * from film")

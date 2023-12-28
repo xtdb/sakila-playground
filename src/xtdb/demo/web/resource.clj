@@ -32,7 +32,10 @@
 
 (def not-found-resource
   (map->Resource
-   {:representations []}))
+   {:representations []
+    :responses {404 (fn [_]
+                      {:ring.response/headers {"content-type" "text/plain;charset=utf-8"}
+                       :ring.response/body "Not found\r\n"})}}))
 
 (extend-protocol UniformInterface
   clojure.lang.Var

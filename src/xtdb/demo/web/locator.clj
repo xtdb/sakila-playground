@@ -1,6 +1,4 @@
-(ns xtdb.demo.web.locator
-  (:require
-   [xtdb.demo.web.protocols :refer [GET HEAD POST PUT DELETE OPTIONS]]))
+(ns xtdb.demo.web.locator)
 
 (defn all-web-context-namespaces []
   (->>
@@ -25,7 +23,7 @@
              (when (= (str web-context web-path) path)
                v))))))))
 
-(defn handle-request [request]
+(defn locate-resource [request]
   (let [path (:ring.request/path request)
         resources (->>
                    (all-web-context-namespaces)
@@ -34,13 +32,5 @@
                      (filter-matching-namespaces-xf path)
                      (mapcat-matching-vars-xf path)
                      (remove nil?))))
-        resource-fn (first resources)
-        resource (resource-fn {:request request})]
-    (case (:ring.request/method request)
-      :get (GET resource request)
-      :head (HEAD resource request)
-      :post (POST resource request)
-      :put (PUT resource request)
-      :delete (DELETE resource request)
-      :options (OPTIONS resource request)
-      {:ring.response/status 501})))
+        resource-fn (first resources)]
+    (when resource-fn (resource-fn {:request request}))))

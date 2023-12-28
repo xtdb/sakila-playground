@@ -1,0 +1,29 @@
+{% extends "templates/layout.html" %}
+
+{% block content %}
+
+<form action="/films/new" method="post">
+    <fieldset>
+        <legend>Film Values</legend>
+        <div class="table rows">
+            <p>
+                <label for="email">Title</label>
+                <input name="title" id="title" type="text" placeholder="Title" value="{{ film.title }}">
+                <span class="error">{{ film.errors['title'] }}</span>
+            </p>
+            <p>
+                <label for="email">Description</label>
+                <input name="description" id="title" type="text" placeholder="Description" value="{{ film.description }}">
+                <span class="error">{{ film.errors['description'] }}</span>
+            </p>
+        </div>
+        <button type="submit">Save</button>
+    </fieldset>
+</form>
+
+<p>
+    <a href="/films">Back</a>
+</p>
+
+
+{% endblock %}

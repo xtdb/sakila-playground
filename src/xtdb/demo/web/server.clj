@@ -1,7 +1,8 @@
 (ns xtdb.demo.web.server
   (:require
+   [ring.adapter.jetty :refer [run-jetty]]
+   [xtdb.demo.web.handler :refer [make-full-ring2-handler]]
    [clojure.set :as set]
-   [xtdb.demo.web.locator :as locator]
    xtdb.demo.web.resource))
 
 (defn wrap-ring-1-adapter
@@ -38,8 +39,11 @@
                             :ring.response/headers :headers
                             :ring.response/body :body})))))
 
-(def handler
+(defn make-handler [opts]
   (->
-   (fn [req]
-     (locator/handle-request req))
+   (make-full-ring2-handler opts)
    (wrap-ring-1-adapter)))
+
+(defn run-server [opts]
+  (run-jetty
+   (make-handler opts) opts))
