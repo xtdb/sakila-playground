@@ -1,0 +1,29 @@
+{% extends "templates/layout.html" %}
+
+{% block content %}
+
+<form action="/customers/new" method="post">
+    <fieldset>
+        <legend>Customer Values</legend>
+        <div class="table rows">
+            <p>
+                <label for="first_name">First name</label>
+                <input name="first_name" id="first_name" type="text" placeholder="First name" value="{{ customer.first_name }}">
+                <span class="error">{{ film.errors['first_name'] }}</span>
+            </p>
+            <p>
+                <label for="last_name">Last name</label>
+                <input name="last_name" id="last_name" type="text" placeholder="Last name" value="{{ film.last_name }}">
+                <span class="error">{{ film.errors['last_name'] }}</span>
+            </p>
+        </div>
+        <button type="submit">Save</button>
+    </fieldset>
+</form>
+
+<p>
+    <a href="/customers">Back</a>
+</p>
+
+
+{% endblock %}

@@ -46,7 +46,7 @@
            )))}}))
 
 (defn ^{:web-path "films/new"} films-new [_]
-  (let [template "templates/new.html"
+  (let [template "templates/new-film.html"
         template-model {}]
     (map->Resource
      {:methods
@@ -65,4 +65,55 @@
             (cond-> template-model
               query-params (assoc "query_params" query-params)))))]})))
 
-;;(xt/q xt-node "select * from film")
+(defn customers [_]
+  (html-templated-resource
+   {:template "templates/customers.html"
+    :template-model
+    {"customers"
+     (fn [request]
+       (let [rows (xt/q xt-node "select customer.xt$id as id, customer.first_name, customer.last_name from customer order by customer.last_name")
+             query-params (when-let [query (:ring.request/query request)]
+                            (form-decode query))
+             q (get query-params "q")]
+         (if q
+           (filter (fn [row] (re-matches (re-pattern (str "(?i)" ".*" "\\Q" q "\\E" ".*")) (str (:first_name row) (:last_name row)))) rows)
+           rows
+           )))}}))
+
+(xt/q xt-node "select * from customer")
+
+(defn ^{:web-path "customers/new"} customers-new [_]
+  (let [template "templates/new-customer.html"
+        template-model {}]
+    (map->Resource
+     {:methods
+      {"POST" (fn [req]
+                ;; How to get form data from the request?
+                ;; See receive_representation
+                (xt/submit-tx
+                 xt-node
+                 [(xt/put
+                   :customer
+                   {:email "mal@juxt.pro"
+                    :first_name "MALCOLM"
+                    :xt/valid-from #time/instant "2006-02-14T22:04:36Z"
+                    :active true
+                    :last_name "SPARKS"
+                    :address_id 5
+                    :xt/id 1
+                    :store_id 1})])
+                ;; Redirect
+                {:ring.response/status 302
+                 :ring.response/headers {"location" (locator/var->path #'customers)}})}
+      :representations
+      [^{:headers {"content-type" "text/html;charset=utf-8"}}
+       (fn [req]
+         (let [query-params (when-let [query (:ring.request/query req)]
+                              (form-decode query))]
+           (selmer/render-file
+            template
+            (cond-> template-model
+              query-params (assoc "query_params" query-params)))))]})))
+
+(comment
+  (take 10 (xt/q xt-node "select customer.xt$id as id, customer.* from customer")))

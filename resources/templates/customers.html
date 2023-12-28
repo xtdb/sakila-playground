@@ -1,0 +1,33 @@
+{% extends "templates/layout.html" %}
+{% block content %}
+<h1>Customers</h1>
+
+<form action="/customers" method="get" class="tool-bar">
+  <label for="search">Search Term</label>
+  <input id="search" type="search" name="q" value="{{ query_params.q }}"/>
+  <input type="submit" value="Search"/>
+</form>
+
+<table>
+  <thead>
+    <tr>
+      <th>Last name</th>
+      <th>First name</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for customer in customers %}
+    <tr>
+      <td>{{ customer.last_name }}</td>
+      <td>{{ customer.first_name }}</td>
+      <td><a href="/customers/{{ customer.id }}/edit">Edit</a>
+        <a href="/customers/{{ customer.id }}">View</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<p>
+  <a href="/customers/new">Add Customer</a>
+</p>
+{% endblock %}
