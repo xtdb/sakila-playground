@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="">
+  <head>
+    <title>Sakila App</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="/static/css/missing.css-1.1.1.js">
+<!--
+    <link rel="stylesheet" href="/static/site.css">
+    <script src="/static/js/htmx-1.8.0.js"></script>
+    <script src="/static/js/_hyperscript-0.9.7.js"></script>
+    <script src="/static/js/rsjs-menu.js" type="module"></script>
+    <script defer src="https://unpkg.com/alpinejs@3/dist/cdn.min.js"></script>
+-->
+  </head>
+  <body hx-boost="true">
+    <main>
+      <header>
+        <h1>
+          <all-caps>films.app</all-caps>
+          <sub-title>A Demo Application built on the Sakila database</sub-title>
+        </h1>
+      </header>
+      {% for message in flashed_messages %}
+      <div class="flash">{{ message }}</div>
+      {% endfor %}
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>

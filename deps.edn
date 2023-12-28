@@ -13,6 +13,7 @@
         ring/ring-jetty-adapter {:mvn/version "1.11.0"}
         ring/ring-core {:mvn/version "1.11.0"}
         hiccup/hiccup {:mvn/version "2.0.0-RC2"}
+        selmer/selmer {:mvn/version "1.12.55"}
         }
 
  :aliases {:xtdb {:jvm-opts
