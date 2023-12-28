@@ -41,11 +41,8 @@
 
 (defn POST [resource request]
   (if-let [f (get (:methods resource) "POST")]
-    (let [{:keys [headers body]} (f request)]
-      {:ring.response/status 201
-       :ring.response/headers headers
-       :ring.response/body body}
-      )
+    (let [response (f request)]
+      (merge {:ring.response/status 201} response))
     {:ring.response/status 405}))
 
 (defn DELETE [resource request]

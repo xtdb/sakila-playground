@@ -2,6 +2,7 @@
   {:web-context "/"}
   (:require
    [xtdb.demo.web.resource :refer [map->Resource html-resource html-templated-resource]]
+   [xtdb.demo.web.locator :as locator]
    [xtdb.demo.web.html :as html]
    [xtdb.demo.db :refer [xt-node]]
    [ring.util.codec :refer [form-decode]]
@@ -48,7 +49,13 @@
   (let [template "templates/new.html"
         template-model {}]
     (map->Resource
-     {:representations
+     {:methods
+      {"POST" (fn [req]
+                ;; TODO: Insert into database
+                ;; Redirect
+                {:ring.response/status 302
+                 :ring.response/headers {"location" (locator/var->path #'films)}})}
+      :representations
       [^{:headers {"content-type" "text/html;charset=utf-8"}}
        (fn [req]
          (let [query-params (when-let [query (:ring.request/query req)]
