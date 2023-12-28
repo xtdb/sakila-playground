@@ -14,8 +14,6 @@
        (when (.startsWith path web-context)
          ns)))))
 
-(ns-publics 'xtdb.demo.static-resources)
-
 (defn mapcat-matching-vars-xf [path]
   (mapcat
    (fn [ns]
@@ -34,7 +32,8 @@
                    (sequence
                     (comp
                      (filter-matching-namespaces-xf path)
-                     (mapcat-matching-vars-xf path))))
+                     (mapcat-matching-vars-xf path)
+                     (remove nil?))))
         resource (first resources)]
     (case (:ring.request/method request)
       :get (GET resource request)
