@@ -34,3 +34,8 @@
                      (remove nil?))))
         resource-fn (first resources)]
     (when resource-fn (resource-fn {:request request}))))
+
+(defn var->path [v]
+  (let [{:keys [ns web-path name]} (meta v)
+        {:keys [web-context]}  (meta ns)]
+    (str web-context (or web-path name))))
