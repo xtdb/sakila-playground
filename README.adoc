@@ -2,9 +2,25 @@
 
 XTDB playground for the https://dev.mysql.com/doc/sakila/en/[Sakila] sample dataset.
 
-== Getting started:
+== Getting started
 
 * To start a REPL, run `clj -M:xtdb:nrepl`, and then connect to it from your editor of choice.
 * You'll then have a running XTDB node at `user/xt-node` - query it to your heart's content!
 
 For more information, see the https://docs.xtdb.com[main XTDB docs].
+
+== Web serving
+
+Open a browser and browse to http://localhost:3000/films and http://localhost:3000/customers.
+
+A https://github.com/ring-clojure/ring[Ring] handler is provided.
+Incoming requests are handled by locating the resource corresponding with the URI of the request.
+By default, resource location is provided by a locator in `xtdb.demo.web.locator` that searches for resources in Clojure namespaces.
+A key Clojure namespace is `xtdb.demo.resources` which provides metadata indicating the web context of the resources contained with the namespace.
+
+Most web frameworks route web requests to a single 1-arity function, taking the request data and returning the response.
+This scheme originates from the early web's Common Gateway Interface (CGI).
+However, this scheme deviates from the object oriented nature of the early web, where resources were defined more closely as objects responding to methods.
+Therefore, Clojure records are used to reflect the fact that web resources are a set of method functions, closed over some state -- in this case, the current state and configuration of the web resource.
+These Clojure records satisfy a Clojure protocol defined in `xtdb.demo.web.protocols/UniformInterface`.
+This protocol represents REST's Uniform Interface, including the various methods that a resource may support.
