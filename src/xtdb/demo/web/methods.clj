@@ -26,7 +26,9 @@
       {:ring.response/status 200
        :ring.response/headers (-> representation meta :headers)
        :ring.response/body (representation request)}
-      {:ring.response/status 404})))
+      (let [response (get-in resource [:responses 404])]
+        (cond-> {:ring.response/status 404}
+          response (merge (response request)))))))
 
 (defn HEAD [resource request]
   (let [representation
