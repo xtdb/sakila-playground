@@ -34,7 +34,8 @@
                      (filter-matching-namespaces-xf path)
                      (mapcat-matching-vars-xf path)
                      (remove nil?))))
-        resource (first resources)]
+        resource-fn (first resources)
+        resource (resource-fn {:request request})]
     (case (:ring.request/method request)
       :get (GET resource request)
       :head (HEAD resource request)

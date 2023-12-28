@@ -2,6 +2,7 @@
   (:require
    [xtdb.demo.web.protocols :refer [UniformInterface allowed-methods GET HEAD POST PUT DELETE OPTIONS]]
    [xtdb.demo.web.methods :as methods]
+   [ring.util.codec :refer [form-decode]]
    [selmer.parser :as selmer]))
 
 (selmer/cache-off!)
@@ -60,11 +61,12 @@
     (map->Resource
      {:representations
       [^{:headers {"content-type" "text/html;charset=utf-8"}}
-       (fn []
-         (selmer/render-file template template-model))]})))
+       (fn [req]
+         (let [query-params (form-decode (:ring.request/query req))]
+           (selmer/render-file template (assoc template-model "query_params" query-params))))]})))
 
 (defn file-resource [file]
   (map->Resource
    {:representations
     [^{:headers {"content-type" "text/css"}}
-     (fn [] file)]}))
+     (fn [_] file)]}))

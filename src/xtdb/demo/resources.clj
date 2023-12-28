@@ -9,7 +9,7 @@
    [hiccup2.core :as h]
    [xtdb.api :as xt]))
 
-(def hello
+(defn hello [_]
   (let [state (atom {:greeting "Hello"})]
     (map->Resource
      {:representations
@@ -18,25 +18,17 @@
        ]})))
 
 (def select-films
-  "select film.title, film.description from film order by film.title limit 20")
+  "select film.xt$id as id, film.title, film.description from film order by film.title limit 20")
 
-(def films
+(defn films [_]
   (html-resource
    (fn []
-     (->
-      (xt/q xt-node select-films)
-      (html/html-table {:rowspecs [:title :description]})
-      (h/html)
-      (str "\r\n")))))
+     (xt/q xt-node select-films))))
 
-(def test-page
+(defn test-page [_]
   (html-templated-resource
-   {:template "templates/basic.html"
+   {:template "templates/films.html"
     :template-model
     {"films"
      (fn []
-       (->
-        (xt/q xt-node select-films)
-        (html/html-table {:rowspecs [:title :description]})
-        (h/html)
-        (str "\r\n")))}}))
+       (xt/q xt-node select-films))}}))
