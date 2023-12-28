@@ -1,11 +1,10 @@
-;; Copyright © 2023, JUXT LTD.
-
 (ns xtdb.demo.resources
   {:web-context "/"}
   (:require
    [xtdb.demo.web.resource :refer [map->Resource html-resource html-templated-resource]]
    [xtdb.demo.web.html :as html]
    [xtdb.demo.db :refer [xt-node]]
+   [ring.util.codec :refer [form-decode]]
    [hiccup2.core :as h]
    [xtdb.api :as xt]))
 
@@ -18,17 +17,28 @@
        ]})))
 
 (def select-films
-  "select film.xt$id as id, film.title, film.description from film order by film.title limit 20")
+  "select film.xt$id as id, film.title, film.description from film order by film.title")
+
+(defn films-no-template [_]
+  (html-resource
+   (fn [_]
+     (->
+      (xt/q xt-node select-films)
+      (html/html-table {:rowspecs [:title :description]})
+      (h/html)
+      (str "\r\n")))))
 
 (defn films [_]
-  (html-resource
-   (fn []
-     (xt/q xt-node select-films))))
-
-(defn test-page [_]
   (html-templated-resource
    {:template "templates/films.html"
     :template-model
     {"films"
-     (fn []
-       (xt/q xt-node select-films))}}))
+     (fn [request]
+       (let [rows (xt/q xt-node select-films)
+             query-params (when-let [query (:ring.request/query request)]
+                            (form-decode query))
+             q (get query-params "q")]
+         (if q
+           (filter (fn [row] (re-matches (re-pattern (str "(?i)" ".*" "\\Q" q "\\E" ".*")) (str (:title row) (:description row)))) rows)
+           rows
+           )))}}))

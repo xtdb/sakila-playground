@@ -2,7 +2,7 @@
 {% block content %}
 <h1>Films</h1>
 
-<form action="/contacts" method="get" class="tool-bar">
+<form action="/films" method="get" class="tool-bar">
   <label for="search">Search Term</label>
   <input id="search" type="search" name="q" value="{{ query_params.q }}"/>
   <input type="submit" value="Search"/>
@@ -26,6 +26,6 @@
   </tbody>
 </table>
 <p>
-  <a href="/contacts/new">Add Contact</a>
+  <a href="/films/new">Add Film</a>
 </p>
 {% endblock %}
