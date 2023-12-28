@@ -17,7 +17,7 @@
     (log/debugf "Submitting '%s' table" (name table-name))
     (with-open [rdr (io/reader file)]
       (doseq [line-batch (->> (line-seq rdr)
-                             (partition-all 1000))]
+                              (partition-all 1000))]
         (xt/submit-tx node (for [line line-batch]
                              (xt/put table-name (edn/read-string {:readers {'time/instant #(Instant/parse %)}}
                                                                  line))))))))

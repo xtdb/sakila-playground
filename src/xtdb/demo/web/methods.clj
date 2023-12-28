@@ -41,6 +41,7 @@
 
 (defn POST [resource request]
   (if-let [f (get (:methods resource) "POST")]
+    ;; Lazily receive representation from request
     (let [response (f request)]
       (merge {:ring.response/status 201} response))
     {:ring.response/status 405}))
