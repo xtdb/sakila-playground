@@ -14,13 +14,18 @@
        (when (.startsWith path web-context)
          ns)))))
 
+(ns-publics 'xtdb.demo.static-resources)
+
 (defn mapcat-matching-vars-xf [path]
   (mapcat
    (fn [ns]
      (let [web-context (-> ns meta :web-context)]
-       (for [[nm v] (ns-publics ns)
-             :when (= (str web-context nm) path)]
-         v)))))
+       (for [[nm v] (ns-publics ns)]
+         (if (= (str web-context nm) path)
+           v
+           (let [{:keys [web-path]} (meta v)]
+             (when (= (str web-context web-path) path)
+               v))))))))
 
 (defn handle-request [request]
   (let [path (:ring.request/path request)
