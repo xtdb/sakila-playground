@@ -57,13 +57,17 @@
     [(with-meta f {:headers {"content-type" "text/html;charset=utf-8"}})]}))
 
 (defn html-templated-resource [{:keys [template template-model]}]
-  (let [template-model (clojure.core/update-vals template-model (fn [x] (if (fn? x) (x) x)))]
-    (map->Resource
-     {:representations
-      [^{:headers {"content-type" "text/html;charset=utf-8"}}
-       (fn [req]
-         (let [query-params (form-decode (:ring.request/query req))]
-           (selmer/render-file template (assoc template-model "query_params" query-params))))]})))
+  (map->Resource
+   {:representations
+    [^{:headers {"content-type" "text/html;charset=utf-8"}}
+     (fn [req]
+       (let [template-model (clojure.core/update-vals template-model (fn [x] (if (fn? x) (x req) x)))
+             query-params (when-let [query (:ring.request/query req)]
+                            (form-decode query))]
+         (selmer/render-file
+          template
+          (cond-> template-model
+            query-params (assoc "query_params" query-params)))))]}))
 
 (defn file-resource [file]
   (map->Resource
