@@ -16,11 +16,15 @@ Open a browser and browse to http://localhost:3000/films and http://localhost:30
 A https://github.com/ring-clojure/ring[Ring] handler is provided.
 Incoming requests are handled by locating the resource corresponding with the URI of the request.
 By default, resource location is provided by a locator in `xtdb.demo.web.locator` that searches for resources in Clojure namespaces.
-A key Clojure namespace is `xtdb.demo.resources` which provides metadata indicating the web context of the resources contained with the namespace.
+A key Clojure namespace is `xtdb.demo.resources` which has metadata indicating the web context of the resources contained with the namespace.
 
 Most web frameworks route web requests to a single 1-arity function, taking the request data and returning the response.
-This scheme originates from the early web's Common Gateway Interface (CGI).
-However, this scheme deviates from the object oriented nature of the early web, where resources were defined more closely as objects responding to methods.
-Therefore, Clojure records are used to reflect the fact that web resources are a set of method functions, closed over some state -- in this case, the current state and configuration of the web resource.
+This scheme originates from the early web's Common Gateway Interface (CGI) mechansim to 'escape' out of the normal serving of static files.
+However, this scheme deviates from the object-oriented nature of the early web, where resources were defined more closely as objects with state responding to methods.
+Therefore, Clojure records are used to reflect the fact that web resources are a set of method functions, closed over some state (the resource's current state and configuration)
 These Clojure records satisfy a Clojure protocol defined in `xtdb.demo.web.protocols/UniformInterface`.
 This protocol represents REST's Uniform Interface, including the various methods that a resource may support.
+
+The benefits of a more accurate and faithful model of the web means that it is easier to implement HTTP as described in its specifications.
+For instance, by modelling which methods are allowed on a given resource, a user-agent can introspect these methods at run-time (inspecting the Allow header returned from an OPTIONS request).
+A user-agent might make use of this metadata, for example, to show/hide parts of its UI accordingly.
