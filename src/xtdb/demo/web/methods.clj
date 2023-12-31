@@ -40,7 +40,7 @@
   (throw (ex-info "TODO" {})))
 
 (defn POST [resource request]
-  (if-let [f (get (:methods resource) "POST")]
+  (if-let [f (get-in resource [:methods "POST" :handler])]
     ;; Lazily receive representation from request
     (let [response (f request)]
       (merge {:ring.response/status 201} response))
