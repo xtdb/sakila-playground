@@ -22,13 +22,30 @@
                              (xt/put table-name (edn/read-string {:readers {'time/instant #(Instant/parse %)}}
                                                                  line))))))))
 
+;; Convert edn to json. Can't work with this until I figure out how to
+;; signal bitemp coords and ids.
+(comment
+  (doseq [file (sort (filter #(.isFile %) (.listFiles (io/file "resources/sakila"))))]
+    (let [table-name (-> (.getName file)
+                         (str/replace #"\.edn$" "")
+                         (keyword))
+          outfile (io/file "resources/sakila/json" (str (name table-name) ".json"))]
+      (.mkdirs (.getParentFile outfile))
+      (log/debugf "Converting '%s' table" (name table-name))
+      (with-open [rdr (io/reader file)
+                  writer (io/writer outfile)]
+        (doseq [line (line-seq rdr)]
+          (let [edn-line (edn/read-string {:readers {'time/instant #(Instant/parse %)}} line)
+                json-line (clojure.data.json/write-str edn-line)
+                json-line (str/replace json-line "id" "xt$id")]
+            (.write writer json-line)
+            (.write writer "\n")))))))
+
 (def xt-node
   (let [node (xtn/start-node {})]
     (doseq [file (sort (.listFiles (io/file "resources/sakila")))]
       (submit-file! node file))
-
     (log/info "Sakila playground started!")
-
     node))
 
 (comment

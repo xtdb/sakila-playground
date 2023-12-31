@@ -50,11 +50,13 @@
         template-model {}]
     (map->Resource
      {:methods
-      {"POST" (fn [req]
-                ;; TODO: Insert into database
-                ;; Redirect
-                {:ring.response/status 302
-                 :ring.response/headers {"location" (locator/var->path #'films)}})}
+      {"POST"
+       {:handler
+        (fn [req]
+          ;; TODO: Insert into database
+          ;; Redirect
+          {:ring.response/status 302
+           :ring.response/headers {"location" (locator/var->path #'films)}})}}
       :representations
       [^{:headers {"content-type" "text/html;charset=utf-8"}}
        (fn [req]
@@ -80,31 +82,33 @@
            rows
            )))}}))
 
-(xt/q xt-node "select * from customer")
+;;(xt/q xt-node "select * from customer")
 
 (defn ^{:web-path "customers/new"} customers-new [_]
   (let [template "templates/new-customer.html"
         template-model {}]
     (map->Resource
      {:methods
-      {"POST" (fn [req]
-                ;; How to get form data from the request?
-                ;; See receive_representation
-                (xt/submit-tx
-                 xt-node
-                 [(xt/put
-                   :customer
-                   {:email "mal@juxt.pro"
-                    :first_name "MALCOLM"
-                    :xt/valid-from #time/instant "2006-02-14T22:04:36Z"
-                    :active true
-                    :last_name "SPARKS"
-                    :address_id 5
-                    :xt/id 1
-                    :store_id 1})])
-                ;; Redirect
-                {:ring.response/status 302
-                 :ring.response/headers {"location" (locator/var->path #'customers)}})}
+      {"POST"
+       {:handler
+        (fn [req]
+          ;; How to get form data from the request?
+          ;; See receive_representation
+          (xt/submit-tx
+           xt-node
+           [(xt/put
+             :customer
+             {:email "mal@juxt.pro"
+              :first_name "MALCOLM"
+              :xt/valid-from #time/instant "2006-02-14T22:04:36Z"
+              :active true
+              :last_name "SPARKS"
+              :address_id 5
+              :xt/id 1
+              :store_id 1})])
+          ;; Redirect
+          {:ring.response/status 302
+           :ring.response/headers {"location" (locator/var->path #'customers)}})}}
       :representations
       [^{:headers {"content-type" "text/html;charset=utf-8"}}
        (fn [req]
