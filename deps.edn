@@ -14,6 +14,11 @@
         ring/ring-core {:mvn/version "1.11.0"}
         hiccup/hiccup {:mvn/version "2.0.0-RC2"}
         selmer/selmer {:mvn/version "1.12.55"}
+
+        juxt/reap
+        {:git/url "https://github.com/juxt/reap.git"
+         :sha "90651d8e48508dc146d2bd3af4de776288c5e5d3"
+         }
         }
 
  :aliases {:xtdb {:jvm-opts
