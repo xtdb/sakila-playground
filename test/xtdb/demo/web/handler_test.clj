@@ -6,7 +6,10 @@
 
 (def handler
   (handler/make-base-ring2-handler
-   {:locator locator/locate-resource}))
+   {:locator (fn [req]
+               (locator/find-resource
+                [] ; resource tree
+                (:ring.request/path req)))}))
 
 (deftest handler-test
   (testing "Not found"
