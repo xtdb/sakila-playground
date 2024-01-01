@@ -35,13 +35,11 @@
         {:ring.response/status 411})))
 
     ;; Protects resources from PUTs that are too large. If you need to
-    ;; exceed this limitation, explicitly declare ::spin/max-content-length in
+    ;; exceed this limitation, explicitly declare :max-content-length in
     ;; your resource.
     (let [max-content-length
           (or
-           (case method
-             :put (get-in resource [:methods "PUT" :max-content-length])
-             :post (get-in resource [:methods "POST" :max-content-length]))
+           (get-in resource [:methods (case method :put "PUT" :post "POST") :max-content-length])
            (Math/pow 2 24) ;;16MB
            )]
       (when (> content-length max-content-length)
@@ -76,7 +74,7 @@
                                     (:juxt.reap.rfc7231/subtype parsed-request-content-type))]
 
       (when-not (contains? acceptable-content-types request-content-type)
-        (throw (ex-info "Unsupported media type"
+        (throw (ex-info (format "Unsupported media type: %s" request-content-type)
                         {:ring.response/status 415
                          :content-type request-content-type
                          :acceptable-content-types acceptable-content-types

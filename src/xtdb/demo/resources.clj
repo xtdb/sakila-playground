@@ -8,6 +8,7 @@
    [ring.util.codec :refer [form-decode]]
    [hiccup2.core :as h]
    [xtdb.api :as xt]
+   [xtdb.demo.web.request :refer [read-request-body]]
    [selmer.parser :as selmer]))
 
 (defn hello [_]
@@ -52,7 +53,7 @@
      {:methods
       {"POST"
        {:handler
-        (fn [req]
+        (fn [resource req]
           ;; TODO: Insert into database
           ;; Redirect
           {:ring.response/status 302
@@ -90,22 +91,20 @@
     (map->Resource
      {:methods
       {"POST"
-       {:handler
-        (fn [req]
+       {:accept ["application/x-www-form-urlencoded"]
+        :handler
+        (fn [resource request]
           ;; How to get form data from the request?
           ;; See receive_representation
-          (xt/submit-tx
-           xt-node
-           [(xt/put
-             :customer
-             {:email "mal@juxt.pro"
-              :first_name "MALCOLM"
-              :xt/valid-from #time/instant "2006-02-14T22:04:36Z"
-              :active true
-              :last_name "SPARKS"
-              :address_id 5
-              :xt/id 1
-              :store_id 1})])
+          (let [body (read-request-body resource request)]
+            (xt/submit-tx
+             xt-node
+             [(xt/put
+               :customer
+               (into body
+                      {:xt/valid-from (java.util.Date.)
+                       :active true
+                       }))]))
           ;; Redirect
           {:ring.response/status 302
            :ring.response/headers {"location" (locator/var->path #'customers)}})}}
