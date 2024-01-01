@@ -46,21 +46,30 @@
     (doseq [file (sort (.listFiles (io/file "resources/sakila")))]
       (submit-file! node file))
     (log/info "Sakila playground started!")
-    node))
+    {:xt-node node
+     :ids (atom (into {}
+                      (for [table [:film :customer]
+                            :let [from-clause (list 'from table '[{:xt/id id}])]]
+                        [table (-> (xt/q node (list '-> from-clause '(aggregate {:next (+ (max id) 1)}))) first :next)])))}))
+
+(defn next-id [table]
+  (get (swap! (:ids xt-node) update table inc) table))
+
+
 
 (comment
   ;; `SELECT title, description, length FROM film WHERE title = 'APOCALYPSE FLAMINGOS'`
-  (xt/q xt-node '(from :film [{:title "APOCALYPSE FLAMINGOS"} title description length]))
+  (xt/q (:xt-node xt-node) '(from :film [{:title "APOCALYPSE FLAMINGOS"} title description length]))
 
-  (xt/q xt-node '(-> (unify (from :actor [{:xt/id actor-id, :first-name "TIM", :last-name "HACKMAN"}])
-                            (from :film-actor [film-id actor-id])
-                            (from :film [{:xt/id film-id} title]))
-                     (return title)
-                     (order-by title)
-                     (limit 5)))
+  (xt/q (:xt-node xt-node) '(-> (unify (from :actor [{:xt/id actor-id, :first-name "TIM", :last-name "HACKMAN"}])
+                              (from :film-actor [film-id actor-id])
+                              (from :film [{:xt/id film-id} title]))
+                       (return title)
+                       (order-by title)
+                       (limit 5)))
 
-  #_(xt/q xt-node "select film.title from film_actor,film,actor where film_actor.film_id = film.xt$id and film_actor.actor_id = actor.xt$id group by film.title limit 10")
-  ;;(xt/q xt-node "select * from film limit 10")
+  #_(xt/q (:xt-node xt-node) "select film.title from film_actor,film,actor where film_actor.film_id = film.xt$id and film_actor.actor_id = actor.xt$id group by film.title limit 10")
+  ;;(xt/q (:xt-node xt-node) "select * from film limit 10")
 
   ;; Have fun!
   )
