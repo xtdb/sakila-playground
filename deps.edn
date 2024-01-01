@@ -28,6 +28,18 @@
                    "-Dio.netty.tryReflectionSetAccessible=true"]}
 
            :nrepl {:main-opts ["-m" "nrepl.cmdline"]
-                   :extra-deps {nrepl/nrepl {:mvn/version "1.0.0"}}} }
+                   :extra-deps {nrepl/nrepl {:mvn/version "1.0.0"}}}
+
+           :test
+           {:extra-paths ["test"]
+            :extra-deps
+            {lambdaisland/kaocha {:mvn/version "1.0.887"}
+             lambdaisland/kaocha-junit-xml {:mvn/version "0.0.76"}}
+            ;;:jvm-opts ["--add-opens" "java.base/java.util.concurrent=ALL-UNNAMED"]
+            :jvm-opts
+                  ;; needed on JDK16+
+                  ["--add-opens=java.base/java.nio=ALL-UNNAMED"
+                   "-Dio.netty.tryReflectionSetAccessible=true"]
+            }}
 
  :paths ["src" "test" "resources"]}
