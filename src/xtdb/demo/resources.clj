@@ -4,7 +4,7 @@
    [xtdb.demo.web.resource :refer [map->Resource html-resource html-templated-resource]]
    [xtdb.demo.web.locator :as locator]
    [xtdb.demo.web.html :as html]
-   [xtdb.demo.db :refer [xt-node]]
+   [xtdb.demo.db :refer [xt-node next-id]]
    [ring.util.codec :refer [form-decode]]
    [hiccup2.core :as h]
    [xtdb.api :as xt]
@@ -26,7 +26,7 @@
   (html-resource
    (fn [_]
      (->
-      (xt/q xt-node select-films)
+      (xt/q (:xt-node xt-node) select-films)
       (html/html-table {:rowspecs [:title :description]})
       (h/html)
       (str "\r\n")))))
@@ -37,7 +37,7 @@
     :template-model
     {"films"
      (fn [request]
-       (let [rows (xt/q xt-node select-films)
+       (let [rows (xt/q (:xt-node xt-node) select-films)
              query-params (when-let [query (:ring.request/query request)]
                             (form-decode query))
              q (get query-params "q")]
@@ -74,7 +74,7 @@
     :template-model
     {"customers"
      (fn [request]
-       (let [rows (xt/q xt-node "select customer.xt$id as id, customer.first_name, customer.last_name from customer order by customer.last_name")
+       (let [rows (xt/q (:xt-node xt-node) "select customer.xt$id as id, customer.first_name, customer.last_name from customer order by customer.last_name")
              query-params (when-let [query (:ring.request/query request)]
                             (form-decode query))
              q (get query-params "q")]
@@ -83,7 +83,8 @@
            rows
            )))}}))
 
-;;(xt/q xt-node "select * from customer")
+(comment
+  (xt/q (:xt-node xt-node) "select * from customer"))
 
 (defn ^{:web-path "customers/new"} customers-new [_]
   (let [template "templates/new-customer.html"
@@ -98,13 +99,14 @@
           ;; See receive_representation
           (let [body (read-request-body resource request)]
             (xt/submit-tx
-             xt-node
+             (:xt-node xt-node)
              [(xt/put
                :customer
-               (into body
-                      {:xt/valid-from (java.util.Date.)
-                       :active true
-                       }))]))
+               (into (update-keys body keyword)
+                     {:xt/id (next-id :customer)
+                      :xt/valid-from (java.util.Date.)
+                      :active true
+                      }))]))
           ;; Redirect
           {:ring.response/status 302
            :ring.response/headers {"location" (locator/var->path #'customers)}})}}
@@ -119,4 +121,6 @@
               query-params (assoc "query_params" query-params)))))]})))
 
 (comment
-  (take 10 (xt/q xt-node "select customer.xt$id as id, customer.* from customer")))
+  (take 10 (xt/q (:xt-node xt-node) "select customer.xt$id as id, customer.* from customer")))
+
+#_(xt/q (:xt-node xt-node) "select customer.xt$id as id, customer.* from customer")
