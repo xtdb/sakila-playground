@@ -3,6 +3,7 @@
   (:require
    [xtdb.demo.web.resource :refer [map->Resource html-resource html-templated-resource]]
    [xtdb.demo.web.locator :as locator]
+   [xtdb.demo.web.var-based-locator :refer [var->path]]
    [xtdb.demo.web.html :as html]
    [xtdb.demo.db :refer [xt-node next-id]]
    [ring.util.codec :refer [form-decode]]
@@ -57,7 +58,7 @@
           ;; TODO: Insert into database
           ;; Redirect
           {:ring.response/status 302
-           :ring.response/headers {"location" (locator/var->path #'films)}})}}
+           :ring.response/headers {"location" (var->path #'films)}})}}
       :representations
       [^{:headers {"content-type" "text/html;charset=utf-8"}}
        (fn [req]
@@ -109,7 +110,7 @@
                       }))]))
           ;; Redirect
           {:ring.response/status 302
-           :ring.response/headers {"location" (locator/var->path #'customers)}})}}
+           :ring.response/headers {"location" (var->path #'customers)}})}}
       :representations
       [^{:headers {"content-type" "text/html;charset=utf-8"}}
        (fn [req]
@@ -120,7 +121,21 @@
             (cond-> template-model
               query-params (assoc "query_params" query-params)))))]})))
 
+(defn ^{:uri-template "customers/{id}"} customer [{:keys [path-params]}]
+  (html-templated-resource
+   {:template "templates/customer.html"
+    :template-model
+    {"customer"
+     (fn [request]
+       (let [row (first (xt/q (:xt-node xt-node) (format "select customer.xt$id as id, customer.first_name, customer.last_name, customer.email, address.phone from customer, address where customer.xt$id = %s and customer.address_id = address.xt$id" (get path-params "id"))))]
+         row))
+
+     }}))
+
 (comment
   (take 10 (xt/q (:xt-node xt-node) "select customer.xt$id as id, customer.* from customer")))
+
+(comment
+  (take 10 (xt/q (:xt-node xt-node) "select address.xt$id as id, address.* from address")))
 
 #_(xt/q (:xt-node xt-node) "select customer.xt$id as id, customer.* from customer")

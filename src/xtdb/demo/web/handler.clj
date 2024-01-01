@@ -15,7 +15,8 @@
     {:ring.response/status 501}))
 
 (defn make-base-ring2-handler
-  [{:keys [locator] :or {locator locator/locate-resource}}]
+  [{:keys [locator]}]
+  (assert locator)
   (fn [req]
     (let [resource (locator req)]
       (handle-request resource req))))

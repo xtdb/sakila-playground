@@ -32,7 +32,7 @@
        (thrown-with-msg?
         clojure.lang.ExceptionInfo
         #"No Content-Length header found"
-        (req/receive-representation
+        (req/read-request-body
          resource
          {:ring.request/method :post}))))
 
@@ -41,7 +41,7 @@
        (thrown-with-msg?
         clojure.lang.ExceptionInfo
         #"Bad content length"
-        (req/receive-representation
+        (req/read-request-body
          resource
          (test-request :post {"content-length" "ABC"})))))
 
@@ -50,7 +50,7 @@
        (thrown-with-msg?
         clojure.lang.ExceptionInfo
         #"Payload too large"
-        (req/receive-representation
+        (req/read-request-body
          (test-resource)
          (test-request :post {"content-length" "120000"})))))
 
@@ -59,7 +59,7 @@
        (thrown-with-msg?
         clojure.lang.ExceptionInfo
         #"No body in request"
-        (req/receive-representation
+        (req/read-request-body
          (test-resource)
          (test-request :post {"content-length" "10"})))))
 
@@ -68,7 +68,7 @@
        (thrown-with-msg?
         clojure.lang.ExceptionInfo
         #"Malformed content-type"
-        (req/receive-representation
+        (req/read-request-body
          (test-resource)
          (test-request
           :post
