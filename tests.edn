@@ -1,0 +1,14 @@
+#kaocha/v1
+{:plugins [;;:kaocha.plugin.alpha/info
+           ;;:kaocha.plugin/cloverage
+           ]
+
+ :tests [{:id :test
+          :test-paths ["test"]
+          :ns-patterns
+          ["xtdb.demo.web.handler-test"
+           "xtdb.demo.web.request-test"
+           "xtdb.demo.web.locator-test"
+           ]}]
+
+ :reporter kaocha.report/documentation}

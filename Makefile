@@ -1,6 +1,9 @@
-.PHONY: all
+.PHONY: all test
 
 all: external/htmx.org-1.9.10.js external/missing.css-1.1.1.css external/hyperscript.org-0.9.12.js external/site.css
+
+test:
+	clojure -M:test -m kaocha.runner test
 
 external/htmx.org-1.9.10.js:
 	mkdir -p external
