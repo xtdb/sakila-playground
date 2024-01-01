@@ -1,2 +1,2 @@
 ((clojure-mode
-  (cider-clojure-cli-aliases . ":xtdb")))
+  (cider-clojure-cli-aliases . ":dev")))
