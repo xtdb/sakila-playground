@@ -12,7 +12,7 @@
     {"POST"
      {:accept ["application/x-www-form-urlencoded"]
       :max-content-length 100000
-      :handler (fn [req] (throw (ex-info "TODO" {})))}}}))
+      :handler (fn [resource req] (throw (ex-info "TODO" {})))}}}))
 
 (defn test-request
   ([method headers body-str]
