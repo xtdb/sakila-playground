@@ -1,0 +1,21 @@
+{% extends "templates/layout.html" %}
+
+{% block content %}
+
+<h1>{{customer.first_name}} {{customer.last_name}}</h1>
+
+<div>
+    <div>Phone: {{customer.phone}}</div>
+    <div>Email: {{customer.email}}</div>
+</div>
+
+<p>
+    <a href="/customers/{{customer.xt$id}}/edit">Edit</a>
+    <a href="/customers">Back</a>
+</p>
+
+<pre>
+  {{debug}}
+</pre>
+
+{% endblock %}
