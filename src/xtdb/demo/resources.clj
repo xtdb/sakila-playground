@@ -17,7 +17,7 @@
     (map->Resource
      {:representations
       [^{:headers {"content-type" "text/html;charset=utf-8"}}
-       (fn [] (format "<h1>%s World!</h1>\r\n" (:greeting @state)))
+       (fn [request] (format "<h1>%s World!</h1>\r\n" (:greeting @state)))
        ]})))
 
 (def select-films
@@ -139,3 +139,11 @@
   (take 10 (xt/q (:xt-node xt-node) "select address.xt$id as id, address.* from address")))
 
 #_(xt/q (:xt-node xt-node) "select customer.xt$id as id, customer.* from customer")
+
+(defn languages [_]
+  (html-templated-resource
+   {:template "templates/languages.html"
+    :template-model
+    {"languages" (fn [_] (xt/q
+                          (:xt-node xt-node)
+                          "select language.xt$id, language.name from language order by xt$id"))}}))
