@@ -1,0 +1,20 @@
+{% extends "templates/layout.html" %}
+{% block content %}
+<h1>Languages</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Id</th><th>Name</th><th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for language in languages %}
+    <tr>
+      <td>{{ language.xt$id }}</td>
+      <td>{{ language.name }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
