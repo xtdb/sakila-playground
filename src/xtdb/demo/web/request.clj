@@ -1,5 +1,3 @@
-;; Copyright © 2023, JUXT LTD.
-
 (ns xtdb.demo.web.request
   (:require
    [ring.util.codec :refer [form-decode]]))

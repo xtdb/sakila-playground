@@ -22,7 +22,11 @@
       <td>{{ customer.last_name }}</td>
       <td>{{ customer.first_name }}</td>
       <td><a href="/customers/{{ customer.id }}/edit">Edit</a>
-        <a href="/customers/{{ customer.id }}">View</a></td>
+        <a href="/customers/{{ customer.id }}">View</a>
+	<a hx-get="/customers/{{ customer.id }}/detail"
+	   hx-target "#customer-{{ customer.id }}"
+	   hx-swap="afterend">Show</a></td>
+      <div id="customer-{{ customer.id }}">
     </tr>
     {% endfor %}
   </tbody>
