@@ -132,6 +132,20 @@
 
      }}))
 
+(defn ^{:uri-template "customers/{id}/detail"} customer-detail [{:keys [path-params]}]
+  (html-resource
+   (fn [_]
+     (let [customer (first (xt/q (:xt-node xt-node) (format "select customer.xt$id as id, customer.first_name, customer.last_name, customer.email, address.phone from customer, address where customer.xt$id = %s and customer.address_id = address.xt$id" (get path-params "id"))))]
+       (str (h/html [:dl
+                     [:dt "First name"]
+                     [:dd (:first_name customer)]
+                     [:dt "Last name"]
+                     [:dd (:last_name customer)]
+                     [:dt "Email"]
+                     [:dd (:email customer)]
+                     [:dt "Phone"]
+                     [:dd (:phone customer)]]))))))
+
 (comment
   (take 10 (xt/q (:xt-node xt-node) "select customer.xt$id as id, customer.* from customer")))
 
