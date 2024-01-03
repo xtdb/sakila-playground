@@ -69,6 +69,23 @@
             (cond-> template-model
               query-params (assoc "query_params" query-params)))))]})))
 
+#_(let [id 1]
+  (xt/q (:xt-node xt-node) (format "select film.xt$id as id.*, language.name as language from film, language where film.xt$id = %s and language.xt$id = film.language_id" id)))
+
+#_(let [id 1]
+  (xt/q (:xt-node xt-node) (format "select film.xt$id as id.*, language.name as language from film, language where film.xt$id = %s and language.xt$id = film.language_id" id)))
+
+
+(defn ^{:uri-template "films/{id}"} film [{:keys [path-params]}]
+  (let [id (get path-params "id")]
+    (html-templated-resource
+     {:template "templates/film.html"
+      :template-model
+      {"film"
+       (let [film (first (xt/q (:xt-node xt-node)
+                               (format "select film.* where film.xt$id = %s" id)))]
+         film)}})))
+
 (defn customers [_]
   (html-templated-resource
    {:template "templates/customers.html"
