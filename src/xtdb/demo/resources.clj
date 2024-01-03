@@ -17,8 +17,7 @@
     (map->Resource
      {:representations
       [^{:headers {"content-type" "text/html;charset=utf-8"}}
-       (fn [request] (format "<h1>%s World!</h1>\r\n" (:greeting @state)))
-       ]})))
+       (fn [request] (format "<h1>%s World!</h1>\r\n" (:greeting @state)))]})))
 
 (def select-films
   "select film.xt$id as id, film.title, film.description from film order by film.title")
@@ -76,14 +75,27 @@
   (xt/q (:xt-node xt-node) (format "select film.xt$id as id.*, language.name as language from film, language where film.xt$id = %s and language.xt$id = film.language_id" id)))
 
 
+(def ^:dynamic *language* :xtql)
+
+;; See https://www.jooq.org/img/sakila.png
+
 (defn ^{:uri-template "films/{id}"} film [{:keys [path-params]}]
   (let [id (get path-params "id")]
     (html-templated-resource
      {:template "templates/film.html"
       :template-model
       {"film"
-       (let [film (first (xt/q (:xt-node xt-node)
-                               (format "select film.* where film.xt$id = %s" id)))]
+       (let [film (first
+                   (case *language*
+                     :sql (xt/q (:xt-node xt-node)
+                                "SELECT film.*, language.name as language FROM film LEFT JOIN language ON language.xt$id = film.language_id WHERE film.xt$id = ?"
+                                {:args [(Long/parseLong id)]})
+
+                     :xtql (xt/q (:xt-node xt-node)
+                                 '(unify (from :film [{:xt/id $film-id} title description language_id release_year rating])
+                                         (from :language [{:xt/id language_id} {:name language}]))
+                                 {:args {:film-id (Long/parseLong id)}
+                                  :key-fn :snake_case})))]
          film)}})))
 
 (defn customers [_]
@@ -92,7 +104,8 @@
     :template-model
     {"customers"
      (fn [request]
-       (let [rows (xt/q (:xt-node xt-node) "select customer.xt$id as id, customer.first_name, customer.last_name from customer order by customer.last_name")
+       (let [rows (xt/q (:xt-node xt-node)
+                        #_"select customer.xt$id as id, customer.first_name, customer.last_name from customer order by customer.last_name")
              query-params (when-let [query (:ring.request/query request)]
                             (form-decode query))
              q (get query-params "q")]
