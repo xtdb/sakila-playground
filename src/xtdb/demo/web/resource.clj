@@ -64,7 +64,7 @@
    {:representations
     [^{:headers {"content-type" "text/html;charset=utf-8"}}
      (fn [req]
-       (let [template-model (clojure.core/update-vals template-model (fn [x] (if (fn? x) (x req) x)))
+       (let [template-model (update-vals template-model (fn [x] (if (fn? x) (x req) x)))
              query-params (when-let [query (:ring.request/query req)]
                             (form-decode query))]
          (selmer/render-file

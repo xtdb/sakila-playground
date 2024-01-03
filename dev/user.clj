@@ -8,7 +8,8 @@
    xtdb.demo.static-resources))
 
 (def http-server
-  (run-server {:port 3000 :join? false
+  (run-server {:port 3000
+               :join? false
                :locator (fn [req]
                           (locator/find-resource
                            (resource-tree)
