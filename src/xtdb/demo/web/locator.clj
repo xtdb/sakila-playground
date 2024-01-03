@@ -2,41 +2,6 @@
   (:require
    [clojure.string :as str]))
 
-#_(defn all-web-context-namespaces []
-    (->>
-     (all-ns)
-     (filter #(-> % meta :web-context))))
-
-#_(defn filter-matching-namespaces-xf [path]
-  (filter
-   (fn [ns]
-     (when-let [web-context (-> ns meta :web-context)]
-       (when (.startsWith path web-context)
-         ns)))))
-
-#_(defn mapcat-matching-vars-xf [path]
-  (mapcat
-   (fn [ns]
-     (let [web-context (-> ns meta :web-context)]
-       (for [[nm v] (ns-publics ns)]
-         (if (= (str web-context nm) path)
-           v
-           (let [{:keys [web-path]} (meta v)]
-             (when (= (str web-context web-path) path)
-               v))))))))
-
-#_(defn locate-resource [request]
-  (let [path (:ring.request/path request)
-        resources (->>
-                   (all-web-context-namespaces)
-                   (sequence
-                    (comp
-                     (filter-matching-namespaces-xf path)
-                     (mapcat-matching-vars-xf path)
-                     (remove nil?))))
-        resource-fn (first resources)]
-    (when resource-fn (resource-fn {:request request}))))
-
 (def to-regex
   (memoize
    (fn [uri-template]
