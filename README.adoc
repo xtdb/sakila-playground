@@ -9,6 +9,14 @@ XTDB playground for the https://dev.mysql.com/doc/sakila/en/[Sakila] sample data
 
 For more information, see the https://docs.xtdb.com[main XTDB docs].
 
+== Tests
+
+There are some simple tests:
+
+----
+clojure -M:test -m kaocha.runner test
+----
+
 == Web serving
 
 Open a browser and browse to http://localhost:3000/films and http://localhost:3000/customers.
