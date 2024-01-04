@@ -19,6 +19,19 @@
       [^{:headers {"content-type" "text/html;charset=utf-8"}}
        (fn [request] (format "<h1>%s World!</h1>\r\n" (:greeting @state)))]})))
 
+(defn ^{:web-path "index.html"} index [_]
+  (html-templated-resource
+   {:template "templates/index.html"
+    :template-model {}}))
+
+(defn ^{:web-path ""} index-redirect [_]
+  (map->Resource
+   {:methods
+    {"GET" {:handler
+            (fn [resource request]
+              {:ring.response/status 302
+               :ring.response/headers {"location" (var->path #'index)}})}}}))
+
 (def select-films
   "select film.xt$id as id, film.title, film.description from film order by film.title")
 
