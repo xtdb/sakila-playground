@@ -1,37 +1,95 @@
-{% extends "templates/layout.html" %}
+{% extends "templates/screen.html" %}
+{% block style %}
+<style>
+  body, html {
+      height: 100%;
+      box-sizing: border-box;
+  }
+  .grid-container {
+      display: grid;
+      grid-template-rows: auto 1fr 1fr auto;
+      height: 100vh; /* Viewport height */
+  }
+
+  section {
+      padding: 0 10pt;
+  }
+
+  section.detail h2 {
+      font-size: 12pt;
+      padding: 2pt 0;
+      margin-top: 0;
+  }
+
+  table {
+      width: 100%;
+      border-collapse: collapse; /* Optional, for styling */
+      table-layout: fixed;
+      box-sizing: border-box;
+  }
+
+  th, td {
+      padding: 2pt;
+      box-sizing: border-box;
+  }
+
+  thead tr th {
+      position: sticky;
+      top: 0;
+      background: black;
+  }
+
+</style>
+{% endblock %}
+
 {% block content %}
-<h1>Customers</h1>
+<div class="grid-container">
 
-<form action="/customers" method="get" class="tool-bar">
-  <label for="search">Search Term</label>
-  <input id="search" type="search" name="q" value="{{ query_params.q }}"/>
-  <input type="submit" value="Search"/>
-</form>
+  <section class="detail">
+    <h2>Customers</h2>
+    <form action="/customers" method="get" class="tool-bar">
+      <label for="search">Search Term</label>
+      <input id="search" type="search" name="q" value="{{ query_params.q }}"/>
+      <input type="submit" value="Search"/>
+    </form>
+  </section>
 
-<table>
-  <thead>
-    <tr>
-      <th>Last name</th>
-      <th>First name</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for customer in customers %}
-    <tr>
-      <td>{{ customer.last_name }}</td>
-      <td>{{ customer.first_name }}</td>
-      <td><a href="/customers/{{ customer.id }}/edit">Edit</a>
-        <a href="/customers/{{ customer.id }}">View</a>
-	<a hx-get="/customers/{{ customer.id }}/detail"
-	   hx-target "#customer-{{ customer.id }}"
-	   hx-swap="afterend">Show</a></td>
-      <div id="customer-{{ customer.id }}">
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-<p>
-  <a href="/customers/new">Add Customer</a>
-</p>
+  <section style="overflow-y: auto;">
+    <table>
+      <thead>
+	<tr>
+	  <th>Last name</th>
+	  <th>First name</th>
+	  <th>Actions</th>
+	</tr>
+      </thead>
+      <tbody>
+	{% for customer in customers %}
+	<tr>
+	  <td>{{ customer.last_name }}</td>
+	  <td>{{ customer.first_name }}</td>
+	  <td><a href="/customers/{{ customer.id }}/edit">Edit</a>
+            <a href="/customers/{{ customer.id }}">View</a>
+	    <a hx-get="/customers/{{ customer.id }}/detail"
+	       hx-target="#customer-detail">Show</a></td>
+	</tr>
+	{% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <section class="detail">
+    <h2>Customer details</h2>
+    <div id="customer-detail">
+    </div>
+  </section>
+
+  <footer>
+    <p>
+      <a href="/">Home</a> |
+      <a href="/customers/new">Add Customer</a>
+    </p>
+  </footer>
+</div>
+
 {% endblock %}
