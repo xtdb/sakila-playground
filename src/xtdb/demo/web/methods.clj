@@ -20,15 +20,22 @@
     (first representations)))
 
 (defn GET [resource request]
-  (let [representation
-        (-> resource :representations (select-representation request))]
-    (if representation
-      {:ring.response/status 200
-       :ring.response/headers (-> representation meta :headers)
-       :ring.response/body (representation request)}
-      (let [response (get-in resource [:responses 404])]
-        (cond-> {:ring.response/status 404}
-          response (merge (response request)))))))
+  (if-let [f (get-in resource [:methods "GET" :handler])]
+    (let [response (f resource request)]
+      (merge {:ring.response/status 200} response))
+    ;; No explicit handler, so check for representations
+    (let [representation
+          (-> resource :representations (select-representation request))]
+      (if representation
+        {:ring.response/status 200
+         ;; TODO: This design makes it impossible to influence the
+         ;; response headers at runtime without resorting to an
+         ;; explicit GET handler. We should improve this.
+         :ring.response/headers (-> representation meta :headers)
+         :ring.response/body (representation request)}
+        (let [response (get-in resource [:responses 404])]
+          (cond-> {:ring.response/status 404}
+            response (merge (response request))))))))
 
 (defn HEAD [resource request]
   (let [representation
