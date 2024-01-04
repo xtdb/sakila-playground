@@ -118,7 +118,7 @@
     {"customers"
      (fn [request]
        (let [rows (xt/q (:xt-node xt-node)
-                        #_"select customer.xt$id as id, customer.first_name, customer.last_name from customer order by customer.last_name")
+                        "select customer.xt$id as id, customer.first_name, customer.last_name from customer order by customer.last_name")
              query-params (when-let [query (:ring.request/query request)]
                             (form-decode query))
              q (get query-params "q")]
