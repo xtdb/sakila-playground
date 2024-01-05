@@ -16,9 +16,24 @@
     (with-open [rdr (io/reader file)]
       (doseq [line-batch (->> (line-seq rdr)
                              (partition-all 1000))]
-        (xt/submit-tx node (for [line line-batch]
-                             (xt/put table-name (edn/read-string {:readers {'time/instant #(Instant/parse %)}}
-                                                                 line))))))))
+        (xt/submit-tx node
+          (for [line line-batch]
+            (let [data (edn/read-string {:readers {'time/instant #(Instant/parse %)}}
+                                        line)
+                  valid-from (:xt/valid-from data)
+                  valid-to (:xt/valid-to data)
+                  enrich
+                  (cond
+                    (and valid-from valid-to)
+                    #(xt/during % valid-from valid-to)
+                    valid-from
+                    #(xt/starting-from % valid-from)
+                    valid-to
+                    #(xt/until % valid-to)
+                    :else
+                    identity)]
+              (-> (xt/put table-name data)
+                  enrich))))))))
 
 (def xt-node
   (let [node (xtn/start-node {})]
