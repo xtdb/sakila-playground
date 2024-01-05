@@ -9,8 +9,8 @@
 (defn ^{:web-path "missing.css.css"} missing-css-css [_]
   (file-resource (io/file "external/missing.css-1.1.1.css")))
 
-(defn ^{:web-path "site.css"} site-css [_]
-  (file-resource (io/file "external/site.css")))
+(defn ^{:web-path "screen.css"} screen-css [_]
+  (file-resource (io/file "external/screen.css")))
 
 (defn ^{:web-path "htmx.org.js"} htmx-js [_]
   (file-resource (io/file "external/htmx.org-1.9.10.js")))

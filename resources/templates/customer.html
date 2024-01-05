@@ -2,69 +2,67 @@
 
 {% block content %}
 
-<div class="grid-container">
-  <section class="detail">
-    <h2>{{customer.first_name}} {{customer.last_name}}</h2>
-    <div>
-      <div>ID: {{customer.id}}</div>
-      <div>Phone: {{customer.phone}}</div>
-      <div>Email: {{customer.email}}</div>
-      <div>Total rentals: {{total_rentals}}</div>
-    </div>
-  </section>
+<section class="detail">
+  <h2>{{customer.first_name}} {{customer.last_name}}</h2>
+  <div>
+    <div>ID: {{customer.id}}</div>
+    <div>Phone: {{customer.phone}}</div>
+    <div>Email: {{customer.email}}</div>
+    <div>Total rentals: {{total_rentals}}</div>
+  </div>
+</section>
 
-  <section style="overflow-y: auto;">
-    <h2>Current Rentals</h2>
-    <table>
-      <thead>
-	<tr>
-	  <th>ID</th>
-	  <th>Film</th>
-	  <th>Rental date</th>
-	</tr>
-      </thead>
-      <tbody>
-	{% for rental in current_rentals %}
-	<tr>
-	  <td>{{ rental.id }}</td>
-	  <td>{{ rental.title }}</td>
-	  <td>{{ rental.rental_date }}</td>
-	</tr>
-	{% endfor %}
-      </tbody>
-    </table>
-  </section>
+<section>
+  <h2>Current Rentals</h2>
+  <table>
+    <thead>
+      <tr>
+	<th>ID</th>
+	<th>Film</th>
+	<th>Rental date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for rental in current_rentals %}
+      <tr>
+	<td>{{ rental.id }}</td>
+	<td>{{ rental.title }}</td>
+	<td>{{ rental.rental_date }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
 
-  <section style="overflow-y: auto;">
-    <h2>Historic Rentals</h2>
-    <table>
-      <thead>
-	<tr>
-	  <th>ID</th>
-	  <th>Film</th>
-	  <th>Rental date</th>
-	  <th>Return date</th>
-	</tr>
-      </thead>
-      <tbody>
-	{% for rental in historic_rentals %}
-	<tr>
-	  <td>{{ rental.id }}</td>
-	  <td>{{ rental.title }}</td>
-	  <td>{{ rental.rental_date }}</td>
-	  <td>{{ rental.return_date }}</td>
-	</tr>
-	{% endfor %}
-      </tbody>
-    </table>
-  </section>
+<section style="max-height: 30vh; overflow-y: auto">
+  <h2>Historic Rentals</h2>
+  <table>
+    <thead>
+      <tr>
+	<th>ID</th>
+	<th>Film</th>
+	<th>Rental date</th>
+	<th>Return date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for rental in historic_rentals %}
+      <tr>
+	<td>{{ rental.id }}</td>
+	<td>{{ rental.title }}</td>
+	<td>{{ rental.rental_date }}</td>
+	<td>{{ rental.return_date }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
 
-  <footer>
-    <p>
-      <a href="/customers/{{customer.id}}/edit">Edit</a>
-      <a href="/customers">Back</a>
-    </p>
-  </footer>
+<section>
+  <menu>
+    <li><a href="/customers/{{customer.id}}/edit">Edit</a></li>
+    <li><a href="/customers">Back</a></li>
+  </menu>
+</section>
 
-</div>
 {% endblock %}
