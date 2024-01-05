@@ -1,51 +1,4 @@
 {% extends "templates/screen.html" %}
-{% block style %}
-<style>
-  body, html {
-      color: #0c0;
-      height: 100%;
-      box-sizing: border-box;
-  }
-  .grid-container {
-      display: grid;
-      grid-template-rows: auto 1fr 1fr auto;
-      height: 100vh; /* Viewport height */
-  }
-
-  section {
-      padding: 0 10pt;
-  }
-
-  section.detail h2 {
-      font-size: 12pt;
-      padding: 2pt 0;
-      margin-top: 0;
-  }
-
-  table {
-      width: 100%;
-      border-collapse: collapse; /* Optional, for styling */
-      table-layout: fixed;
-      box-sizing: border-box;
-  }
-
-  th {
-      color: #ff6;
-  }
-
-  th, td {
-      padding: 2pt;
-      box-sizing: border-box;
-  }
-
-  thead tr th {
-      position: sticky;
-      top: 0;
-      background: black;
-  }
-
-</style>
-{% endblock %}
 
 {% block content %}
 <div class="grid-container">
@@ -63,6 +16,7 @@
     <table>
       <thead>
 	<tr>
+	  <th>ID </th>
 	  <th>Last name</th>
 	  <th>First name</th>
 	  <th>Actions</th>
@@ -71,6 +25,7 @@
       <tbody>
 	{% for customer in customers %}
 	<tr>
+	  <td>{{ customer.id }}</td>
 	  <td>{{ customer.last_name }}</td>
 	  <td>{{ customer.first_name }}</td>
 	  <td><a href="/customers/{{ customer.id }}/edit">Edit</a>
