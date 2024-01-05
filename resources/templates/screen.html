@@ -11,6 +11,51 @@
     <script src="/static/js/rsjs-menu.js" type="module"></script>
     <script defer src="https://unpkg.com/alpinejs@3/dist/cdn.min.js"></script>
 -->
+    <style>
+  body, html {
+      color: #0c0;
+      height: 100%;
+      box-sizing: border-box;
+  }
+  .grid-container {
+      display: grid;
+      grid-template-rows: auto 1fr 1fr auto;
+      height: 100vh; /* Viewport height */
+  }
+
+  section {
+      padding: 0 10pt;
+  }
+
+  section.detail h2 {
+      font-size: 12pt;
+      padding: 2pt 0;
+      margin-top: 0;
+  }
+
+  table {
+      width: 100%;
+      border-collapse: collapse; /* Optional, for styling */
+      table-layout: fixed;
+      box-sizing: border-box;
+  }
+
+  th {
+      color: #ff6;
+  }
+
+  th, td {
+      padding: 2pt;
+      box-sizing: border-box;
+  }
+
+  thead tr th {
+      position: sticky;
+      top: 0;
+      background: black;
+  }
+    </style>
+
     {% block style %}{% endblock %}
   </head>
   <body hx-boost="true">
