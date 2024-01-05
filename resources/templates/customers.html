@@ -1,55 +1,52 @@
 {% extends "templates/screen.html" %}
 
 {% block content %}
-<div class="grid-container">
+<section>
+  <h2>Customers</h2>
+  <form action="/customers" method="get" class="tool-bar">
+    <label for="search">Search Term</label>
+    <input id="search" type="search" name="q" value="{{ query_params.q }}"/>
+    <input type="submit" value="Search"/>
+  </form>
+</section>
 
-  <section class="detail">
-    <h2>Customers</h2>
-    <form action="/customers" method="get" class="tool-bar">
-      <label for="search">Search Term</label>
-      <input id="search" type="search" name="q" value="{{ query_params.q }}"/>
-      <input type="submit" value="Search"/>
-    </form>
-  </section>
+<section style="max-height: 200pt; overflow-y: auto">
+  <table>
+    <thead>
+      <tr>
+	<th>ID </th>
+	<th>Last name</th>
+	<th>First name</th>
+	<th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for customer in customers %}
+      <tr>
+	<td>{{ customer.id }}</td>
+	<td>{{ customer.last_name }}</td>
+	<td>{{ customer.first_name }}</td>
+	<td><a href="/customers/{{ customer.id }}/edit">Edit</a>
+          <a href="/customers/{{ customer.id }}">View</a>
+	  <a hx-get="/customers/{{ customer.id }}/detail"
+	     hx-target="#customer-detail">Show</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
 
-  <section style="overflow-y: auto;">
-    <table>
-      <thead>
-	<tr>
-	  <th>ID </th>
-	  <th>Last name</th>
-	  <th>First name</th>
-	  <th>Actions</th>
-	</tr>
-      </thead>
-      <tbody>
-	{% for customer in customers %}
-	<tr>
-	  <td>{{ customer.id }}</td>
-	  <td>{{ customer.last_name }}</td>
-	  <td>{{ customer.first_name }}</td>
-	  <td><a href="/customers/{{ customer.id }}/edit">Edit</a>
-            <a href="/customers/{{ customer.id }}">View</a>
-	    <a hx-get="/customers/{{ customer.id }}/detail"
-	       hx-target="#customer-detail">Show</a></td>
-	</tr>
-	{% endfor %}
-      </tbody>
-    </table>
-  </section>
+<section>
+  <h2>Customer details</h2>
+  <div id="customer-detail">
+  </div>
+</section>
 
-  <section class="detail">
-    <h2>Customer details</h2>
-    <div id="customer-detail">
-    </div>
-  </section>
-
-  <footer>
-    <p>
-      <a href="/">Home</a> |
-      <a href="/customers/new">Add Customer</a>
-    </p>
-  </footer>
-</div>
+<section>
+  <menu>
+    <li><a href="/">Home</a></li>
+    <li><a href="/customers/new">Add Customer</a></li>
+  </menu>
+</section>
 
 {% endblock %}
