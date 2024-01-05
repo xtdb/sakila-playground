@@ -34,14 +34,15 @@
 ;; XTQL
 (comment
   (xt/q (:xt-node xt-node)
-        '(unify (from :rental [{:xt/id rental_id} {:customer-id $customer_id} inventory_id])
+        '(unify (from :rental {:bind
+                               [{:xt/id rental_id} {:customer-id $customer_id} inventory_id
+                                {:xt/valid-from valid_from} {:xt/valid-to valid_to}]
+                               :for-valid-time :all-time})
                 (from :customer [{:xt/id $customer_id}])
                 (from :inventory [{:xt/id inventory_id} film_id])
-                (from :film [{:xt/id film_id} title])
-                )
-        {:args {:customer_id 100}
-         :key-fn :snake_case}
-        ))
+                (from :film [{:xt/id film_id} title]))
+        {:args {:customer_id 560}
+         :key-fn :snake_case}))
 
 (comment
   (for [result
