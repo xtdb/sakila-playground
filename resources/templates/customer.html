@@ -22,6 +22,7 @@
 	<th>ID</th>
 	<th>Film</th>
 	<th>Rental date</th>
+	<th>Action</th>
       </tr>
     </thead>
     <tbody>
@@ -30,6 +31,7 @@
 	<td>{{ rental.id }}</td>
 	<td>{{ rental.title }}</td>
 	<td>{{ rental.rental_date }}</td>
+	<td><button hx-delete="/rentals/{{ rental.id }}">Return</button></td>
       </tr>
       {% endfor %}
     </tbody>

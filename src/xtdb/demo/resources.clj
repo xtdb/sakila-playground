@@ -1,7 +1,7 @@
 (ns xtdb.demo.resources
   {:web-context "/"}
   (:require
-   [xtdb.demo.web.resource :refer [map->Resource html-resource html-templated-resource]]
+   [xtdb.demo.web.resource :refer [map->Resource html-resource html-templated-resource templated-responder]]
    [xtdb.demo.web.locator :as locator]
    [xtdb.demo.web.var-based-locator :refer [var->path]]
    [xtdb.demo.web.html :as html]
@@ -164,14 +164,16 @@
 (defn ^{:uri-template "customers/{id}"} customer [{:keys [path-params]}]
   (let [customer-id (Long/parseLong (get path-params "id"))
         historic-rentals
-        (q '(unify (from :rental {:bind [{:xt/id rental_id} {:xt/id id} {:customer-id $customer_id} inventory_id
-                                         {:xt/valid-from rental_date} {:xt/valid-to return_date}]
-                                 :for-valid-time :all-time})
-                  (from :customer [{:xt/id $customer_id}])
-                  (from :inventory [{:xt/id inventory_id} film_id])
-                  (from :film [{:xt/id film_id} title]))
-          {:args {:customer_id customer-id}
-           :key-fn :snake_case})]
+        (q '(->
+             (unify (from :rental {:bind [{:xt/id rental_id} {:xt/id id} {:customer-id $customer_id} inventory_id
+                                          {:xt/valid-from rental_date} {:xt/valid-to return_date}]
+                                   :for-valid-time :all-time})
+                    (from :customer [{:xt/id $customer_id}])
+                    (from :inventory [{:xt/id inventory_id} film_id])
+                    (from :film [{:xt/id film_id} title]))
+             (order-by {:val rental_date :dir :desc}))
+           {:args {:customer_id customer-id}
+            :key-fn :snake_case})]
     (html-templated-resource
      {:template "templates/customer.html"
       :template-model
@@ -226,3 +228,24 @@
     {"languages" (fn [_] (xt/q
                           (:xt-node xt-node)
                           "select language.xt$id, language.name from language order by xt$id"))}}))
+
+(defn rentals [_]
+  (html-templated-resource
+   {:template "templates/rentals.html"
+    :template-model
+    {"rentals" (q '(unify (from :rental {:bind [{:xt/id rental_id} {:xt/id id} {:customer-id $customer_id} inventory_id {:xt/valid-from rental_date}]})
+                          (from :customer [{:xt/id $customer_id} {:first_name first_name} {:last_name last_name}])
+                          (from :inventory [{:xt/id inventory_id} film_id])
+                          (from :film [{:xt/id film_id} {:title film}]))
+                  {:args {:customer_id 560}
+                   :key-fn :snake_case})}}))
+
+(defn ^{:uri-template "rentals/{id}"} rental [{:keys [path-params]}]
+  (let [rental-id (Long/parseLong (get path-params "id"))]
+    (map->Resource
+     {:methods
+      {"DELETE"
+       {:handler (fn [_ req]
+                   (println "Deleting" rental-id)
+                   (xt/delete :rental rental-id)
+                   {})}}})))
