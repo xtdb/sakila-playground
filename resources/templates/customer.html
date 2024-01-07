@@ -6,12 +6,12 @@
 
 <section class="detail">
   <h2>{{customer.first_name}} {{customer.last_name}}</h2>
-  <div>
-    <div>ID: {{customer.id}}</div>
-    <div>Phone: {{customer.phone}}</div>
-    <div>Email: {{customer.email}}</div>
-    <div>Total rentals: {{total_rentals}}</div>
-  </div>
+  <dl>
+    <dt>ID</dt><dd>{{customer.id}}</dd>
+    <dt>Phone</dt><dd>{{customer.phone}}</dd>
+    <dt>Email</dt><dd>{{customer.email}}</dd>
+    <dt>Total rentals</dt><dd>{{total_rentals}}</dd>
+  </dl>
 </section>
 
 <section>
