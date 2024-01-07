@@ -16,9 +16,15 @@
   <body hx-boost="true">
     {% block content %}{% endblock %}
 
-    <footer>
-      XTDB Sakila Demonstrator. Copyright © 2024, JUXT LTD.
-      <a href="https://github.com/xtdb/sakila-playground">GitHub</a>
-    </footer>
+    <div>
+      <div style="float: left; margin: 12pt">
+	XTDB Sakila Demonstrator. Copyright © 2024, JUXT LTD.
+	<a href="https://github.com/xtdb/sakila-playground">GitHub</a>
+      </div>
+
+      <div style="text-align: right; float: right; margin: 12pt">
+	<img style="width: 60px" src="/static/juxt.svg">
+      </div>
+    </div>
   </body>
 </html>
