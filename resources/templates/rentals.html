@@ -1,0 +1,31 @@
+{% extends "templates/screen.html" %}
+
+{% block content %}
+
+<section style="max-height: 30vh; overflow-y: auto">
+  <h2>Rentals</h2>
+  <table>
+    <thead>
+      <tr>
+	<th>ID</th>
+	<th>Date</th>
+	<th>Customer</th>
+	<th>Film</th>
+	<th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for rental in rentals %}
+      <tr>
+	<td>{{ rental.id }}</td>
+	<td>{{ rental.rental_date }}</td>
+	<td>{{ rental.first_name }} {{ rental.last_name }}</td>
+	<td>{{ rental.film }}</td>
+	<td><button hx-delete="/rentals/{{ rental.id }}">Delete</button></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+{% endblock %}

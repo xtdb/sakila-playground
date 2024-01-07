@@ -59,21 +59,25 @@
    {:representations
     [(with-meta f {:headers {"content-type" "text/html;charset=utf-8"}})]}))
 
+(defn templated-responder [template content-type template-model]
+  (with-meta
+    (fn [req]
+      (let [template-model (update-vals template-model (fn [x] (if (fn? x) (x req) x)))
+            query-params (when-let [query (:ring.request/query req)]
+                           (form-decode query))]
+        (selmer/render-file
+         template
+         (cond-> template-model
+           query-params (assoc "query_params" query-params)))))
+    {:headers {"content-type" content-type}}))
+
 (defn html-templated-resource [{:keys [template template-model]}]
   (map->Resource
    {:representations
-    [^{:headers {"content-type" "text/html;charset=utf-8"}}
-     (fn [req]
-       (let [template-model (update-vals template-model (fn [x] (if (fn? x) (x req) x)))
-             query-params (when-let [query (:ring.request/query req)]
-                            (form-decode query))]
-         (selmer/render-file
-          template
-          (cond-> template-model
-            query-params (assoc "query_params" query-params)))))]}))
+    [(templated-responder template "text/html;charset=utf-8" template-model)]}))
 
-(defn file-resource [file]
+(defn file-resource [file content-type]
   (map->Resource
    {:representations
-    [^{:headers {"content-type" "text/css"}}
+    [^{:headers {"content-type" content-type}}
      (fn [_] file)]}))
