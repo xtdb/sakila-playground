@@ -54,7 +54,10 @@
     {:ring.response/status 405}))
 
 (defn DELETE [resource request]
-  (throw (ex-info "TODO" {})))
+  (if-let [f (get-in resource [:methods "DELETE" :handler])]
+    (let [response (f resource request)]
+      (merge {:ring.response/status 204} response))
+    {:ring.response/status 405}))
 
 (defn OPTIONS [resource request]
   (let [methods (allowed-methods resource request)]
