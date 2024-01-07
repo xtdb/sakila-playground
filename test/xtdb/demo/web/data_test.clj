@@ -51,3 +51,18 @@
               {:args [100]})]
     result
     ))
+
+
+(comment
+  (xt/q (:xt-node xt-node)
+        '(unify (from :rental {:bind
+                               [{:xt/id rental_id} {:customer-id $customer_id} inventory_id
+                                {:xt/valid-from valid_from} {:xt/valid-to valid_to}]
+                               :for-valid-time :all-time})
+                (from :customer [{:xt/id $customer_id}])
+                (from :inventory [{:xt/id inventory_id} film_id])
+                (from :film [{:xt/id film_id} title]))
+        {:args {:customer_id 560}
+         :key-fn :snake_case})
+
+  (xt/delete :rental 14425))
