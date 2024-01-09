@@ -18,4 +18,4 @@
            :nrepl {:main-opts ["-m" "nrepl.cmdline"]
                    :extra-deps {nrepl/nrepl {:mvn/version "1.0.0"}}} }
 
- :paths ["src" "resources"]}
+ :paths ["src" "test" "resources"]}
