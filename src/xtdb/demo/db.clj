@@ -70,6 +70,7 @@
 
 (def xt-node
   (let [node (xtn/start-node {})]
+    (log/info "Loading data into XTDB...")
     (doseq [file (sort (.listFiles (io/file "resources/sakila")))]
       (submit-file! node file))
     (log/info "Sakila playground started!")
@@ -84,6 +85,9 @@
 
 (defn q [& args]
   (apply xt/q (:xt-node xt-node) args))
+
+(defn sql-op [& args]
+  (xt/submit-tx (:xt-node xt-node) [(xt/sql-op (first args))]))
 
 (comment
   ;; `SELECT title, description, length FROM film WHERE title = 'APOCALYPSE FLAMINGOS'`
