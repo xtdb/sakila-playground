@@ -33,7 +33,7 @@
                :ring.response/headers {"location" (var->path #'index)}})}}}))
 
 (def select-films
-  "select film.xt$id as id, film.title, film.description from film order by film.title")
+  "SELECT film.xt$id AS id, film.title, film.description FROM film ORDER BY film.title")
 
 (defn films-no-template [_]
   (html-resource
@@ -100,7 +100,7 @@
       {"film"
        (let [film (first
                    (case *language*
-                     :sql (q "SELECT film.*, language.name as language FROM film LEFT JOIN language ON language.xt$id = film.language_id WHERE film.xt$id = ?"
+                     :sql (q "SELECT film.*, language.name AS language FROM film LEFT JOIN language ON language.xt$id = film.language_id WHERE film.xt$id = ?"
                              {:args [(Long/parseLong id)]})
 
                      :xtql (q '(unify (from :film [{:xt/id $film-id} title description language_id release_year rating])
@@ -115,7 +115,7 @@
     :template-model
     {"customers"
      (fn [request]
-       (let [rows (q "select customer.xt$id as id, customer.first_name, customer.last_name from customer order by customer.last_name")
+       (let [rows (q "SELECT customer.xt$id AS id, customer.first_name, customer.last_name FROM customer ORDER BY customer.last_name")
              query-params (when-let [query (:ring.request/query request)]
                             (form-decode query))
              q (get query-params "q")]
@@ -125,7 +125,7 @@
            )))}}))
 
 (comment
-  (xt/q (:xt-node xt-node) "select * from customer"))
+  (xt/q (:xt-node xt-node) "SELECT * FROM customer"))
 
 (defn ^{:web-path "customers/new"} customers-new [_]
   (let [template "templates/new-customer.html"
@@ -202,7 +202,7 @@
 (defn ^{:uri-template "customers/{id}/detail"} customer-detail [{:keys [path-params]}]
   (html-resource
    (fn [_]
-     (let [customer (first (xt/q (:xt-node xt-node) (format "select customer.xt$id as id, customer.first_name, customer.last_name, customer.email, address.phone from customer, address where customer.xt$id = %s and customer.address_id = address.xt$id" (get path-params "id"))))]
+     (let [customer (first (xt/q (:xt-node xt-node) (format "SELECT customer.xt$id AS id, customer.first_name, customer.last_name, customer.email, address.phone FROM customer, address WHERE customer.xt$id = %s AND customer.address_id = address.xt$id" (get path-params "id"))))]
        (str (h/html [:dl
                      [:dt "First name"]
                      [:dd (:first_name customer)]
@@ -227,7 +227,7 @@
     :template-model
     {"languages" (fn [_] (xt/q
                           (:xt-node xt-node)
-                          "select language.xt$id, language.name from language order by xt$id"))}}))
+                          "SELECT language.xt$id, language.name FROM language ORDER BY xt$id"))}}))
 
 (defn rentals [_]
   (html-templated-resource
