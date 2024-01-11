@@ -1,31 +1,33 @@
 {% extends "templates/layout.html" %}
 {% block content %}
-<h1>Available Films in Store {{ store-id }} </h1>
+<h1>Films in stock @ Store {{ store_id }} </h1>
 
-<form action="/films" method="get" class="tool-bar">
+<form action="/jdt/availabe-films" method="get" class="tool-bar">
   <label for="search">Search Term</label>
   <input id="search" type="search" name="q" value="{{ query_params.q }}"/>
+  <label for="vt_datepicker">Search Date</label>
+  <input id="vt_datepicker" type="date" name="vt_date" value="{{ vt_date }}" hx-get="/films" hx-trigger="change" hx-target="#film-list" hx-swap="outerHTML"/>
+  <label for="st_datepicker">As-Of Date (System Audit)</label>
+  <input id="st_datepicker" type="date" name="st_date" value="{{ st_date }}" hx-get="/films" hx-trigger="change" hx-target="#film-list" hx-swap="outerHTML"/>
   <input type="submit" value="Search"/>
 </form>
 
 <table>
   <thead>
     <tr>
-      <th>Title</th> <th>Description</th><th></th>
+      <th>Title</th> <th>Description</th> <th>In-stock</th><th></th>
     </tr>
   </thead>
   <tbody>
-    {% for film in available-films %}
+    {% for film in available_films %}
     <tr>
       <td>{{ film.title }}</td>
       <td>{{ film.description }}</td>
+      <td>{{ film.inventory_count }}</td>
       <td><a href="/films/{{ film.id }}/edit">Edit</a>
         <a href="/films/{{ film.id }}">View</a></td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
-<p>
-  <a href="/films/new">Add Film</a>
-</p>
 {% endblock %}
