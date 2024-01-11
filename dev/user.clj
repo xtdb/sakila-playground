@@ -5,7 +5,13 @@
    [xtdb.demo.web.var-based-locator :refer [resource-tree]]
    xtdb.demo.db
    xtdb.demo.resources
+   xtdb.demo.jdt-resources
    xtdb.demo.static-resources))
+
+(declare http-server)
+
+(when (not= (type http-server) clojure.lang.Var$Unbound)
+  (.stop http-server))
 
 (def http-server
   (run-server {:port 3000

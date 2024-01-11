@@ -1,0 +1,31 @@
+{% extends "templates/layout.html" %}
+{% block content %}
+<h1>Available Films in Store {{ store-id }} </h1>
+
+<form action="/films" method="get" class="tool-bar">
+  <label for="search">Search Term</label>
+  <input id="search" type="search" name="q" value="{{ query_params.q }}"/>
+  <input type="submit" value="Search"/>
+</form>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th> <th>Description</th><th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for film in available-films %}
+    <tr>
+      <td>{{ film.title }}</td>
+      <td>{{ film.description }}</td>
+      <td><a href="/films/{{ film.id }}/edit">Edit</a>
+        <a href="/films/{{ film.id }}">View</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<p>
+  <a href="/films/new">Add Film</a>
+</p>
+{% endblock %}
