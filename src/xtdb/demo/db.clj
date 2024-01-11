@@ -100,4 +100,23 @@
   ;;(xt/q (:xt-node xt-node) "select * from film limit 10")
 
   ;; Have fun!
+
+  (xt/q (:xt-node xt-node)
+        '(-> (unify (from :film [{:xt/id film-id} language-id])
+                    (from :film-actor [film-id actor-id])
+                    (from :actor [{:xt/id actor-id}])
+                    (from :film-category [film-id category-id])
+                    (from :category [{:xt/id category-id}])
+                    (from :language [{:xt/id language-id}])
+                    (from :inventory [{:xt/id inventory-id} store-id film-id])
+                    (from :store [{:xt/id store-id}])
+                    (from :rental [{:xt/id rental-id} customer-id staff-id inventory-id])
+                    (from :customer [{:xt/id customer-id} address-id])
+                    (from :address [{:xt/id address-id} city-id])
+                    (from :city [{:xt/id city-id} country-id])
+                    (from :country [{:xt/id country-id}])
+                    (from :payment [{:xt/id payment-id} rental-id])
+                    (from :staff [{:xt/id staff-id}]))
+             (order-by {:val payment-id :dir :desc})
+             (limit 1)))
   )
