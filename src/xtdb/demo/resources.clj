@@ -249,3 +249,32 @@
                    (println "Deleting" rental-id)
                    (xt/delete :rental rental-id)
                    {})}}})))
+
+
+(defn analytics [_]
+  (let [rows (xt/q (:xt-node xt-node)
+                   (format
+                    "SELECT A.year, A.month, count(*) as rented
+           FROM (%s) as A
+           GROUP BY A.year, A.month
+           ORDER BY A.year DESC, A.month DESC
+           " "SELECT EXTRACT (YEAR FROM rental.xt$valid_from) as year,
+          EXTRACT (MONTH FROM rental.xt$valid_from) as month
+   FROM rental FOR ALL VALID_TIME")
+                   )]
+    (map->Resource
+     {:representations
+      [^{:content-type "text/html;charset=utf-8"}(fn [_] (str (h/html
+                       [:div
+                        (for [{:keys [year month rented]} rows]
+                          [:table
+                           [:thead
+                            [:th "Year/Month"]
+                            [:th "Videos rented"]]
+                           [:tbody
+                            [:td (java.time.YearMonth/of year month)]
+                            [:td rented]
+                            ]]
+                          )]
+                       )))]}))
+  )
