@@ -9,6 +9,7 @@
           ["xtdb.demo.web.not-found-test"
            "xtdb.demo.web.request-test"
            "xtdb.demo.web.locator-test"
+           "xtdb.demo.web.last-modified-test"
            ]}]
 
  :reporter kaocha.report/documentation}
