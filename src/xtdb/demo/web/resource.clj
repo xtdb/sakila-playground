@@ -3,7 +3,9 @@
    [xtdb.demo.web.protocols :refer [UniformInterface allowed-methods GET HEAD POST PUT DELETE OPTIONS]]
    [xtdb.demo.web.methods :as methods]
    [ring.util.codec :refer [form-decode]]
-   [selmer.parser :as selmer]))
+   [selmer.parser :as selmer]
+   [juxt.reap.encoders :refer [format-http-date]]
+   [clojure.java.io :as io]))
 
 (selmer/cache-off!)
 
@@ -60,16 +62,16 @@
     [(with-meta f {:headers {"content-type" "text/html;charset=utf-8"}})]}))
 
 (defn templated-responder [template content-type template-model]
-  (with-meta
-    (fn [req]
-      (let [template-model (update-vals template-model (fn [x] (if (fn? x) (x req) x)))
-            query-params (when-let [query (:ring.request/query req)]
-                           (form-decode query))]
-        (selmer/render-file
-         template
-         (cond-> template-model
-           query-params (assoc "query_params" query-params)))))
-    {:headers {"content-type" content-type}}))
+  ^{:headers {"content-type" content-type}}
+  (fn [req]
+    {:body
+     (let [template-model (update-vals template-model (fn [x] (if (fn? x) (x req) x)))
+           query-params (when-let [query (:ring.request/query req)]
+                          (form-decode query))]
+       (selmer/render-file
+        template
+        (cond-> template-model
+          query-params (assoc "query_params" query-params))))}))
 
 (defn html-templated-resource [{:keys [template template-model]}]
   (map->Resource
@@ -79,5 +81,7 @@
 (defn file-resource [file content-type]
   (map->Resource
    {:representations
-    [^{:headers {"content-type" content-type}}
-     (fn [_] file)]}))
+    [^{:headers {"content-type" content-type
+                 "last-modified" (format-http-date (java.util.Date. (.lastModified file)))}}
+     (fn [req]
+       {:body file})]}))
