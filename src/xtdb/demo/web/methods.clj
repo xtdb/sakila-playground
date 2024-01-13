@@ -28,7 +28,7 @@
           (-> resource :representations (select-representation request))]
       (if representation
         (let [{:keys [status headers body]} (representation request)]
-          {:ring.response/status (or 200 status)
+          {:ring.response/status (or status 200)
            :ring.response/headers (into (or (-> representation meta :headers) {}) headers)
            :ring.response/body body})
         (let [response (get-in resource [:responses 404])]
