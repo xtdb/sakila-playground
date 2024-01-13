@@ -27,12 +27,10 @@
     (let [representation
           (-> resource :representations (select-representation request))]
       (if representation
-        {:ring.response/status 200
-         ;; TODO: This design makes it impossible to influence the
-         ;; response headers at runtime without resorting to an
-         ;; explicit GET handler. We should improve this.
-         :ring.response/headers (-> representation meta :headers)
-         :ring.response/body (representation request)}
+        (let [{:keys [status headers body]} (representation request)]
+          {:ring.response/status (or 200 status)
+           :ring.response/headers (into (or (-> representation meta :headers) {}) headers)
+           :ring.response/body body})
         (let [response (get-in resource [:responses 404])]
           (cond-> {:ring.response/status 404}
             response (merge (response request))))))))
