@@ -66,3 +66,20 @@
          :key-fn :snake_case})
 
   (xt/delete :rental 14425))
+
+
+(comment
+  (time
+   (xt/q (:xt-node xt-node)
+         (format
+          "SELECT A.year, A.month, count(*) as rented
+           FROM (%s) as A
+           GROUP BY A.year, A.month
+           ORDER BY A.year DESC, A.month DESC
+           " "SELECT EXTRACT (YEAR FROM rental.xt$valid_from) as year,
+          EXTRACT (MONTH FROM rental.xt$valid_from) as month
+   FROM rental FOR ALL VALID_TIME")
+         )))
+
+(xt/q (:xt-node xt-node)
+      )
