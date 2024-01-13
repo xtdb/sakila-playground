@@ -7,8 +7,7 @@
 
 (defn test-resource []
   (map->Resource
-   {
-    :methods
+   {:methods
     {"POST"
      {:accept ["application/x-www-form-urlencoded"]
       :max-content-length 100000
