@@ -1,4 +1,4 @@
-(ns xtdb.demo.web.handler-test
+(ns xtdb.demo.web.not-found-test
   (:require
    [clojure.test :refer [deftest is testing]]
    [xtdb.demo.web.handler :as handler]
