@@ -59,10 +59,10 @@
 (defn html-resource [f]
   (map->Resource
    {:representations
-    [(with-meta f {:headers {"content-type" "text/html;charset=utf-8"}})]}))
+    [(with-meta f {"content-type" "text/html;charset=utf-8"})]}))
 
 (defn templated-responder [template content-type template-model]
-  ^{:headers {"content-type" content-type}}
+  ^{"content-type" content-type}
   (fn [req]
     {:body
      (let [template-model (update-vals template-model (fn [x] (if (fn? x) (x req) x)))
@@ -81,7 +81,7 @@
 (defn file-resource [file content-type]
   (map->Resource
    {:representations
-    [^{:headers {"content-type" content-type
-                 "last-modified" (format-http-date (java.util.Date. (.lastModified file)))}}
+    [^{"content-type" content-type
+       "last-modified" (format-http-date (java.util.Date. (.lastModified file)))}
      (fn [req]
        {:body file})]}))

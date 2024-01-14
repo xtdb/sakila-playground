@@ -16,7 +16,7 @@
   (let [state (atom {:greeting "Hello"})]
     (map->Resource
      {:representations
-      [^{:headers {"content-type" "text/html;charset=utf-8"}}
+      [^{"content-type" "text/html;charset=utf-8"}
        (fn [request] (format "<h1>%s World!</h1>\r\n" (:greeting @state)))]})))
 
 (defn ^{:web-path "index.html"} index [_]
@@ -72,7 +72,7 @@
           {:ring.response/status 302
            :ring.response/headers {"location" (var->path #'films)}})}}
       :representations
-      [^{:headers {"content-type" "text/html;charset=utf-8"}}
+      [^{"content-type" "text/html;charset=utf-8"}
        (fn [req]
          (let [query-params (when-let [query (:ring.request/query req)]
                               (form-decode query))]
@@ -152,7 +152,7 @@
           {:ring.response/status 302
            :ring.response/headers {"location" (var->path #'customers)}})}}
       :representations
-      [^{:headers {"content-type" "text/html;charset=utf-8"}}
+      [^{"content-type" "text/html;charset=utf-8"}
        (fn [req]
          (let [query-params (when-let [query (:ring.request/query req)]
                               (form-decode query))]
