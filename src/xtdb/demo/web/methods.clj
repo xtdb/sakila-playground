@@ -19,6 +19,11 @@
   (when request
     (:juxt.pick/representation (pick request representations))))
 
+(defn request-applied-metadata [representation request]
+  (or
+   (some-> representation meta #_(update-vals (fn [v] (if (fn? v) (v request) v))))
+   {}))
+
 (defn GET [resource request]
   (if-let [f (get-in resource [:methods "GET" :handler])]
     (let [response (f resource request)]
@@ -26,20 +31,22 @@
     ;; No explicit handler, so check for representations
     (let [representation
           (-> resource :representations (select-representation request))]
-      (if representation
-        (let [{:ring.response/keys [status headers body]} (representation request)]
-          {:ring.response/status (or status 200)
-           :ring.response/headers (into (or (-> representation meta) {}) headers)
-           :ring.response/body body})
+      (if-not representation
         (let [response (get-in resource [:responses 404])]
           (cond-> {:ring.response/status 404}
-            response (merge (response request))))))))
+            response (merge (response request))))
+        (let [representation-metadata (request-applied-metadata representation request)
+              {:ring.response/keys [status headers body]} (representation request)]
+          {:ring.response/status (or status 200)
+           :ring.response/headers (into representation-metadata headers)
+           :ring.response/body body})
+        ))))
 
 (defn HEAD [resource request]
   (let [representation
         (-> resource :representations (select-representation request))]
     {:ring.response/status 200
-     :ring.response/headers (-> representation meta :headers)}))
+     :ring.response/headers (request-applied-metadata representation request)}))
 
 (defn PUT [resource request]
   (throw (ex-info "TODO" {})))
