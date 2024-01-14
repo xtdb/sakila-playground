@@ -245,11 +245,13 @@
     (map->Resource
      {:methods
       {"DELETE"
-       {:handler (fn [_ req]
-                   (println "Deleting" rental-id)
-                   (xt/delete :rental rental-id)
-                   {})}}})))
-
+       {:handler
+        (fn [_ req]
+          (println "Deleting" rental-id)
+          (xt/submit-tx
+           (:xt-node xt-node)
+           [(xt/delete :rental rental-id)])
+          {})}}})))
 
 (defn analytics [_]
   (let [rows (xt/q (:xt-node xt-node)
