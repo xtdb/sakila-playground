@@ -17,8 +17,12 @@
 
         juxt/reap
         {:git/url "https://github.com/juxt/reap.git"
-         :sha "90651d8e48508dc146d2bd3af4de776288c5e5d3"
-         }
+         :sha "90651d8e48508dc146d2bd3af4de776288c5e5d3"}
+
+        juxt/pick
+        {:git/url "https://github.com/juxt/pick.git"
+         :sha "dabc8c456eacf4246a9b8b449fcf554c5bb2b79f"}
+
         }
 
  :aliases {:xtdb {:jvm-opts

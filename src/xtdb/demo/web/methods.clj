@@ -1,6 +1,7 @@
 (ns xtdb.demo.web.methods
   (:require
-   [clojure.string :as str]))
+   [clojure.string :as str]
+   [juxt.pick.ring :refer [pick]]))
 
 (defn allowed-methods [resource request]
   (let [methods (set (keys (:methods resource {"GET" {}})))]
@@ -16,8 +17,7 @@
 
 (defn select-representation [representations request]
   (when request
-    ;; TODO: Use juxt/pick
-    (first representations)))
+    (:juxt.pick/representation (pick request representations))))
 
 (defn GET [resource request]
   (if-let [f (get-in resource [:methods "GET" :handler])]

@@ -21,3 +21,8 @@
       (handler
        {:ring.request/method :get
         :ring.request/path "/foo"})))))
+
+
+#_(handler
+ {:ring.request/method :get
+  :ring.request/path "/foo"})
