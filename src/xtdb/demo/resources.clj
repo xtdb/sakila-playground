@@ -116,8 +116,7 @@
     :template-model
     {"customers"
      (fn [request]
-       (let [rows (xt/q (:xt-node xt-node)
-                        "select customer.xt$id as id, customer.first_name, customer.last_name from customer order by customer.last_name")
+       (let [rows (q "SELECT customer.xt$id AS id, customer.first_name, customer.last_name FROM customer ORDER BY customer.last_name")
              query-params (when-let [query (:ring.request/query request)]
                             (form-decode query))
              q (get query-params "q")]
