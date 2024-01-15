@@ -17,7 +17,8 @@
     (map->Resource
      {:representations
       [^{"content-type" "text/html;charset=utf-8"}
-       (fn [request] (format "<h1>%s World!</h1>\r\n" (:greeting @state)))]})))
+       (fn [request]
+         {:ring.response/body (format "<h1>%s World!</h1>\r\n" (:greeting @state))})]})))
 
 (defn ^{:web-path "index.html"} index [_]
   (html-templated-resource
