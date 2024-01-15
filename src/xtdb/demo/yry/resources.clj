@@ -28,18 +28,18 @@
 
 (def rentals-per-category-query 
   "WITH rental_categories AS 
-               (SELECT film_category.category_id as category_id,
-                       count(*) as films_rented 
-                FROM rental
-                LEFT JOIN inventory ON rental.inventory_id = inventory.xt$id
-                LEFT JOIN film_category ON inventory.film_id = film_category.film_id
-                GROUP BY film_category.category_id)
-          SELECT category.name AS category_name,
-                 rental_categories.category_id, 
-                 rental_categories.films_rented 
-          FROM rental_categories 
-          LEFT JOIN category ON rental_categories.category_id = category.xt$id
-          ORDER BY category.name ASC")
+        (SELECT film_category.category_id as category_id,
+                count(*) as films_rented 
+         FROM rental
+         LEFT JOIN inventory ON rental.inventory_id = inventory.xt$id
+         LEFT JOIN film_category ON inventory.film_id = film_category.film_id
+         GROUP BY film_category.category_id)
+    SELECT category.name AS category_name,
+           rental_categories.category_id, 
+           rental_categories.films_rented 
+    FROM rental_categories 
+    LEFT JOIN category ON rental_categories.category_id = category.xt$id
+    ORDER BY category.name ASC")
 
 (def top-users-raw-data
   "WITH top_user AS 
@@ -57,6 +57,20 @@
    FROM top_user
    LEFT JOIN customer ON top_user.customer_id = customer.xt$id")
 
+(def top-perfomer-film-raw-data
+  "WITH film_rented AS 
+      (SELECT inventory.film_id, 
+             count(*) as count_rented
+      FROM rental
+      LEFT JOIN inventory ON rental.inventory_id = inventory.xt$id
+      GROUP BY inventory.film_id
+      ORDER BY count_rented DESC
+      LIMIT %s)
+   SELECT film_rented.film_id,
+           film.title, 
+           film_rented.count_rented 
+   FROM film_rented
+   LEFT JOIN film ON film_rented.film_id = film.xt$id")
 
 (def default-query-params {:default-all-valid-time? true})
 
@@ -78,6 +92,12 @@
         (format top-users-raw-data limit)
         default-query-params))
 
+(defn top-performed-films-data
+  [{:keys [xt-node]} & {:keys [limit] :or {limit 10}}]
+  (xt/q xt-node
+        (format top-perfomer-film-raw-data limit)
+        default-query-params))
+
 (defn ^{:web-path "rentals"} rentals-per-year-month [x]
   (html-templated-resource
    {:template "templates/rental_analytics.html"
@@ -88,4 +108,6 @@
      "rentals_category"
      (fn [request] (rentals-per-category-data xt-node))
      "rentals_top_users"
-     (fn [request] (top-users-data xt-node))}}))
+     (fn [request] (top-users-data xt-node))
+     "rentals_top_films"
+     (fn [request] (top-performed-films-data xt-node))}}))
