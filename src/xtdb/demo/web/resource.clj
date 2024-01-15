@@ -64,7 +64,7 @@
 (defn templated-responder [template content-type template-model]
   ^{"content-type" content-type}
   (fn [req]
-    {:body
+    {:ring.response/body
      (let [template-model (update-vals template-model (fn [x] (if (fn? x) (x req) x)))
            query-params (when-let [query (:ring.request/query req)]
                           (form-decode query))]
@@ -84,4 +84,4 @@
     [^{"content-type" content-type
        "last-modified" (format-http-date (java.util.Date. (.lastModified file)))}
      (fn [req]
-       {:body file})]}))
+       {:ring.response/body file})]}))
