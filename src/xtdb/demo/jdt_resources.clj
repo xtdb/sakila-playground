@@ -12,31 +12,40 @@
    [xtdb.demo.web.request :refer [read-request-body]]
    [selmer.parser :as selmer])
   (:import
-   [java.time LocalDate Instant]
+   [java.time Instant LocalDateTime ZonedDateTime ZoneId]
    [java.time.format DateTimeFormatter]
    [xtdb.api TransactionKey]))
 
 ;; (sql-op "INSERT INTO film(xt$id, title, description, language_id) VALUES (9999, 'foo', 'bar', 1)")
 
 (def select-available-films
-  "SELECT DISTINCT film.xt$id AS id, film.title, film.description, COUNT(inventory.xt$id) AS inventory_count
-FROM film
-JOIN inventory ON (inventory.film_id = film.xt$id AND inventory.store_id = 1)
-LEFT JOIN rental ON (rental.inventory_id = inventory.xt$id AND rental.return_date < CURRENT_DATE)
-GROUP BY film.xt$id, film.title, film.description
-ORDER BY film.title")
+  "SELECT DISTINCT f.xt$id AS id, f.title, f.description, COUNT(i.xt$id) AS inventory_count
+FROM film f
+JOIN inventory i ON (i.film_id = f.xt$id AND i.store_id = ?)
+LEFT JOIN rental FOR ALL VALID_TIME r ON (r.inventory_id = i.xt$id AND r.xt$valid_from <= ?)
+GROUP BY f.xt$id, f.title, f.description
+ORDER BY f.title")
 
-(comment
-  (def select-available-films
-    "SELECT film.xt$id AS id, film.title, film.description, film.xt$valid_from
-FROM film
-ORDER BY film.xt$id DESC")
+;; NOTE: the data model does NOT include historic inventory or film availability information
+;; NOTE: this avoids using CURRENT_TIME because not all tables are loaded with valid-time, meaning explicit `FOR VALID_TIME AS OF ?` transformations would be needed (otherwise ~atemporal tables will appear empty in valid-time past, given XTDB's CURRENT_TIME override behaviour)
 
-  (q select-available-films))
+(defn iso-string->instant [iso-string]
+  (let [localDateTime (LocalDateTime/parse iso-string (DateTimeFormatter/ISO_LOCAL_DATE_TIME))
+        zoneId (ZoneId/of "UTC")
+        zonedDateTime (ZonedDateTime/of localDateTime zoneId)]
+    (.toInstant zonedDateTime)))
 
-(defn get-vt [query-params]
-  (or (get query-params "vt_date")
-      (.format (.plusDays (LocalDate/now) 1) (DateTimeFormatter/ofPattern "yyyy-MM-dd"))))
+(defn instant->iso-string [instant]
+  (let [zoneId (ZoneId/of "UTC")
+        localDateTime (LocalDateTime/ofInstant instant zoneId)
+        formatter (DateTimeFormatter/ofPattern "yyyy-MM-dd'T'HH:mm:ss.SSS")]
+    (.format localDateTime formatter)))
+
+(instant->iso-string #time/instant "2020-01-01T00:00:00.000Z")
+
+(defn get-timestamp [query-params name]
+  (or (some-> (get query-params name) iso-string->instant)
+      (Instant/now)))
 
 (defn available-films [_]
   (html-templated-resource
@@ -50,17 +59,14 @@ ORDER BY film.xt$id DESC")
                         (if (empty? s)
                           1
                           (Integer/parseInt s)))
-             vt (get-vt query-params)
-             _ (prn (Instant/parse (str vt "T00:00:00Z")))
+             st (get-timestamp query-params "as_of_timestamp")
+             vt (get-timestamp query-params "vt_timestamp")
              rows (q select-available-films
-                     {:args [store-id]
-                      :basis {:current-time (Instant/now)
-                              ;; (Instant/parse (str vt "T00:00:00Z"))
-                              ;; TODO can't naively use current-time as not all tables are loaded with vt
-                              #_ #_:at-tx (TransactionKey. -1 (Instant/parse "2024-01-11T22:00:00Z"))}})
+                     {:args [store-id vt]
+                      :basis {:at-tx (TransactionKey. -1 st)}})
              filter-str (get query-params "q")]
          (if filter-str
-           (filter (fn [row] (re-matches (re-pattern (str "(?i)" ".*" "\\Q" q "\\E" ".*")) (str (:title row) (:description row)))) rows)
+           (filter (fn [row] (re-matches (re-pattern (str "(?i)" ".*" "\\Q" filter-str "\\E" ".*")) (str (:title row) (:description row)))) rows)
            rows
            )))
      "store_id"
@@ -72,11 +78,15 @@ ORDER BY film.xt$id DESC")
                           1
                           (Integer/parseInt s)))]
          store-id))
-     "vt_date"
+     "vt_timestamp"
      (fn [request]
        (let [query-params (when-let [query (:ring.request/query request)]
                             (form-decode query))]
-         (get-vt query-params)))
-     "st_date"
-     (fn [_]
-       (.format (LocalDate/now) (DateTimeFormatter/ofPattern "yyyy-MM-dd")))}}))
+         (-> (get-timestamp query-params "vt_timestamp")
+             instant->iso-string)))
+     "as_of_timestamp"
+     (fn [request]
+       (let [query-params (when-let [query (:ring.request/query request)]
+                            (form-decode query))]
+         (-> (get-timestamp query-params "as_of_timestamp")
+             instant->iso-string)))}}))

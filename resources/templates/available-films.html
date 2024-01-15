@@ -2,14 +2,19 @@
 {% block content %}
 <h1>Films in stock @ Store {{ store_id }} </h1>
 
-<form action="/jdt/availabe-films" method="get" class="tool-bar">
+<form id="searchForm" action="/jdt/available-films" method="get" class="tool-bar">
   <label for="search">Search Term</label>
   <input id="search" type="search" name="q" value="{{ query_params.q }}"/>
-  <label for="vt_datepicker">Search Date</label>
-  <input id="vt_datepicker" type="date" name="vt_date" value="{{ vt_date }}" hx-get="/films" hx-trigger="change" hx-target="#film-list" hx-swap="outerHTML"/>
-  <label for="st_datepicker">As-Of Date (System Audit)</label>
-  <input id="st_datepicker" type="date" name="st_date" value="{{ st_date }}" hx-get="/films" hx-trigger="change" hx-target="#film-list" hx-swap="outerHTML"/>
+  <label for="vt_timestamppicker">Search Date</label>
+  <input id="vt_timestamppicker" type="datetime-local" step="0.001" name="vt_timestamp" value="{{ vt_timestamp }}"/>
   <input type="submit" value="Search"/>
+</form>
+
+
+<form id="asOfForm" action="/jdt/available-films" method="get" class="tool-bar">
+  <label for="as_of_datepicker">As-Of Date (System Audit)</label>
+  <input id="as_of_timestamppicker" type="datetime-local" step="0.001" name="as_of_timestamp" value="{{ as_of_timestamp }}"/>
+  <input type="submit" value="Search As Of"/>
 </form>
 
 <table>
@@ -30,4 +35,19 @@
     {% endfor %}
   </tbody>
 </table>
+
+<script>
+ function handleSubmit(event) {
+     event.preventDefault();
+     var searchParams = new URLSearchParams(window.location.search);
+     searchParams.delete('as_of_timestamp');
+     searchParams.append('as_of_timestamp', document.getElementById('as_of_timestamppicker').value);
+     const form = document.getElementById('asOfForm');
+     form.action = "/jdt/available-films?" + searchParams.toString();
+     //console.log(form.action);
+     //form.submit();
+     window.location.href = form.action
+ }
+ document.getElementById('asOfForm').addEventListener('submit', handleSubmit);
+</script>
 {% endblock %}
