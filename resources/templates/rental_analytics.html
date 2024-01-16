@@ -7,26 +7,10 @@
         <h2>Rental Analytics</h2>
     </section>
 
-    <section style="overflow-y: auto;">
-        <table>
-            <caption>Rentals per month</caption>
-            <thead>
-                <tr>
-                    <th>Year </th>
-                    <th>Month</th>
-                    <th>Rented</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for rental in rentals_ym %}
-                <tr>
-                    <td>{{ rental.year }}</td>
-                    <td>{{ rental.month }}</td>
-                    <td>{{ rental.rented }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <section style="overflow-y: auto;"
+             hx-trigger="load"
+             hx-get = "/yry/rental-per-month" >
+        <p>Loading...</p>
     </section>
 
     <section style="overflow-y: auto;">
