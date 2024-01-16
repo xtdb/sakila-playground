@@ -115,12 +115,17 @@
     {"rentals_category"
      (fn [request] (rentals-per-category-data xt-node))}}))
 
+(defn ^{:web-path "top-renting-customers"}
+  top-renting-customers [_]
+  (html-templated-resource
+   {:template "templates/rental-analytics/top-renting-customers.html"
+    :template-model
+    {"rentals_top_users"
+     (fn [request] (top-users-data xt-node))}}))
 
 (defn ^{:web-path "rentals"} rentals-per-year-month [x]
   (html-templated-resource
    {:template "templates/rental_analytics.html"
     :template-model
-    {"rentals_top_users"
-     (fn [request] (top-users-data xt-node))
-     "rentals_top_films"
+    {"rentals_top_films"
      (fn [request] (top-performed-films-data xt-node))}}))
