@@ -1,0 +1,19 @@
+<table>
+    <caption>Top renting customers</caption>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>email</th>
+            <th>Rented</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in rentals_top_users %}
+        <tr>
+            <td>{{ user.first_name }} {{ user.last_name }} </td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.films_rented }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

@@ -7,55 +7,16 @@
         <h2>Rental Analytics</h2>
     </section>
 
-    <section style="overflow-y: auto;"
-             hx-trigger="load"
-             hx-get = "/yry/rental-per-month" >
+    <section style="overflow-y: auto;" hx-trigger="load" hx-get="/yry/rental-per-month">
         <p>Loading...</p>
     </section>
 
-    <section style="overflow-y: auto;"
-             hx-trigger="load"
-             hx-get = "/yry/rental-per-category">
-        <p>Loading...</p>         
-        <!-- <table>
-            <caption>Rentals per category</caption>
-            <thead>
-                <tr>
-                    <th>Category</th>
-                    <th>Rented</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for rental in rentals_category %}
-                <tr>
-                    <td>{{ rental.category_name }}</td>
-                    <td>{{ rental.films_rented }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table> -->
+    <section style="overflow-y: auto;" hx-trigger="load" hx-get="/yry/rental-per-category">
+        <p>Loading...</p>
     </section>
 
-    <section style="overflow-y: auto;">
-        <table>
-            <caption>Top renting users</caption>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>email</th>
-                    <th>Rented</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for user in rentals_top_users %}
-                <tr>
-                    <td>{{ user.first_name }} {{ user.last_name }} </td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.films_rented }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <section style="overflow-y: auto;" hx-trigger="load" hx-get="/yry/top-renting-customers">
+        <p>Loading...</p>
     </section>
 
     <section style="overflow-y: auto;">
