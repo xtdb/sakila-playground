@@ -1,7 +1,8 @@
 (ns xtdb.demo.web.methods
   (:require
    [clojure.string :as str]
-   [juxt.pick.ring :refer [pick]]))
+   [juxt.pick.ring :refer [pick]]
+   [xtdb.demo.web.conditional :refer [evaluate-preconditions!]]))
 
 (defn allowed-methods [resource request]
   (let [methods (set (keys (:methods resource {"GET" {}})))]
@@ -31,6 +32,7 @@
     ;; No explicit handler, so check for representations
     (let [representation
           (-> resource :representations (select-representation request))]
+      (evaluate-preconditions! (meta representation) request)
       (if-not representation
         (let [response (get-in resource [:responses 404])]
           (cond-> {:ring.response/status 404}
