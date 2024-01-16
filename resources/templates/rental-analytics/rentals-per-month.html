@@ -1,0 +1,21 @@
+{% block content %}
+<table>
+    <caption>Rentals per month</caption>
+    <thead>
+        <tr>
+            <th>Year </th>
+            <th>Month</th>
+            <th>Rented</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for rental in rentals_ym %}
+        <tr>
+            <td>{{ rental.year }}</td>
+            <td>{{ rental.month }}</td>
+            <td>{{ rental.rented }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
