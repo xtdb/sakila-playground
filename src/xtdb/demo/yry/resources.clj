@@ -98,14 +98,20 @@
         (format top-perfomer-film-raw-data limit)
         default-query-params))
 
+(defn ^{:web-path "rental-per-month"}
+  rental-per-month [_]
+  (html-templated-resource
+   {:template "templates/rental-analytics/rentals-per-month.html"
+    :template-model
+    {"rentals_ym"
+     (fn [request]
+       (mapv #(update % :month month-num->month-name) (rentals-per-year-month-data xt-node)))}}))
+
 (defn ^{:web-path "rentals"} rentals-per-year-month [x]
   (html-templated-resource
    {:template "templates/rental_analytics.html"
     :template-model
-    {"rentals_ym"
-     (fn [request] 
-       (mapv #(update % :month month-num->month-name) (rentals-per-year-month-data xt-node)))
-     "rentals_category"
+    {"rentals_category"
      (fn [request] (rentals-per-category-data xt-node))
      "rentals_top_users"
      (fn [request] (top-users-data xt-node))
