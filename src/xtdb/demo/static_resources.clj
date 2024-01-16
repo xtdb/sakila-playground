@@ -13,7 +13,7 @@
 
 (defn ^{:web-path "screen.css"} screen-css [_]
   (file-resource
-   (io/file "external/screen.css")
+   (io/file "resources/screen.css")
    "text/css"))
 
 (defn ^{:web-path "htmx.org.js"} htmx-js [_]
