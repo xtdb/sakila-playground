@@ -13,18 +13,21 @@
 -->
     {% block style %}{% endblock %}
   </head>
-  <body hx-boost="true">
+  <body style="margin: 6pt 6pt" hx-boost="true">
     {% block content %}{% endblock %}
 
+    <footer style="text-align: left; padding: 0; margin: 0">
     <div style="font-size: 80%; color: #ccc">
-      <div style="float: left; margin: 12pt">
-	XTDB Sakila Demonstrator. Copyright © 2024, JUXT LTD.
-	<a href="https://github.com/xtdb/sakila-playground">GitHub</a>
-      </div>
+      <p>
+	XTDBv2 Demonstrator. Copyright © 2024, JUXT LTD.
+	<a href="https://github.com/xtdb/sakila-playground">GitHub</a><br>
+	Uses the <a href="https://www.jooq.org/sakila">Sakila</a> data set. Copyright © 2009 - 2024 by Data Geekery™ GmbH. All rights reserved.
+      </p>
 
-      <div style="text-align: right; float: right; margin: 12pt">
+      <div style="margin-top: 24pt">
 	<img style="width: 60px" src="/static/juxt.svg">
       </div>
     </div>
+    </footer>
   </body>
 </html>
