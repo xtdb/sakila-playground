@@ -126,7 +126,7 @@
 (defn ^{:web-path "top-rented-films"}
   top-rented-films [_]
   (html-templated-resource
-   {:template "templates/rental-analytics/top-renting-customers.html"
+   {:template "templates/rental-analytics/top-rented-films.html"
     :template-model
     {"rentals_top_films"
      (fn [request] (top-performed-films-data xt-node))}}))
