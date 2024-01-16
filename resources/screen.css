@@ -1,0 +1,62 @@
+body, html {
+    background: black;
+    color: #0a0;
+    box-sizing: border-box;
+}
+
+footer {
+    color: #aaa;
+}
+
+section {
+    padding: 0 10pt;
+}
+
+section.detail h2 {
+    font-size: 14pt;
+    padding: 2pt 0;
+    margin-top: 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse; /* Optional, for styling */
+    table-layout: fixed;
+    box-sizing: border-box;
+}
+
+th {
+    color: #ff6;
+    font-family: monospace;
+    text-align: left;
+}
+
+th, td {
+    padding: 2pt;
+    font-family: monospace;
+    box-sizing: border-box;
+}
+
+thead tr th {
+    position: sticky;
+    top: 0;
+    background: black;
+}
+
+footer {
+    font-size: 10pt;
+}
+
+section menu li {
+    display: inline;
+    padding-right: 2pt;
+}
+
+blockquote {
+    font-size: 80%;
+    color: #0a0;
+}
+
+h1 {
+    color: #ddd;
+}
