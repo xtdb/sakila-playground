@@ -1,0 +1,18 @@
+<table>
+  <thead>
+    <tr>
+      <th>Category id</th>
+      <th>Category</th>
+      <th>Films rented</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in resultset %}
+    <tr>
+      <td>{{ row.category_id }}</td>
+      <td>{{ row.category_name }}</td>
+      <td>{{ row.films_rented }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

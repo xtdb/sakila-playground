@@ -1,0 +1,29 @@
+{% extends "templates/screen.html" %}
+
+{% block content %}
+<div class="grid-container">
+
+  <section class="detail">
+    <h2>Rental Analytics</h2>
+  </section>
+
+  <section hx-trigger="load" hx-get="rentals-by-category" hx-swap="innerhtml" hx-target="#table" style="overflow-y: auto;">
+    <div id="table">
+      <p>Loading...<p>
+    </div>
+  </section>
+</div>
+
+<script>
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  vegaEmbed('#chart', '/charting/bar-graph', {theme: 'dark'});
+} else {
+  vegaEmbed('#chart', '/charting/bar-graph');
+}
+</script>
+
+
+<div id="chart">
+
+</div>
+{% endblock %}
