@@ -8,19 +8,19 @@
     </section>
 
     <section style="overflow-y: auto;" hx-trigger="load" hx-get="/yry/rental-per-month">
-        <p>Loading...</p>
+        {% include "templates/rental-analytics/loading.html" %}
     </section>
 
     <section style="overflow-y: auto;" hx-trigger="load" hx-get="/yry/rental-per-category">
-        <p>Loading...</p>
+        {% include "templates/rental-analytics/loading.html" %}
     </section>
 
     <section style="overflow-y: auto;" hx-trigger="load" hx-get="/yry/top-renting-customers">
-        <p>Loading...</p>
+        {% include "templates/rental-analytics/loading.html" %}
     </section>
 
     <section style="overflow-y: auto;" hx-trigger="load" hx-get="/yry/top-rented-films">
-        <p>Loading...</p>
+        {% include "templates/rental-analytics/loading.html" %}
     </section>
 </div>
 {% endblock %}
