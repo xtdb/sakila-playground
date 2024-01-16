@@ -13,8 +13,11 @@
         <p>Loading...</p>
     </section>
 
-    <section style="overflow-y: auto;">
-        <table>
+    <section style="overflow-y: auto;"
+             hx-trigger="load"
+             hx-get = "/yry/rental-per-category">
+        <p>Loading...</p>         
+        <!-- <table>
             <caption>Rentals per category</caption>
             <thead>
                 <tr>
@@ -30,7 +33,7 @@
                 </tr>
                 {% endfor %}
             </tbody>
-        </table>
+        </table> -->
     </section>
 
     <section style="overflow-y: auto;">
