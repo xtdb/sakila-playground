@@ -110,20 +110,30 @@
                                :key-fn :snake_case})))]
          film)}})))
 
+(defn customers-table [_]
+  (let [customers (fn [request]
+                    (let [rows (q "SELECT customer.xt$id AS id, customer.first_name, customer.last_name FROM customer ORDER BY customer.last_name")
+                          query-params (when-let [query (:ring.request/query request)]
+                                         (form-decode query))
+                          q (get query-params "q")]
+                      (if q
+                        (filter (fn [row] (re-matches (re-pattern (str "(?i)" ".*" "\\Q" q "\\E" ".*")) (str (:id row) (:first_name row) (:last_name row)))) rows)
+                        rows
+                        )))]
+    (map->Resource
+     {:representations
+      [(templated-responder
+        "templates/customers-table.html" "text/html;charset=utf-8"
+        {"customers" customers})
+
+       ^{"content-type" "application/edn"}
+       (fn [req] {:ring.response/body (pr-str (customers req))})]})))
+
 (defn customers [_]
   (html-templated-resource
-   {:template "templates/customers.html"
+   {:template "templates/customers-page.html"
     :template-model
-    {"customers"
-     (fn [request]
-       (let [rows (q "SELECT customer.xt$id AS id, customer.first_name, customer.last_name FROM customer ORDER BY customer.last_name")
-             query-params (when-let [query (:ring.request/query request)]
-                            (form-decode query))
-             q (get query-params "q")]
-         (if q
-           (filter (fn [row] (re-matches (re-pattern (str "(?i)" ".*" "\\Q" q "\\E" ".*")) (str (:id row) (:first_name row) (:last_name row)))) rows)
-           rows
-           )))}}))
+    {}}))
 
 (comment
   (xt/q (:xt-node xt-node) "SELECT * FROM customer"))
