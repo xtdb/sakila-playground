@@ -12,7 +12,7 @@
 </section>
 
 <section style="max-height: 200pt; overflow-y: auto">
-  <div hx-get="/customers-table" hx-trigger="load">
+  <div hx-get="/customers-table?q={{ query_params.q }}" hx-trigger="load">
     <p>Loading!!!</p>
   </div>
 </section>
