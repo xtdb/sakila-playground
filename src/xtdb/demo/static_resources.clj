@@ -30,3 +30,13 @@
   (file-resource
    (io/file "resources/images/juxt.svg")
    "image/svg+xml"))
+
+(defn ^{:web-path "bar-chart.vg.json"} bar-chart [_]
+  (file-resource
+   (io/file "external/bar-chart.vg.json")
+   "application/json"))
+
+(defn ^{:web-path "movies.json"} movies [_]
+  (file-resource
+   (io/file "external/movies.json")
+   "application/json"))
