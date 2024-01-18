@@ -1,16 +1,17 @@
 (ns xtdb.demo.resources
   {:web-context "/"}
   (:require
-   [xtdb.demo.web.resource :refer [map->Resource html-resource html-templated-resource templated-responder]]
-   [xtdb.demo.web.locator :as locator]
-   [xtdb.demo.web.var-based-locator :refer [var->path]]
-   [xtdb.demo.web.html :as html]
-   [xtdb.demo.db :refer [xt-node next-id q]]
-   [ring.util.codec :refer [form-decode]]
-   [hiccup2.core :as h]
-   [xtdb.api :as xt]
-   [xtdb.demo.web.request :refer [read-request-body]]
-   [selmer.parser :as selmer]))
+    [xtdb.demo.web.resource :refer [map->Resource html-resource html-templated-resource templated-responder]]
+    [xtdb.demo.web.locator :as locator]
+    [xtdb.demo.web.var-based-locator :refer [var->path]]
+    [xtdb.demo.web.html :as html]
+    [xtdb.demo.db :refer [xt-node next-id q]]
+    [ring.util.codec :refer [form-decode]]
+    [hiccup2.core :as h]
+    [xtdb.api :as xt]
+    [xtdb.demo.web.request :refer [read-request-body]]
+    [selmer.parser :as selmer])
+  (:import (java.time LocalDate ZoneId)))
 
 (defn hello [_]
   (let [state (atom {:greeting "Hello"})]
@@ -107,8 +108,8 @@
                      :xtql (q '(unify (from :film [{:xt/id $film-id} title description language_id release_year rating])
                                       (from :language [{:xt/id language_id} {:name language}]))
                               {:args {:film-id (Long/parseLong id)}
-                               :key-fn :snake_case})))]
-         film)}})))
+                               :key-fn :snake-case-kw})))]
+         (assoc film :id id))}})))
 
 (defn customers-table [_]
   (let [customers (fn [request]
@@ -184,7 +185,7 @@
                     (from :film [{:xt/id film_id} title]))
              (order-by {:val rental_date :dir :desc}))
            {:args {:customer_id customer-id}
-            :key-fn :snake_case})]
+            :key-fn :snake-case-kw})]
     (html-templated-resource
      {:template "templates/customer.html"
       :template-model
@@ -196,7 +197,7 @@
          '(unify (from :customer [{:xt/id $customer_id} {:xt/id id} first_name last_name email address_id])
                  (from :address [{:xt/id address_id} phone]))
          {:args {:customer_id customer-id}
-          :key-fn :snake_case}))
+          :key-fn :snake-case-kw}))
 
        "current_rentals"
        (q '(unify (from :rental {:bind [{:xt/id rental_id} {:xt/id id} {:customer-id $customer_id} inventory_id {:xt/valid-from rental_date}]})
@@ -204,7 +205,7 @@
                   (from :inventory [{:xt/id inventory_id} film_id])
                   (from :film [{:xt/id film_id} title]))
           {:args {:customer_id customer-id}
-           :key-fn :snake_case}
+           :key-fn :snake-case-kw}
           )
 
        "historic_rentals"
@@ -250,20 +251,32 @@
                           (from :inventory [{:xt/id inventory_id} film_id])
                           (from :film [{:xt/id film_id} {:title film}]))
                   {:args {:customer_id 560}
-                   :key-fn :snake_case})}}))
+                   :key-fn :snake-case-kw})}}))
 
 (defn ^{:uri-template "rentals/{id}"} rental [{:keys [path-params]}]
   (let [rental-id (Long/parseLong (get path-params "id"))]
     (map->Resource
      {:methods
       {"DELETE"
-       {:handler
-        (fn [_ req]
-          (println "Deleting" rental-id)
-          (xt/submit-tx
-           (:xt-node xt-node)
-           [(xt/delete :rental rental-id)])
-          {})}}})))
+       {:accept ["application/x-www-form-urlencoded"]
+        :handler
+        (fn [resource req]
+          (let [{:strs [return-date]} (read-request-body resource req)
+                return-date (when (not-empty return-date)
+                              (try
+                                (LocalDate/parse return-date)
+                                (catch Exception _
+                                  (throw (ex-info "Invalid return date" {:ring.response/status 400})))))
+                return-instant (some-> return-date (.atStartOfDay (ZoneId/of "Europe/London")))]
+
+            (println "Deleting" rental-id)
+
+            (xt/submit-tx
+              (:xt-node xt-node)
+              [(cond-> (xt/delete :rental rental-id) return-instant (xt/starting-from return-instant))])
+
+            ;; returning 204 causes HTMX to not swap, even if a hx-swap=delete is set.
+            {:ring.response/status 200}))}}})))
 
 (defn analytics [_]
   (let [rows (xt/q (:xt-node xt-node)

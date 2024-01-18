@@ -42,7 +42,7 @@
                 (from :inventory [{:xt/id inventory_id} film_id])
                 (from :film [{:xt/id film_id} title]))
         {:args {:customer_id 560}
-         :key-fn :snake_case}))
+         :key-fn :snake-case-kw}))
 
 (comment
   (for [result
@@ -63,7 +63,7 @@
                 (from :inventory [{:xt/id inventory_id} film_id])
                 (from :film [{:xt/id film_id} title]))
         {:args {:customer_id 560}
-         :key-fn :snake_case})
+         :key-fn :snake-case-kw})
 
   (xt/delete :rental 14425))
 
@@ -80,6 +80,3 @@
           EXTRACT (MONTH FROM rental.xt$valid_from) as month
    FROM rental FOR ALL VALID_TIME")
          )))
-
-(xt/q (:xt-node xt-node)
-      )

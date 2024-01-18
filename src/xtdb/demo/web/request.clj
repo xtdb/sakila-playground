@@ -37,7 +37,7 @@
     ;; your resource.
     (let [max-content-length
           (or
-           (get-in resource [:methods (case method :put "PUT" :post "POST") :max-content-length])
+           (get-in resource [:methods (case method :put "PUT" :post "POST" :delete "DELETE") :max-content-length])
            (Math/pow 2 24) ;;16MB
            )]
       (when (> content-length max-content-length)
@@ -64,7 +64,7 @@
 
     (let [acceptable-content-types
           (set (get-in resource [:methods
-                                 (case method :put "PUT" :post "POST")
+                                 (case method :put "PUT" :post "POST" :delete "DELETE")
                                  :accept]))
           parsed-request-content-type ((:header-reader req) "content-type")
           request-content-type (str (:juxt.reap.rfc7231/type parsed-request-content-type)
