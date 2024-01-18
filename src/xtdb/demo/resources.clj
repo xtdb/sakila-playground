@@ -108,7 +108,7 @@
                                       (from :language [{:xt/id language_id} {:name language}]))
                               {:args {:film-id (Long/parseLong id)}
                                :key-fn :snake-case-kw})))]
-         film)}})))
+         (assoc film :id id))}})))
 
 (defn customers-table [_]
   (let [customers (fn [request]
