@@ -107,7 +107,7 @@
                      :xtql (q '(unify (from :film [{:xt/id $film-id} title description language_id release_year rating])
                                       (from :language [{:xt/id language_id} {:name language}]))
                               {:args {:film-id (Long/parseLong id)}
-                               :key-fn :snake_case})))]
+                               :key-fn :snake-case-kw})))]
          film)}})))
 
 (defn customers-table [_]
