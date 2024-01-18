@@ -1,20 +1,13 @@
 (ns xtdb.demo.yry.resources
   {:web-context "/yry/"}
   (:require
-   [xtdb.demo.web.resource :refer [map->Resource html-resource html-templated-resource]]
-   [xtdb.demo.web.var-based-locator :refer [var->path]]
-   [xtdb.demo.web.html :as html]
-   [xtdb.demo.db :refer [xt-node next-id]]
-   [ring.util.codec :refer [form-decode]]
-   [hiccup2.core :as h]
+   [xtdb.demo.web.resource :refer [html-templated-resource]]
+   [xtdb.demo.db :refer [xt-node]]
    [xtdb.api :as xt]
-   [xtdb.demo.web.request :refer [read-request-body]]
    [selmer.parser :as selmer])
   (:import [java.util Locale]
            [java.time.format TextStyle]
-           [java.time Month Year]))
-
-
+           [java.time Month]))
 
 (def rentals-per-year-month-query
   "WITH rentals_ym AS (
@@ -74,6 +67,12 @@
 
 (def default-query-params {:default-all-valid-time? true})
 
+(selmer/add-filter!
+ :query
+ (fn [query]
+   (let [result (xt/q (:xt-node xt-node) query default-query-params)]
+     result)))
+
 (defn rentals-per-year-month-data
   [{:keys [xt-node]}]
   (xt/q xt-node rentals-per-year-month-query default-query-params))
@@ -110,7 +109,8 @@
 (defn ^{:web-path "rental-per-category"}
   rental-per-category [_]
   (html-templated-resource
-   {:template "templates/rental-analytics/rentals-per-category.html"
+   {:template "templates/rental-analytics/rentals-per-category-with-query.html"}
+   #_{:template "templates/rental-analytics/rentals-per-category.html"
     :template-model
     {"rentals_category"
      (fn [request] (rentals-per-category-data xt-node))}}))
