@@ -27,11 +27,11 @@
     </thead>
     <tbody>
       {% for rental in current_rentals %}
-      <tr>
+      <tr class="rental-row">
 	<td>{{ rental.id }}</td>
 	<td>{{ rental.title }}</td>
 	<td>{{ rental.rental_date }}</td>
-	<td><button hx-delete="/rentals/{{ rental.id }}">Return</button></td>
+	<td><button hx-delete="/rentals/{{ rental.id }}" hx-target="closest .rental-row">Return</button></td>
       </tr>
       {% endfor %}
     </tbody>

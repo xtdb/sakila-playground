@@ -263,7 +263,8 @@
           (xt/submit-tx
            (:xt-node xt-node)
            [(xt/delete :rental rental-id)])
-          {})}}})))
+          ;; returning 204 causes HTMX to not swap, even if a hx-swap=delete is set.
+          {:ring.response/status 200})}}})))
 
 (defn analytics [_]
   (let [rows (xt/q (:xt-node xt-node)
