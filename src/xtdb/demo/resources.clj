@@ -184,7 +184,7 @@
                     (from :film [{:xt/id film_id} title]))
              (order-by {:val rental_date :dir :desc}))
            {:args {:customer_id customer-id}
-            :key-fn :snake_case})]
+            :key-fn :snake-case-kw})]
     (html-templated-resource
      {:template "templates/customer.html"
       :template-model
@@ -196,7 +196,7 @@
          '(unify (from :customer [{:xt/id $customer_id} {:xt/id id} first_name last_name email address_id])
                  (from :address [{:xt/id address_id} phone]))
          {:args {:customer_id customer-id}
-          :key-fn :snake_case}))
+          :key-fn :snake-case-kw}))
 
        "current_rentals"
        (q '(unify (from :rental {:bind [{:xt/id rental_id} {:xt/id id} {:customer-id $customer_id} inventory_id {:xt/valid-from rental_date}]})
@@ -204,7 +204,7 @@
                   (from :inventory [{:xt/id inventory_id} film_id])
                   (from :film [{:xt/id film_id} title]))
           {:args {:customer_id customer-id}
-           :key-fn :snake_case}
+           :key-fn :snake-case-kw}
           )
 
        "historic_rentals"
@@ -250,7 +250,7 @@
                           (from :inventory [{:xt/id inventory_id} film_id])
                           (from :film [{:xt/id film_id} {:title film}]))
                   {:args {:customer_id 560}
-                   :key-fn :snake_case})}}))
+                   :key-fn :snake-case-kw})}}))
 
 (defn ^{:uri-template "rentals/{id}"} rental [{:keys [path-params]}]
   (let [rental-id (Long/parseLong (get path-params "id"))]
