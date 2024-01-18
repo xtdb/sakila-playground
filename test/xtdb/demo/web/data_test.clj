@@ -80,6 +80,3 @@
           EXTRACT (MONTH FROM rental.xt$valid_from) as month
    FROM rental FOR ALL VALID_TIME")
          )))
-
-(xt/q (:xt-node xt-node)
-      )
