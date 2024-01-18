@@ -1,16 +1,17 @@
 (ns xtdb.demo.resources
   {:web-context "/"}
   (:require
-   [xtdb.demo.web.resource :refer [map->Resource html-resource html-templated-resource templated-responder]]
-   [xtdb.demo.web.locator :as locator]
-   [xtdb.demo.web.var-based-locator :refer [var->path]]
-   [xtdb.demo.web.html :as html]
-   [xtdb.demo.db :refer [xt-node next-id q]]
-   [ring.util.codec :refer [form-decode]]
-   [hiccup2.core :as h]
-   [xtdb.api :as xt]
-   [xtdb.demo.web.request :refer [read-request-body]]
-   [selmer.parser :as selmer]))
+    [xtdb.demo.web.resource :refer [map->Resource html-resource html-templated-resource templated-responder]]
+    [xtdb.demo.web.locator :as locator]
+    [xtdb.demo.web.var-based-locator :refer [var->path]]
+    [xtdb.demo.web.html :as html]
+    [xtdb.demo.db :refer [xt-node next-id q]]
+    [ring.util.codec :refer [form-decode]]
+    [hiccup2.core :as h]
+    [xtdb.api :as xt]
+    [xtdb.demo.web.request :refer [read-request-body]]
+    [selmer.parser :as selmer])
+  (:import (java.time LocalDate ZoneId)))
 
 (defn hello [_]
   (let [state (atom {:greeting "Hello"})]
@@ -257,14 +258,25 @@
     (map->Resource
      {:methods
       {"DELETE"
-       {:handler
-        (fn [_ req]
-          (println "Deleting" rental-id)
-          (xt/submit-tx
-           (:xt-node xt-node)
-           [(xt/delete :rental rental-id)])
-          ;; returning 204 causes HTMX to not swap, even if a hx-swap=delete is set.
-          {:ring.response/status 200})}}})))
+       {:accept ["application/x-www-form-urlencoded"]
+        :handler
+        (fn [resource req]
+          (let [{:strs [return-date]} (read-request-body resource req)
+                return-date (when (not-empty return-date)
+                              (try
+                                (LocalDate/parse return-date)
+                                (catch Exception _
+                                  (throw (ex-info "Invalid return date" {:ring.response/status 400})))))
+                return-instant (some-> return-date (.atStartOfDay (ZoneId/of "Europe/London")))]
+
+            (println "Deleting" rental-id)
+
+            (xt/submit-tx
+              (:xt-node xt-node)
+              [(cond-> (xt/delete :rental rental-id) return-instant (xt/starting-from return-instant))])
+
+            ;; returning 204 causes HTMX to not swap, even if a hx-swap=delete is set.
+            {:ring.response/status 200}))}}})))
 
 (defn analytics [_]
   (let [rows (xt/q (:xt-node xt-node)
