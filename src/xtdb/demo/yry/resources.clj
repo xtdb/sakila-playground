@@ -5,20 +5,7 @@
    [xtdb.demo.db :refer [xt-node]]
    [xtdb.api :as xt]
    [selmer.parser :as selmer]
-   [clojure.java.io :refer [resource]])
-  (:import [java.util Locale]
-           [java.time.format TextStyle]
-           [java.time Month]))
-
-(def rentals-per-year-month-query
-  "WITH rentals_ym AS (
-     SELECT EXTRACT (YEAR FROM rental.xt$valid_from) as year,
-            EXTRACT (MONTH FROM rental.xt$valid_from) as month
-     FROM rental)
-   SELECT A.year, A.month, count(*) as rented
-   FROM rentals_ym as A
-   GROUP BY A.year, A.month
-   ORDER BY A.year DESC, A.month DESC")
+   [clojure.java.io :refer [resource]]))
 
 (def rentals-per-category-query 
   "WITH rental_categories AS 
@@ -68,26 +55,19 @@
 
 (def default-query-params {:default-all-valid-time? true})
 
-(selmer/add-filter!
- :query
- (fn [query]
-   (let [result (xt/q (:xt-node xt-node) query default-query-params)]
-     result)))
+(defn sql-query
+  [query]
+  (let [result (xt/q (:xt-node xt-node) query default-query-params)]
+    result))
 
+
+(selmer/add-filter! :query sql-query)
 (selmer/add-filter! :resource-load (comp slurp resource))
 (selmer/add-filter! :url-load slurp)
-
-(defn rentals-per-year-month-data
-  [{:keys [xt-node]}]
-  (xt/q xt-node rentals-per-year-month-query default-query-params))
 
 (defn rentals-per-category-data
   [{:keys [xt-node]}]
   (xt/q xt-node rentals-per-category-query default-query-params))
-
-(defn month-num->month-name
-  [num]
-  (.getDisplayName (Month/of num) TextStyle/FULL Locale/UK))
 
 (defn top-users-data
   [{:keys [xt-node]} & {:keys [limit] :or {limit 10}}]
@@ -104,20 +84,12 @@
 (defn ^{:web-path "rental-per-month"}
   rental-per-month [_]
   (html-templated-resource
-   {:template "templates/rental-analytics/rentals-per-month.html"
-    :template-model
-    {"rentals_ym"
-     (fn [request]
-       (mapv #(update % :month month-num->month-name) (rentals-per-year-month-data xt-node)))}}))
+   {:template "templates/rental-analytics/rentals-per-month.html"}))
 
 (defn ^{:web-path "rental-per-category"}
   rental-per-category [_]
   (html-templated-resource
-   {:template "templates/rental-analytics/rentals-per-category-with-query.html"}
-   #_{:template "templates/rental-analytics/rentals-per-category.html"
-    :template-model
-    {"rentals_category"
-     (fn [request] (rentals-per-category-data xt-node))}}))
+   {:template "templates/rental-analytics/rentals-per-category-with-query.html"}))
 
 (defn ^{:web-path "top-renting-customers"}
   top-renting-customers [_]
@@ -156,5 +128,7 @@
   
   
   (clojure.java.io/resource "https://raw.githubusercontent.com/xtdb/sakila-playground/htmx/resources/sql/rentals-by-category.sql")
+  
+  (selmer/render "{{ x|date:\"mm\" }}" {:x (java.util.Date.)})
   
   )
