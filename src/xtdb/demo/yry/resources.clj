@@ -7,22 +7,6 @@
    [selmer.parser :as selmer]
    [clojure.java.io :refer [resource]]))
 
-(def top-users-raw-data
-  "WITH top_user AS 
-      (SELECT rental.customer_id, 
-              count(*) AS films_rented
-       FROM rental
-       GROUP BY rental.customer_id
-       ORDER BY films_rented DESC
-       LIMIT %s)
-   SELECT top_user.customer_id, 
-          top_user.films_rented,
-          customer.last_name,
-          customer.first_name,
-          customer.email            
-   FROM top_user
-   LEFT JOIN customer ON top_user.customer_id = customer.xt$id")
-
 (def top-perfomer-film-raw-data
   "WITH film_rented AS 
       (SELECT inventory.film_id, 
@@ -50,12 +34,6 @@
 (selmer/add-filter! :resource-load (comp slurp resource))
 (selmer/add-filter! :url-load slurp)
 
-(defn top-users-data
-  [{:keys [xt-node]} & {:keys [limit] :or {limit 10}}]
-  (xt/q xt-node
-        (format top-users-raw-data limit)
-        default-query-params))
-
 (defn top-performed-films-data
   [{:keys [xt-node]} & {:keys [limit] :or {limit 10}}]
   (xt/q xt-node
@@ -75,10 +53,7 @@
 (defn ^{:web-path "top-renting-customers"}
   top-renting-customers [_]
   (html-templated-resource
-   {:template "templates/rental-analytics/top-renting-customers.html"
-    :template-model
-    {"rentals_top_users"
-     (fn [request] (top-users-data xt-node))}}))
+   {:template "templates/rental-analytics/top-renting-customers.html"}))
 
 (defn ^{:web-path "top-rented-films"}
   top-rented-films [_]
