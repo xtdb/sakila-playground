@@ -4,7 +4,8 @@
    [xtdb.demo.web.resource :refer [html-templated-resource]]
    [xtdb.demo.db :refer [xt-node]]
    [xtdb.api :as xt]
-   [selmer.parser :as selmer])
+   [selmer.parser :as selmer]
+   [clojure.java.io :refer [resource]])
   (:import [java.util Locale]
            [java.time.format TextStyle]
            [java.time Month]))
@@ -73,6 +74,9 @@
    (let [result (xt/q (:xt-node xt-node) query default-query-params)]
      result)))
 
+(selmer/add-filter! :resource-load (comp slurp resource))
+(selmer/add-filter! :url-load slurp)
+
 (defn rentals-per-year-month-data
   [{:keys [xt-node]}]
   (xt/q xt-node rentals-per-year-month-query default-query-params))
@@ -134,3 +138,23 @@
 (defn ^{:web-path "rentals"} rentals-per-year-month [x]
   (html-templated-resource
    {:template "templates/rental_analytics.html"}))
+
+
+(comment 
+  
+  (selmer/add-filter! :slurp (comp slurp clojure.java.io/resource))
+  
+  (selmer/add-filter! :many-args (fn [& x] (tap> {:so-many-args x}) x))
+  
+  (selmer/render "{% with path=\"sql/rentals-by-category.sql\" %}  {{path|slurp|query}} {% endwith %}" {})
+  
+  (slurp (clojure.java.io/resource "sql/rentals-by-category.sql"))
+  
+  
+  (tap> :potap)
+  (selmer/render "{{ 5|many-args:1:2:3}}" {})
+  
+  
+  (clojure.java.io/resource "https://raw.githubusercontent.com/xtdb/sakila-playground/htmx/resources/sql/rentals-by-category.sql")
+  
+  )
