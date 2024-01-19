@@ -1,18 +1,4 @@
-{% with rentals_category="
-        WITH rental_categories AS 
-            (SELECT film_category.category_id as category_id,
-                    count(*) as films_rented 
-            FROM rental
-            LEFT JOIN inventory ON rental.inventory_id = inventory.xt$id
-            LEFT JOIN film_category ON inventory.film_id = film_category.film_id
-            GROUP BY film_category.category_id)
-        SELECT category.name AS category_name,
-            rental_categories.category_id, 
-            rental_categories.films_rented 
-        FROM rental_categories 
-        LEFT JOIN category ON rental_categories.category_id = category.xt$id
-        ORDER BY category.name ASC
-" %}
+{% with rentals_category= "https://raw.githubusercontent.com/xtdb/sakila-playground/htmx/resources/sql/rentals-by-category.sql" %}
 <table>
     <caption>Rentals per category</caption>
     <thead>
@@ -22,7 +8,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for rental in rentals_category|query %}
+        {% for rental in rentals_category|url-load|query %}
         <tr>
             <td>{{ rental.category_name }}</td>
             <td>{{ rental.films_rented }}</td>
