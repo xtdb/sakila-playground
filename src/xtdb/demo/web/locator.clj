@@ -1,24 +1,14 @@
 (ns xtdb.demo.web.locator
   (:require
-   [clojure.string :as str]))
+   [clojure.string :as str]
+   [xtdb.demo.web.uri-template :refer [uri-template-matches]]
+   [juxt.reap.decoders.rfc6570 :as uri-template]
+   ))
 
-(def to-regex
+(def compile-uri-template
   (memoize
    (fn [uri-template]
-     (re-pattern
-      (str/replace
-       uri-template
-       #"\{([^\}]+)\}"                  ; e.g. {id}
-       (fn replacer [[_ group]]
-         (format "(?<%s>[^/#\\?]+)" group)))))))
-
-(defn uri-template-matches [resource-path request-path]
-  (let [regex (to-regex resource-path)
-        groups (re-matches regex request-path)]
-    (when (first groups)
-      (zipmap
-       (map second (re-seq #"\{(\p{Alpha}+)\}" resource-path))
-       (next groups)))))
+     (uri-template/compile-uri-template uri-template))))
 
 (defn find-resource [resource-tree request-path]
   (first
@@ -30,9 +20,10 @@
                  web-path (when (= (str web-context web-path) request-path)
                             (resource-fn {}))
                  uri-template
-                 (when-let [params (uri-template-matches
-                                    (str web-context uri-template)
-                                    request-path)]
-                   (resource-fn {:path-params params})))]
+                 (when-let [{:keys [vars]}
+                            (uri-template/match-uri
+                             (compile-uri-template (str web-context uri-template))
+                             request-path)]
+                   (resource-fn {:path-params vars})))]
          :when resource]
      resource)))
