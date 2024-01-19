@@ -19,7 +19,12 @@
   resultset
   )
 
-(defn ^{:uri-template "rentals-by-category{.suffix}"} rentals-by-category [{:keys [path-params]}]
+(defn ^{:uri-template "rentals-by-category{.suffix}"}
+  rentals-by-category
+  ;; path-params is a misnomer. It's from OpenAPI but really it's the
+  ;; map of uri-template variables and their expansions. So expect
+  ;; path-params to be renamed at some point!
+  [{:keys [path-params]}]
   (let [suffix (get path-params "suffix")
         sql (slurp (io/file "resources/sql/rentals-by-category.sql"))
         resultset (xt/q (:xt-node xt-node) sql {:default-all-valid-time? true})]
@@ -28,16 +33,20 @@
       (case suffix
         "html"
         [^{"content-type" "text/html"}
-         (fn [req] {:ring.response/body
-                    (selmer/render-file
-                     "templates/mal/rentals-by-category.html"
-                     {"resultset" resultset})})]
+         (fn [req]
+           {:ring.response/body
+            (selmer/render-file
+             "templates/mal/rentals-by-category.html"
+             {"resultset" resultset})})]
 
         "sql"
         [^{"content-type" "application/sql"}
-         (fn [req] {:ring.response/body sql})]
+         (fn [req]
+           {:ring.response/body sql})]
 
-        [])})))
+        ;; Otherwise, we don't have a representation
+        []
+        )})))
 
 (defn rental-analytics [_]
   (html-templated-resource
