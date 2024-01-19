@@ -7,21 +7,6 @@
    [selmer.parser :as selmer]
    [clojure.java.io :refer [resource]]))
 
-(def top-perfomer-film-raw-data
-  "WITH film_rented AS 
-      (SELECT inventory.film_id, 
-             count(*) as count_rented
-      FROM rental
-      LEFT JOIN inventory ON rental.inventory_id = inventory.xt$id
-      GROUP BY inventory.film_id
-      ORDER BY count_rented DESC
-      LIMIT %s)
-   SELECT film_rented.film_id,
-           film.title, 
-           film_rented.count_rented 
-   FROM film_rented
-   LEFT JOIN film ON film_rented.film_id = film.xt$id")
-
 (def default-query-params {:default-all-valid-time? true})
 
 (defn sql-query
@@ -29,16 +14,9 @@
   (let [result (xt/q (:xt-node xt-node) query default-query-params)]
     result))
 
-
 (selmer/add-filter! :query sql-query)
 (selmer/add-filter! :resource-load (comp slurp resource))
 (selmer/add-filter! :url-load slurp)
-
-(defn top-performed-films-data
-  [{:keys [xt-node]} & {:keys [limit] :or {limit 10}}]
-  (xt/q xt-node
-        (format top-perfomer-film-raw-data limit)
-        default-query-params))
 
 (defn ^{:web-path "rental-per-month"}
   rental-per-month [_]
@@ -58,33 +36,8 @@
 (defn ^{:web-path "top-rented-films"}
   top-rented-films [_]
   (html-templated-resource
-   {:template "templates/rental-analytics/top-rented-films.html"
-    :template-model
-    {"rentals_top_films"
-     (fn [request] (top-performed-films-data xt-node))}}))
+   {:template "templates/rental-analytics/top-rented-films.html"}))
 
 (defn ^{:web-path "rentals"} rentals-per-year-month [x]
   (html-templated-resource
    {:template "templates/rental_analytics.html"}))
-
-
-(comment 
-  
-  (selmer/add-filter! :slurp (comp slurp clojure.java.io/resource))
-  
-  (selmer/add-filter! :many-args (fn [& x] (tap> {:so-many-args x}) x))
-  
-  (selmer/render "{% with path=\"sql/rentals-by-category.sql\" %}  {{path|slurp|query}} {% endwith %}" {})
-  
-  (slurp (clojure.java.io/resource "sql/rentals-by-category.sql"))
-  
-  
-  (tap> :potap)
-  (selmer/render "{{ 5|many-args:1:2:3}}" {})
-  
-  
-  (clojure.java.io/resource "https://raw.githubusercontent.com/xtdb/sakila-playground/htmx/resources/sql/rentals-by-category.sql")
-  
-  (selmer/render "{{ x|date:\"mm\" }}" {:x (java.util.Date.)})
-  
-  )
