@@ -17,13 +17,11 @@
 
         juxt/reap
         {:git/url "https://github.com/juxt/reap.git"
-         :sha "90651d8e48508dc146d2bd3af4de776288c5e5d3"}
+         :sha "6194f3187509816a2354842e2e610900aa43a769"}
 
         juxt/pick
         {:git/url "https://github.com/juxt/pick.git"
-         :sha "dabc8c456eacf4246a9b8b449fcf554c5bb2b79f"}
-
-        }
+         :sha "dabc8c456eacf4246a9b8b449fcf554c5bb2b79f"}}
 
  :aliases {:xtdb {:jvm-opts
                   ;; needed on JDK16+
@@ -35,9 +33,9 @@
 
            :dev {:extra-paths ["dev"]
                  :jvm-opts
-                  ;; needed on JDK16+
-                  ["--add-opens=java.base/java.nio=ALL-UNNAMED"
-                   "-Dio.netty.tryReflectionSetAccessible=true"]}
+                 ;; needed on JDK16+
+                 ["--add-opens=java.base/java.nio=ALL-UNNAMED"
+                  "-Dio.netty.tryReflectionSetAccessible=true"]}
 
            :test
            {:extra-paths ["test"]
@@ -46,9 +44,9 @@
              lambdaisland/kaocha-junit-xml {:mvn/version "0.0.76"}}
             ;;:jvm-opts ["--add-opens" "java.base/java.util.concurrent=ALL-UNNAMED"]
             :jvm-opts
-                  ;; needed on JDK16+
-                  ["--add-opens=java.base/java.nio=ALL-UNNAMED"
-                   "-Dio.netty.tryReflectionSetAccessible=true"]
+            ;; needed on JDK16+
+            ["--add-opens=java.base/java.nio=ALL-UNNAMED"
+             "-Dio.netty.tryReflectionSetAccessible=true"]
             }}
 
  :paths ["src" "resources"]}
