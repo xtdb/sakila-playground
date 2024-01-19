@@ -1,21 +1,20 @@
-{% block content %}
+{% with rentals_ym_path="sql/rentals-per-year-month.sql" 
+        rentals_ym=rentals_ym_path|resource-load|query %}
 <table>
     <caption>Rentals per month</caption>
     <thead>
         <tr>
-            <th>Year </th>
-            <th>Month</th>
+            <th>Period </th>
             <th>Rented</th>
         </tr>
     </thead>
     <tbody>
         {% for rental in rentals_ym %}
         <tr>
-            <td>{{ rental.year }}</td>
-            <td>{{ rental.month }}</td>
+            <td>{{ rental.ts|date:"YYYY/MM" }}</td>
             <td>{{ rental.rented }}</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
-{% endblock %}
+{% endwith %}

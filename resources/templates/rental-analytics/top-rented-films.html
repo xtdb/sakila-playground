@@ -1,3 +1,5 @@
+{% with rentals_top_films_path="sql/top-rented-films.sql" 
+        rentals_top_films=rentals_top_films_path|resource-load|query %}
 <table>
     <caption>Top rented films</caption>
     <thead>
@@ -15,3 +17,4 @@
         {% endfor %}
     </tbody>
 </table>
+{% endwith %}

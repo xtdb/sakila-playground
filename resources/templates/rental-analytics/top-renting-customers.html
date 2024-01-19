@@ -1,3 +1,5 @@
+{% with top_renting_customers_path="sql/top-renting-customers.sql" 
+        top_renting_customers=top_renting_customers_path|resource-load|query %}
 <table>
     <caption>Top renting customers</caption>
     <thead>
@@ -8,12 +10,13 @@
         </tr>
     </thead>
     <tbody>
-        {% for user in rentals_top_users %}
+        {% for customer in top_renting_customers %}
         <tr>
-            <td>{{ user.first_name }} {{ user.last_name }} </td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.films_rented }}</td>
+            <td>{{ customer.first_name }} {{ customer.last_name }} </td>
+            <td>{{ customer.email }}</td>
+            <td>{{ customer.films_rented }}</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+{% endwith %}
