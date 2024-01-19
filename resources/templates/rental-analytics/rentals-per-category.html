@@ -1,3 +1,5 @@
+{% with rentals_category_path="sql/rentals-by-category.sql" 
+        rentals_category=rentals_category_path|resource-load|query %}
 <table>
     <caption>Rentals per category</caption>
     <thead>
@@ -15,3 +17,4 @@
         {% endfor %}
     </tbody>
 </table>
+{% endwith %}

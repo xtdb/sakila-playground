@@ -7,21 +7,6 @@
    [selmer.parser :as selmer]
    [clojure.java.io :refer [resource]]))
 
-(def rentals-per-category-query 
-  "WITH rental_categories AS 
-        (SELECT film_category.category_id as category_id,
-                count(*) as films_rented 
-         FROM rental
-         LEFT JOIN inventory ON rental.inventory_id = inventory.xt$id
-         LEFT JOIN film_category ON inventory.film_id = film_category.film_id
-         GROUP BY film_category.category_id)
-    SELECT category.name AS category_name,
-           rental_categories.category_id, 
-           rental_categories.films_rented 
-    FROM rental_categories 
-    LEFT JOIN category ON rental_categories.category_id = category.xt$id
-    ORDER BY category.name ASC")
-
 (def top-users-raw-data
   "WITH top_user AS 
       (SELECT rental.customer_id, 
@@ -65,10 +50,6 @@
 (selmer/add-filter! :resource-load (comp slurp resource))
 (selmer/add-filter! :url-load slurp)
 
-(defn rentals-per-category-data
-  [{:keys [xt-node]}]
-  (xt/q xt-node rentals-per-category-query default-query-params))
-
 (defn top-users-data
   [{:keys [xt-node]} & {:keys [limit] :or {limit 10}}]
   (xt/q xt-node
@@ -89,7 +70,7 @@
 (defn ^{:web-path "rental-per-category"}
   rental-per-category [_]
   (html-templated-resource
-   {:template "templates/rental-analytics/rentals-per-category-with-query.html"}))
+   {:template "templates/rental-analytics/rentals-per-category.html"}))
 
 (defn ^{:web-path "top-renting-customers"}
   top-renting-customers [_]
