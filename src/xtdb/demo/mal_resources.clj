@@ -19,25 +19,25 @@
   resultset
   )
 
-(defn rentals-by-category [_]
-  (let [sql (slurp (io/file "resources/sql/rentals-by-category.sql"))
+(defn ^{:uri-template "rentals-by-category{.suffix}"} rentals-by-category [{:keys [path-params]}]
+  (let [suffix (get path-params "suffix")
+        sql (slurp (io/file "resources/sql/rentals-by-category.sql"))
         resultset (xt/q (:xt-node xt-node) sql {:default-all-valid-time? true})]
     (map->Resource
      {:representations
-      [
-       ^{"content-type" "text/plain"}
-       (fn [req] {:ring.response/body (pr-str resultset)})
+      (case suffix
+        "html"
+        [^{"content-type" "text/html"}
+         (fn [req] {:ring.response/body
+                    (selmer/render-file
+                     "templates/mal/rentals-by-category.html"
+                     {"resultset" resultset})})]
 
-       ^{"content-type" "text/html"}
-       (fn [req] {:ring.response/body
-                  (selmer/render-file
-                   "templates/mal/rentals-by-category.html"
-                   {"resultset" resultset})})
+        "sql"
+        [^{"content-type" "application/sql"}
+         (fn [req] {:ring.response/body sql})]
 
-       ^{"content-type" "application/sql"}
-       (fn [req] {:ring.response/body sql})]
-
-      })))
+        [])})))
 
 (defn rental-analytics [_]
   (html-templated-resource
