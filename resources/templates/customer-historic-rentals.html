@@ -1,0 +1,20 @@
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Film</th>
+      <th>Rental date</th>
+      <th>Return date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for rental in historic_rentals %}
+    <tr>
+      <td>{{ rental.id }}</td>
+      <td>{{ rental.title }}</td>
+      <td>{{ rental.rental_date }}</td>
+      <td>{{ rental.return_date }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

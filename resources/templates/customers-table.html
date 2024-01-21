@@ -14,7 +14,7 @@
       <td>{{ customer.last_name }}</td>
       <td>{{ customer.first_name }}</td>
       <td><a href="/customers/{{ customer.id }}/edit">Edit</a>
-        <a href="/customers/{{ customer.id }}">View</a>
+        <a href="/customers/{{ customer.id }}/">View</a>
 	<a hx-get="/customers/{{ customer.id }}/detail"
 	   hx-target="#customer-detail">Show</a></td>
     </tr>
