@@ -31,24 +31,34 @@
 	<td>{{ rental.title }}</td>
 	<td>{{ rental.rental_date }}</td>
 	<td>
-        <form>
+          <form>
             <input name="return-date" type="date" />
             <button hx-delete="/rentals/{{ rental.id }}"
                     hx-on--before-cleanup-element="htmx.trigger('#historic-rentals', 'refresh')"
                     hx-target="closest .rental-row">Return</button>
-        </form>
-    </td>
+          </form>
+	</td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
 </section>
 
-<section style="max-height: 30vh; overflow-y: auto" hx-get="historic-rentals.html" hx-target="#historic-rentals" hx-trigger="load">
+<section>
   <h2>Historic Rentals</h2>
-  <div id="historic-rentals">
+
+  <details>
+    <summary>SQL</summary>
+    <pre id="historic-rentals-sql" hx-get="historic-rentals.sql" hx-target="#historic-rentals-sql" hx-trigger="load">
+    </pre>
+  </details>
+
+  <div style="max-height: 30vh; overflow-y: auto">
+    <div id="historic-rentals" hx-get="historic-rentals.html" hx-target="#historic-rentals" hx-trigger="load">
+    </div>
   </div>
 </section>
+
 
 <section>
   <menu>
