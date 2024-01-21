@@ -177,27 +177,30 @@
 (defn ^{:uri-template "customers/{id}/historic-rentals{.suffix}"}
   customer-historic-rentals
   [{:keys [path-params]}]
-  (let [customer-id (Long/parseLong (get path-params "id"))
-        suffix (get path-params "suffix")]
+  (let [suffix (get path-params "suffix")
+        sql (slurp "resources/sql/customer-historic-rentals.sql")
+        customer-id (Long/parseLong (get path-params "id"))]
     (map->Resource
      {:representations
       (case suffix
         "sql" [^{"content-type" "text/plain"}
                (fn [req]
-                 {:ring.response/body
-                  (slurp "resources/sql/customer-historic-rentals.sql")})]
+                 {:ring.response/body sql})]
+        "html" [^{"content-type" "text/html"}
+                (templated-responder
+                 "templates/customer-historic-rentals.html"
+                 "text/html;charset=utf-8"
+                 {"historic_rentals" (q (slurp "resources/sql/customer-historic-rentals.sql")
+                                        {:args [customer-id]})})]
         [])})))
 
-(defn ^{:uri-template "customers/{id}"} customer [{:keys [path-params]}]
-  (let [customer-id (Long/parseLong (get path-params "id"))
-        historic-rentals
-        (q historic-rentals-sql {:args [customer-id]})]
+(defn ^{:uri-template "customers/{id}/"} customer [{:keys [path-params]}]
+  (let [customer-id (Long/parseLong (get path-params "id"))]
 
     (html-templated-resource
      {:template "templates/customer.html"
       :template-model
-      {"total_rentals" (count historic-rentals)
-       "customer"
+      {"customer"
        (first
         (xt/q
          (:xt-node xt-node)
@@ -213,8 +216,7 @@
                   (from :film [{:xt/id film_id} title]))
           {:args {:customer_id customer-id}})
 
-       "historic_rentals"
-       historic-rentals}})))
+       }})))
 
 (defn ^{:uri-template "customers/{id}/detail"} customer-detail [{:keys [path-params]}]
   (html-resource
