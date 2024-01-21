@@ -108,7 +108,7 @@
                      :xtql (q '(unify (from :film [{:xt/id $film-id} title description language_id release_year rating])
                                       (from :language [{:xt/id language_id} {:name language}]))
                               {:args {:film-id (Long/parseLong id)}
-                               :key-fn :snake-case-kw})))]
+                               })))]
          (assoc film :id id))}})))
 
 (defn customers-table [_]
@@ -173,19 +173,20 @@
             (cond-> template-model
               query-params (assoc "query_params" query-params)))))]})))
 
+(def historic-rentals-sql "SELECT rental.xt$id as id, film.title, rental.rental_id, rental.customer_id, rental.inventory_id, rental.xt$valid_from as rental_date, rental.xt$valid_to as return_date
+FROM rental FOR ALL VALID_TIME
+LEFT JOIN customer ON (rental.customer_id = rental.xt$id)
+LEFT JOIN inventory ON (rental.inventory_id = inventory.xt$id)
+LEFT JOIN film ON (inventory.film_id = film.xt$id)
+WHERE rental.customer_id = ?
+ORDER BY rental.xt$valid_from desc
+   ")
+
 (defn ^{:uri-template "customers/{id}"} customer [{:keys [path-params]}]
   (let [customer-id (Long/parseLong (get path-params "id"))
         historic-rentals
-        (q '(->
-             (unify (from :rental {:bind [{:xt/id rental_id} {:xt/id id} {:customer-id $customer_id} inventory_id
-                                          {:xt/valid-from rental_date} {:xt/valid-to return_date}]
-                                   :for-valid-time :all-time})
-                    (from :customer [{:xt/id $customer_id}])
-                    (from :inventory [{:xt/id inventory_id} film_id])
-                    (from :film [{:xt/id film_id} title]))
-             (order-by {:val rental_date :dir :desc}))
-           {:args {:customer_id customer-id}
-            :key-fn :snake-case-kw})]
+        (q historic-rentals-sql {:args [customer-id]})]
+
     (html-templated-resource
      {:template "templates/customer.html"
       :template-model
@@ -197,16 +198,14 @@
          '(unify (from :customer [{:xt/id $customer_id} {:xt/id id} first_name last_name email address_id])
                  (from :address [{:xt/id address_id} phone]))
          {:args {:customer_id customer-id}
-          :key-fn :snake-case-kw}))
+          }))
 
        "current_rentals"
        (q '(unify (from :rental {:bind [{:xt/id rental_id} {:xt/id id} {:customer-id $customer_id} inventory_id {:xt/valid-from rental_date}]})
                   (from :customer [{:xt/id $customer_id}])
                   (from :inventory [{:xt/id inventory_id} film_id])
                   (from :film [{:xt/id film_id} title]))
-          {:args {:customer_id customer-id}
-           :key-fn :snake-case-kw}
-          )
+          {:args {:customer_id customer-id}})
 
        "historic_rentals"
        historic-rentals}})))
@@ -232,8 +231,6 @@
 (comment
   (take 10 (xt/q (:xt-node xt-node) "select address.xt$id as id, address.* from address")))
 
-#_(xt/q (:xt-node xt-node) "select customer.xt$id as id, customer.* from customer")
-
 (defn languages [_]
   (html-templated-resource
    {:template "templates/languages.html"
@@ -251,7 +248,7 @@
                           (from :inventory [{:xt/id inventory_id} film_id])
                           (from :film [{:xt/id film_id} {:title film}]))
                   {:args {:customer_id 560}
-                   :key-fn :snake-case-kw})}}))
+                   })}}))
 
 (defn ^{:uri-template "rentals/{id}"} rental [{:keys [path-params]}]
   (let [rental-id (Long/parseLong (get path-params "id"))]
