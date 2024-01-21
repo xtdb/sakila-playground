@@ -190,8 +190,9 @@
                 (templated-responder
                  "templates/customer-historic-rentals.html"
                  "text/html;charset=utf-8"
-                 {"historic_rentals" (q (slurp "resources/sql/customer-historic-rentals.sql")
-                                        {:args [customer-id]})})]
+                 {"rows"
+                  (q (slurp "resources/sql/customer-historic-rentals.sql")
+                     {:args [customer-id]})})]
         [])})))
 
 (defn ^{:uri-template "customers/{id}/"} customer [{:keys [path-params]}]
