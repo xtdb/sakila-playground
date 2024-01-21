@@ -1,16 +1,17 @@
 (ns xtdb.demo.resources
   {:web-context "/"}
   (:require
-    [xtdb.demo.web.resource :refer [map->Resource html-resource html-templated-resource templated-responder]]
-    [xtdb.demo.web.locator :as locator]
-    [xtdb.demo.web.var-based-locator :refer [var->path]]
-    [xtdb.demo.web.html :as html]
-    [xtdb.demo.db :refer [xt-node next-id q]]
-    [ring.util.codec :refer [form-decode]]
-    [hiccup2.core :as h]
-    [xtdb.api :as xt]
-    [xtdb.demo.web.request :refer [read-request-body]]
-    [selmer.parser :as selmer])
+   [xtdb.demo.web.resource :refer [map->Resource html-resource html-templated-resource templated-responder]]
+   [xtdb.demo.web.locator :as locator]
+   [xtdb.demo.web.var-based-locator :refer [var->path]]
+   [xtdb.demo.web.html :as html]
+   [xtdb.demo.db :refer [xt-node next-id q]]
+   [ring.util.codec :refer [form-decode]]
+   [hiccup2.core :as h]
+   [xtdb.api :as xt]
+   [xtdb.demo.web.request :refer [read-request-body]]
+   [selmer.parser :as selmer]
+   [clojure.java.io :as io])
   (:import (java.time LocalDate ZoneId)))
 
 (defn hello [_]
@@ -173,14 +174,19 @@
             (cond-> template-model
               query-params (assoc "query_params" query-params)))))]})))
 
-(def historic-rentals-sql "SELECT rental.xt$id as id, film.title, rental.rental_id, rental.customer_id, rental.inventory_id, rental.xt$valid_from as rental_date, rental.xt$valid_to as return_date
-FROM rental FOR ALL VALID_TIME
-LEFT JOIN customer ON (rental.customer_id = rental.xt$id)
-LEFT JOIN inventory ON (rental.inventory_id = inventory.xt$id)
-LEFT JOIN film ON (inventory.film_id = film.xt$id)
-WHERE rental.customer_id = ?
-ORDER BY rental.xt$valid_from desc
-   ")
+(defn ^{:uri-template "customers/{id}/historic-rentals{.suffix}"}
+  customer-historic-rentals
+  [{:keys [path-params]}]
+  (let [customer-id (Long/parseLong (get path-params "id"))
+        suffix (get path-params "suffix")]
+    (map->Resource
+     {:representations
+      (case suffix
+        "sql" [^{"content-type" "text/plain"}
+               (fn [req]
+                 {:ring.response/body
+                  (slurp "resources/sql/customer-historic-rentals.sql")})]
+        [])})))
 
 (defn ^{:uri-template "customers/{id}"} customer [{:keys [path-params]}]
   (let [customer-id (Long/parseLong (get path-params "id"))
