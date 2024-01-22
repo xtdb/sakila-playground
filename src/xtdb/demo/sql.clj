@@ -48,7 +48,8 @@
    [:script {:src "https://cdn.jsdelivr.net/npm/vega-lite@5.16.3"}]
    [:script {:src "https://cdn.jsdelivr.net/npm/vega-embed@6.22.2"}]
    [:script {:src "/static/codemirror.js"}]
-   [:script {:src "/static/sql.js"}]])
+   [:script {:src "/static/sql.js"}]
+   [:script {:src "/static/sakila.js"}]])
 
 (defn body [content]
   [:body {:style "margin: 6pt 6pt"}
@@ -93,11 +94,10 @@
               [:li [:a {:href (query-url (.getName file))} (.getName file)]])]]))]}))
 
 (defn sql-editor [{:keys [sql-string]}]
-  (let [id (str (random-uuid))
-        codemirror-opts {:mode "sql"}]
+  (let [id (str (random-uuid))]
     [:div
-     [:textarea {:id id} sql-string]
-     [:script (h/raw (format "CodeMirror.fromTextArea(document.getElementById('%s'), %s);" id (json/write-str codemirror-opts)))]]))
+     [:textarea {:id id, :name "sql"} sql-string]
+     [:script (h/raw (format "Sakila.initialiseSqlEditor(document.getElementById('%s'), document.getElementById('query-form'));" id))]]))
 
 (defn sort-cols [result-set-cols col-order]
   (let [index-of (into {} (map-indexed (fn [i col] [col i]) col-order))]
@@ -174,6 +174,14 @@
           (param-label param t)
           (param-input param t (satisfied-params param))])])))
 
+(defn specialise-query [query req]
+  (let [{user-sql "sql"} (some-> req :ring.request/query form-decode)
+        user-sql (if (sequential? user-sql) (first user-sql) user-sql)]
+    (if user-sql
+      ;; xt does not like carriage returns for some reason
+      (assoc query :sql-string (str/replace user-sql "\r" ""))
+      query)))
+
 (defn ^{:uri-template "queries/{file}"} query-file-resource [{:keys [path-params]}]
   (let [{:strs [file]} path-params
         {:keys [file-name, title, desc] :as query} (parse-sql-file :query (io/file "sql" "queries" file))]
@@ -181,15 +189,22 @@
       {:representations
        [^{"content-type" "text/html;charset=utf-8"}
         (fn [req]
-          (page-response
-            (str "queries/" file-name)
-            [:div
-             [:h1 [:a {:href "/sql/queries"} "queries"] "/" file-name]
-             (when title [:h2 title])
-             (when desc [:pre desc])
-             (sql-editor query)
-             (parameter-view query req)
-             (evaluate-query query (satisfy-query-args query req))]))]})))
+          (let [query (specialise-query query req)]
+            (page-response
+              (str "queries/" file-name)
+              [:div
+               [:h1 [:a {:href "/sql/queries"} "queries"] "/" file-name]
+               (when title [:h2 title])
+               (when desc [:pre desc])
+               [:form {:id "query-form",
+                       :hx-trigger "submit"
+                       :hx-get "",
+                       :hx-target "#query-results",
+                       :hx-select "#query-results"}
+                (sql-editor query)
+                (parameter-view query req)
+                [:div {:id "query-results"}
+                 (evaluate-query query (satisfy-query-args query req))]]])))]})))
 
 (comment
 

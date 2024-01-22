@@ -31,6 +31,12 @@
     (io/file "resources/sql.js")
     "text/javascript"))
 
+
+(defn ^{:web-path "sakila.js"} sakila-js [_]
+  (file-resource
+    (io/file "resources/sakila.js")
+    "text/javascript"))
+
 (defn ^{:web-path "htmx.org.js"} htmx-js [_]
   (file-resource
    (io/file "external/htmx.org-1.9.10.js")
