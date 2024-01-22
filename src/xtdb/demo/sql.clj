@@ -8,7 +8,8 @@
             [xtdb.demo.web.resource :refer [map->Resource]]
             [xtdb.demo.db :refer [q]]
             [ring.util.codec :refer [form-encode form-decode]])
-  (:import (java.io File)))
+  (:import (java.io File PushbackReader)
+           (java.time Instant)))
 
 (defn parse-comment-line [comment-line]
   (let [[kw arg] (str/split (subs comment-line 3) #"\s+" 2)]
@@ -17,7 +18,7 @@
 (defn parse-sql-file [sql-type file]
   (let [file-name (.getName (io/file file))
         sql-lines (str/split-lines (slurp file))
-        comment-line? #(str/starts-with? % "-- ")
+        comment-line? #(str/starts-with? % "-- :")
         comment-lines (filter comment-line? sql-lines)
         comment-opts (into {} (map parse-comment-line comment-lines))
         sql-string (str/join "\n" (remove comment-line? sql-lines))]
@@ -54,10 +55,10 @@
    content
    [:footer {:style "text-align: left; padding: 0; margin: 0"}
     [:div {:style "font-size: 80%; color: #ccc"}
-     [:p "XTDBv2 Demonstrator. Copyright © 2024, JUXT LTD."
-      [:a {:href "/"} "Home"] "|"
+     [:p "XTDBv2 Demonstrator. Copyright © 2024, JUXT LTD. "
+      [:a {:href "/"} "Home"] " | "
       [:a {:href "https://github.com/xtdb/sakila-playground"} "GitHub"]
-      [:br] "Uses the" [:a {:href "https://www.jooq.org/sakila"} "Sakila"] "data set. Copyright © 2009 - 2024 by Data Geekery™ GmbH. All rights reserved."]
+      [:br] "Uses the " [:a {:href "https://www.jooq.org/sakila"} "Sakila"] " data set. Copyright © 2009 - 2024 by Data Geekery™ GmbH. All rights reserved."]
      [:div {:style "margin-top: 24pt"}
       [:img {:style "width: 60px" :src "/static/juxt.svg"}]]]]])
 
@@ -111,6 +112,11 @@
     )
   )
 
+(defn get-ref [explicit-refs col]
+  (or (get explicit-refs col)
+      (when (str/ends-with? (name col) "-id")
+        (str (str/join "-" (butlast (str/split (name col) #"-"))) ".sql"))))
+
 (defn evaluate-query [{:keys [file-name, sql-string refs col-order]} args]
   (try
     (let [rs (q sql-string {:args args})
@@ -126,7 +132,7 @@
             [:tr
              (for [col cols
                    :let [value (col row)]]
-               (if-some [query-file (get refs col)]
+               (if-some [query-file (get-ref refs col)]
                  [:td [:a {:href (query-url query-file {:id value})} value]]
                  [:td value]))])]]))
     (catch Throwable t
@@ -189,5 +195,91 @@
 
   (clojure.java.browse/browse-url "http://localhost:3000/sql/queries")
   (clojure.java.browse/browse-url "http://localhost:3000/sql/queries/customers.sql")
+
+  )
+
+(defn infer-schema [edn-file]
+  (with-open [in (io/input-stream edn-file)
+              rdr (io/reader in)
+              pb-rdr (PushbackReader. rdr)]
+    (let [m (edn/read {:readers {'time/instant #(Instant/parse %)}} pb-rdr)]
+      (into {}
+            (for [[k v] m
+                  :when (not= :xt/valid-from k)]
+              [k {:example v
+                  :ref (when (str/ends-with? (name k) "_id") (str/join "_" (butlast (str/split (name k) #"_"))))
+                  :data-type (cond
+                               (boolean? v) :bit
+                               (int? v) :long
+                               (double? v) :double
+                               (inst? v) :datetime
+                               (string? v) :varchar
+                               (set? v) :set
+                               :else :any)}])))))
+
+(comment
+  (infer-schema (io/resource "sakila/actor.edn"))
+  )
+
+;; could use this data for auto-complete
+(def schema
+  (->> (for [seed-file ["sakila/payment.edn"
+                        "sakila/country.edn"
+                        "sakila/city.edn"
+                        "sakila/address.edn"
+                        "sakila/inventory.edn"
+                        "sakila/store.edn"
+                        "sakila/rental.edn"
+                        "sakila/category.edn"
+                        "sakila/staff.edn"
+                        "sakila/film_actor.edn"
+                        "sakila/language.edn"
+                        "sakila/film.edn"
+                        "sakila/film_category.edn"
+                        "sakila/customer.edn"
+                        "sakila/actor.edn"]
+             :let [[_ table-name] (re-find #"sakila/(.+)\.edn" seed-file)
+                   table-schema (infer-schema (io/resource seed-file))]]
+         [table-name table-schema])
+       (into {})))
+
+(defn ^{:web-path "schema"} schema-resource [_]
+  (map->Resource
+    {:representations
+     [^{"content-type" "text/html;charset=utf-8"}
+      (fn [req]
+        (page-response
+          "Schema"
+          [:div
+           [:h1 "Schema"]
+           (for [[table-name table-schema] (sort-by key schema)]
+             [:div {:style "display:inline-block; margin:10px; padding:10px; border:solid 2px; border-radius:5px"}
+              [:h2 table-name]
+              [:table {:style "table-layout:auto;"}
+               [:thead [:th "column"] [:th "data type"] [:th "example"]]
+               [:tbody
+                (for [[col {:keys [data-type, ref, example]}] (sort-by key table-schema)]
+                  [:tr
+                   [:td (str col)]
+                   [:td
+                    (str/upper-case (name data-type))
+                    (when ref (format " REF(%s, xt$id)" ref))]
+                   [:td example]])]]])]))]}))
+
+(comment
+
+  (clojure.java.browse/browse-url "http://localhost:3000/sql/schema")
+  )
+
+(comment
+  ;; generate table queries
+  (doseq [table (keys schema)
+          :let [solo-content
+                ["-- :params {:id :long}"
+                 "-- :param-order [:id]"
+                 "SELECT *"
+                 (format "FROM %s" table)
+                 (format "WHERE %s.xt$id = ?" table)]]]
+    (spit (format "sql/queries/%s.sql" table) (str/join "\n" solo-content)))
 
   )

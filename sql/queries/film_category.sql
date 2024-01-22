@@ -1,5 +1,5 @@
 -- :params {:id :long}
 -- :param-order [:id]
 SELECT *
-FROM address
-WHERE address.xt$id = ?
+FROM film_category
+WHERE film_category.xt$id = ?
