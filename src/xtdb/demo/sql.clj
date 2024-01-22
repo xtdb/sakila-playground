@@ -279,7 +279,13 @@
                  "-- :param-order [:id]"
                  "SELECT *"
                  (format "FROM %s" table)
-                 (format "WHERE %s.xt$id = ?" table)]]]
-    (spit (format "sql/queries/%s.sql" table) (str/join "\n" solo-content)))
+                 (format "WHERE %s.xt$id = ?" table)]
+                list-content
+                ["SELECT *"
+                 (format "FROM %s" table)
+                 (format "ORDER BY %s.xt$id" table)
+                 "LIMIT 100"]]]
+    (spit (format "sql/queries/%s.sql" table) (str/join "\n" solo-content))
+    (spit (format "sql/queries/%s_list.sql" table) (str/join "\n" list-content)))
 
   )
