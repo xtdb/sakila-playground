@@ -162,7 +162,7 @@
   [:label {:style "display: inline-block; vertical-align:middle; margin-right:10px" :for (name param)} (name param)])
 
 (defn param-input [param t v]
-  [:input {:style "display: inline-block; vertical-align:middle; border-radius:5px; padding:8px; border: 1px solid #ccc;" :name (name param), :value v}])
+  [:input {:style "display: inline-block; vertical-align:middle; border-radius:5px; padding:8px; border: 1px solid #ccc;" :id (name param), :name (name param), :value v}])
 
 (defn parameter-view [{:keys [params] :as query} req]
   (when (seq params)
