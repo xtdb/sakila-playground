@@ -89,7 +89,7 @@
           "queries"
           [:div
            [:ul
-            (for [file (file-seq (io/file "sql/queries"))
+            (for [file (sort-by #(.getName %) (file-seq (io/file "sql/queries")))
                   :when (and (.isFile file) (str/ends-with? (str file) ".sql"))]
               [:li [:a {:href (query-url (.getName file))} (.getName file)]])]]))]}))
 
