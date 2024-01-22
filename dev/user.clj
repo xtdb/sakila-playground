@@ -5,6 +5,7 @@
    [xtdb.demo.web.var-based-locator :refer [resource-tree]]
    xtdb.demo.db
    xtdb.demo.resources
+   xtdb.demo.sql
    xtdb.demo.jdt-resources
    xtdb.demo.yry.resources
    xtdb.demo.static-resources))

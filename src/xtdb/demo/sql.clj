@@ -1,14 +1,14 @@
 (ns xtdb.demo.sql
   {:web-context "/sql/"}
-  (:require [clojure.data.json :as json]
-            [clojure.edn :as edn]
+  (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [hiccup2.core :as h]
             [xtdb.demo.web.resource :refer [map->Resource]]
             [xtdb.demo.db :refer [q]]
-            [ring.util.codec :refer [form-encode form-decode]])
-  (:import (java.io File PushbackReader)
+            [ring.util.codec :refer [form-encode form-decode]]
+            [clojure.repl])
+  (:import (java.io PushbackReader)
            (java.time Instant)))
 
 (defn parse-comment-line [comment-line]
@@ -144,11 +144,15 @@
   (let [{:keys [params, defaults]} query
         {query-params :ring.request/query} req
         query-params (some-> query-params form-decode)]
-    (->> (for [[param t] params]
+    (->> (for [[param t] params
+               :let [query-param (get query-params (name param))]]
            [param (case t
-                    :str (get query-params (name param))
+                    :str query-param
+                    :inst (try
+                            (Instant/parse query-param)
+                            (catch Throwable _ nil))
                     :long (try
-                            (parse-long (get query-params (name param)))
+                            (parse-long query-param)
                             (catch Throwable _ nil)))])
          (into {})
          (merge-with (fn [a b] (if (nil? b) a b)) defaults))))
