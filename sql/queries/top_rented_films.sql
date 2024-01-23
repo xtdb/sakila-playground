@@ -1,14 +1,12 @@
+-- :desc The most rented films across time
 -- :category "Custom"
-WITH film_rented AS
-    (SELECT inventory.film_id, 
-            count(*) as count_rented
-    FROM rental
-    LEFT JOIN inventory ON rental.inventory_id = inventory.xt$id
-    GROUP BY inventory.film_id
-    ORDER BY count_rented DESC
-    LIMIT 10)
-SELECT film_rented.film_id,
-        film.title, 
-        film_rented.count_rented 
-FROM film_rented
-LEFT JOIN film ON film_rented.film_id = film.xt$id
+SELECT
+  film.xt$id film_id,
+  film.title,
+  COUNT(*) rental_count
+FROM rental FOR ALL VALID_TIME
+LEFT JOIN inventory ON rental.inventory_id = inventory.xt$id
+JOIN film ON film.xt$id = inventory.film_id
+GROUP BY film.xt$id, film.title
+ORDER BY rental_count DESC
+LIMIT 10
