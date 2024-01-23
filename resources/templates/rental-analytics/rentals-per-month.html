@@ -1,5 +1,9 @@
 {% with rentals_ym_path="sql/rentals-per-year-month.sql" 
-        rentals_ym=rentals_ym_path|resource-load|query %}
+        rentals_ym=rentals_ym_path|resource-load|query 
+        query_error=rentals_ym.error %}
+{% if query_error %}
+{% include "templates/rental-analytics/query-error.html" %}
+{% else %}
 <table>
     <caption>Rentals per month</caption>
     <thead>
@@ -9,7 +13,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for rental in rentals_ym %}
+        {% for rental in rentals_ym.result %}
         <tr>
             <td>{{ rental.ts|date:"YYYY/MM" }}</td>
             <td>{{ rental.rented }}</td>
@@ -17,4 +21,5 @@
         {% endfor %}
     </tbody>
 </table>
+{% endif %}
 {% endwith %}
