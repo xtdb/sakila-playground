@@ -1,3 +1,4 @@
+-- :category "Custom"
 -- :params {:id :long}
 -- :defaults {:id 42}
 -- :param-order [:id]

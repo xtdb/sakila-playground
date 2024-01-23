@@ -1,3 +1,4 @@
+-- :category "Custom"
 WITH rental_categories AS
         (SELECT film_category.category_id as category_id,
                 count(*) as films_rented
