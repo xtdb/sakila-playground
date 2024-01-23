@@ -1,3 +1,4 @@
+-- :category "Custom"
 WITH rentals_ym AS (
     SELECT EXTRACT (YEAR FROM rental.xt$valid_from) as year,
            EXTRACT (MONTH FROM rental.xt$valid_from) as month,

@@ -1,3 +1,4 @@
+-- :category "Custom"
 SELECT top_user.customer_id,
        top_user.films_rented,
        customer.last_name,

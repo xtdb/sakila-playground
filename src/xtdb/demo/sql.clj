@@ -18,7 +18,7 @@
   (let [[kw arg] (str/split (subs comment-line 3) #"\s+" 2)]
     [(edn/read-string kw) (edn/read-string arg)]))
 
-(defn parse-sql-file [sql-type file]
+(defn parse-sql-file [file]
   (let [file-name (.getName (io/file file))
         sql-lines (str/split-lines (slurp file))
         comment-line? #(str/starts-with? % "-- :")
@@ -27,14 +27,13 @@
         sql-string (str/join "\n" (remove comment-line? sql-lines))]
     (merge
       comment-opts
-      {:sql-type sql-type
-       :file-name file-name
+      {:file-name file-name
        :sql-string (str/trim sql-string)})))
 
 (comment
 
-  (parse-sql-file :query "sql/queries/customers.sql")
-  (parse-sql-file :query "sql/queries/customer-rentals.sql")
+  (parse-sql-file "sql/queries/customers.sql")
+  (parse-sql-file "sql/queries/customer-rentals.sql")
 
   )
 
@@ -91,10 +90,20 @@
         (page-response
           "queries"
           [:div
-           [:ul
-            (for [file (sort-by #(.getName %) (file-seq (io/file "sql/queries")))
-                  :when (and (.isFile file) (str/ends-with? (str file) ".sql"))]
-              [:li [:a {:href (query-url (.getName file))} (.getName file)]])]]))]}))
+           [:table
+            (for [[category queries]
+                  (->> (file-seq (io/file "sql/queries"))
+                       (filter (fn [file] (and (.isFile file) (str/ends-with? (str file) ".sql"))))
+                       (map parse-sql-file)
+                       (group-by (some-fn :category (constantly "Other")))
+                       (sort-by key))]
+              (list
+                [:tr [:td {:cols 2} [:strong category]]]
+                (for [{:keys [file-name, desc]} (sort-by :file-name queries)]
+                  [:tr
+                   [:th [:a {:href (query-url file-name)} file-name]]
+                   [:td (when desc
+                          [:small " | " desc])]])))]]))]}))
 
 (defn sql-editor [{:keys [sql-string]}]
   (let [id (str (random-uuid))]
@@ -196,7 +205,7 @@
 
 (defn ^{:uri-template "queries/{file}"} query-file-resource [{:keys [path-params]}]
   (let [{:strs [file]} path-params
-        {:keys [file-name, title, desc] :as query} (parse-sql-file :query (io/file "sql" "queries" file))]
+        {:keys [file-name, title, desc] :as query} (parse-sql-file (io/file "sql" "queries" file))]
     (map->Resource
       {:representations
        [^{"content-type" "text/html;charset=utf-8"}
@@ -304,11 +313,13 @@
           :let [solo-content
                 ["-- :params {:id :long}"
                  "-- :param-order [:id]"
+                 (format "-- :desc \"Select a %s by id\"" table)
                  "SELECT *"
                  (format "FROM %s" table)
                  (format "WHERE %s.xt$id = ?" table)]
                 list-content
-                ["SELECT *"
+                [(format "-- :desc \"List all %s rows\"" table)
+                 "SELECT *"
                  (format "FROM %s" table)
                  (format "ORDER BY %s.xt$id" table)
                  "LIMIT 100"]]]

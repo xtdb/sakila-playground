@@ -1,3 +1,7 @@
+-- :category "Custom"
+-- :params {:id :long}
+-- :defaults {:id 42}
+-- :param-order [:id]
 SELECT rental.xt$id as id,
        film.title,
        rental.rental_id, rental.customer_id, rental.inventory_id,
