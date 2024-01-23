@@ -1,5 +1,9 @@
 {% with rentals_category_path="sql/rentals-by-category.sql" 
-        rentals_category=rentals_category_path|resource-load|query %}
+        rentals_category=rentals_category_path|resource-load|query 
+        query_error=rentals_category.error %}
+{% if query_error %}
+{% include "templates/rental-analytics/query-error.html" %}
+{% else %}
 <table>
     <caption>Rentals per category</caption>
     <thead>
@@ -9,7 +13,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for rental in rentals_category %}
+        {% for rental in rentals_category.result %}
         <tr>
             <td>{{ rental.category_name }}</td>
             <td>{{ rental.films_rented }}</td>
@@ -17,4 +21,5 @@
         {% endfor %}
     </tbody>
 </table>
+{% endif %}
 {% endwith %}

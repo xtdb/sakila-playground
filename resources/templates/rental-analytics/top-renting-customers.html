@@ -1,5 +1,9 @@
 {% with top_renting_customers_path="sql/top-renting-customers.sql" 
-        top_renting_customers=top_renting_customers_path|resource-load|query %}
+        top_renting_customers=top_renting_customers_path|resource-load|query
+        query_error=top_renting_customers.error %}
+{% if query_error %}
+{% include "templates/rental-analytics/query-error.html" %}
+{% else %}        
 <table>
     <caption>Top renting customers</caption>
     <thead>
@@ -10,7 +14,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for customer in top_renting_customers %}
+        {% for customer in top_renting_customers.result %}
         <tr>
             <td>{{ customer.first_name }} {{ customer.last_name }} </td>
             <td>{{ customer.email }}</td>
@@ -19,4 +23,5 @@
         {% endfor %}
     </tbody>
 </table>
+{% endif %}
 {% endwith %}
