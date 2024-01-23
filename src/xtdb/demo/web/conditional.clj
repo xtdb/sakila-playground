@@ -118,7 +118,8 @@
               reap/http-date
               :juxt.reap.rfc7231/date)]
 
-      (when-not (.isAfter
+      ;; todo fix this, it throws all the time and is not handled
+      #_(when-not (.isAfter
                  (.toInstant last-modified)
                  (.toInstant if-modified-since-date))
         (throw

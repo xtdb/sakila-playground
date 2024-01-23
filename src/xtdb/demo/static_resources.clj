@@ -16,6 +16,27 @@
    (io/file "resources/screen.css")
    "text/css"))
 
+(defn ^{:web-path "codemirror.css"} codemirror-css [_]
+  (file-resource
+    (io/file "resources/codemirror.css")
+    "text/css"))
+
+(defn ^{:web-path "codemirror.js"} codemirror-js [_]
+  (file-resource
+    (io/file "resources/codemirror.js")
+    "text/javascript"))
+
+(defn ^{:web-path "sql.js"} sql-js [_]
+  (file-resource
+    (io/file "resources/sql.js")
+    "text/javascript"))
+
+
+(defn ^{:web-path "sakila.js"} sakila-js [_]
+  (file-resource
+    (io/file "resources/sakila.js")
+    "text/javascript"))
+
 (defn ^{:web-path "htmx.org.js"} htmx-js [_]
   (file-resource
    (io/file "external/htmx.org-1.9.10.js")
