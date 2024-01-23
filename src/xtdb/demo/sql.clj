@@ -5,11 +5,14 @@
             [clojure.string :as str]
             [hiccup2.core :as h]
             [xtdb.demo.web.resource :refer [map->Resource]]
-            [xtdb.demo.db :refer [q]]
+            [xtdb.demo.db :as db]
             [ring.util.codec :refer [form-encode form-decode]]
             [clojure.repl])
   (:import (java.io PushbackReader)
            (java.time Instant)))
+
+(defn q [q & [opts]]
+  (db/q q (assoc opts :key-fn :snake-case-kw)))
 
 (defn parse-comment-line [comment-line]
   (let [[kw arg] (str/split (subs comment-line 3) #"\s+" 2)]
@@ -114,8 +117,13 @@
 
 (defn get-ref [explicit-refs col]
   (or (get explicit-refs col)
-      (when (str/ends-with? (name col) "-id")
-        (str (str/join "-" (butlast (str/split (name col) #"-"))) ".sql"))))
+      (when (str/ends-with? (name col) "_id")
+        (str (str/join "_" (butlast (str/split (name col) #"_"))) ".sql"))))
+
+(defn hiccup-value [col value]
+  (if (vector? value)
+    (str "[" (str/join "," value) "]")
+    (str value)))
 
 (defn evaluate-query [{:keys [file-name, sql-string refs col-order]} args]
   (try
@@ -134,7 +142,7 @@
                    :let [value (col row)]]
                (if-some [query-file (get-ref refs col)]
                  [:td [:a {:href (query-url query-file {:id value})} value]]
-                 [:td value]))])]]))
+                 [:td (hiccup-value col value)]))])]]))
     (catch Throwable t
       [:div
        [:h2 "Exception!"]
