@@ -11,8 +11,10 @@
 
 (defn sql-query
   [query]
-  (let [result (xt/q (:xt-node xt-node) query default-query-params)]
-    result))
+  (try
+    {:result (xt/q (:xt-node xt-node) query default-query-params)}
+    (catch Exception e
+      {:error (ex-message e)})))
 
 (selmer/add-filter! :query sql-query)
 (selmer/add-filter! :resource-load (comp slurp resource))
