@@ -1,3 +1,4 @@
+-- :category "Custom"
 -- :desc "List the films an actor has been in"
 -- :col-order [:last_name, :first_name, :films]
 SELECT

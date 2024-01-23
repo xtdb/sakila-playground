@@ -1,4 +1,5 @@
-WITH film_rented AS 
+-- :category "Custom"
+WITH film_rented AS
     (SELECT inventory.film_id, 
             count(*) as count_rented
     FROM rental

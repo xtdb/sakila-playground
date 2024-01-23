@@ -1,4 +1,5 @@
--- :desc "Shows overdue films, using the xt$valid_from as the rental date"
+-- :category "Custom"
+-- :desc "Shows a contact list for overdue rentals"
 SELECT
   customer.xt$id customer_id,
   customer.first_name,
