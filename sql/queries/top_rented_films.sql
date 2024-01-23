@@ -1,4 +1,4 @@
--- :desc The most rented films across time
+-- :desc "The most rented films across time"
 -- :category "Custom"
 SELECT
   film.xt$id film_id,
