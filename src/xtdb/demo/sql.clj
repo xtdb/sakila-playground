@@ -115,15 +115,6 @@
   (let [index-of (into {} (map-indexed (fn [i col] [col i]) col-order))]
     (sort-by (fn [col] [(index-of col Long/MAX_VALUE) (= :xt/valid-from col) col]) result-set-cols)))
 
-(comment
-  (sort-cols
-
-    [:d :a :b :c]
-    [:a :b :c]
-
-    )
-  )
-
 (defn get-ref [explicit-refs col]
   (or (get explicit-refs col)
       (when (str/ends-with? (name col) "_id")
