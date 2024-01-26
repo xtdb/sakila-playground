@@ -12,7 +12,7 @@
    [xtdb.demo.web.request :refer [read-request-body]]
    [selmer.parser :as selmer]
    [clojure.java.io :as io])
-  (:import (java.time LocalDate ZoneId)))
+  (:import (java.time Instant LocalDate ZoneId)))
 
 (defn hello [_]
   (let [state (atom {:greeting "Hello"})]
@@ -210,7 +210,8 @@
           }))
 
        "current_rentals"
-       (q '(unify (from :rental {:bind [{:xt/id rental_id} {:xt/id id} {:customer-id $customer_id} inventory_id {:xt/valid-from rental_date}]})
+       (q '(unify (from :rental {:bind [{:xt/id rental_id} {:xt/id id} {:customer_id $customer_id} inventory_id rental_date, return_date]})
+                  (where (nil? return_date))
                   (from :customer [{:xt/id $customer_id}])
                   (from :inventory [{:xt/id inventory_id} film_id])
                   (from :film [{:xt/id film_id} title]))
@@ -272,15 +273,17 @@
                                 (LocalDate/parse return-date)
                                 (catch Exception _
                                   (throw (ex-info "Invalid return date" {:ring.response/status 400})))))
-                return-instant (some-> return-date (.atStartOfDay (ZoneId/of "Europe/London")))]
+                return-date (or return-date (LocalDate/now))]
 
-            (println "Deleting" rental-id)
+            (println "Returning" rental-id)
 
             (xt/submit-tx
               (:xt-node xt-node)
-              [[:delete-docs (cond-> {:from :rental}
-                               return-instant (assoc :xt/valid-from return-instant))
-                rental-id]])
+              [[:update '{:table :rental
+                          :bind [{:xt$id $rental-id}]
+                          :set {:return_date $return-date}}
+                {:rental-id rental-id
+                 :return-instant return-date}]])
 
             ;; returning 204 causes HTMX to not swap, even if a hx-swap=delete is set.
             {:ring.response/status 200}))}}})))
@@ -288,13 +291,13 @@
 (defn analytics [_]
   (let [rows (xt/q (:xt-node xt-node)
                    (format
-                    "SELECT A.year, A.month, count(*) as rented
-           FROM (%s) as A
-           GROUP BY A.year, A.month
-           ORDER BY A.year DESC, A.month DESC
-           " "SELECT EXTRACT (YEAR FROM rental.xt$valid_from) as year,
-          EXTRACT (MONTH FROM rental.xt$valid_from) as month
-   FROM rental FOR ALL VALID_TIME")
+                     "SELECT A.year, A.month, count(*) as rented
+            FROM (%s) as A
+            GROUP BY A.year, A.month
+            ORDER BY A.year DESC, A.month DESC
+            " "SELECT EXTRACT (YEAR FROM rental.rental_date) as year,
+          EXTRACT (MONTH FROM rental.rental_date) as month
+   FROM rental")
                    )]
     (map->Resource
      {:representations

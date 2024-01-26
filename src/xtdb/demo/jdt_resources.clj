@@ -22,7 +22,7 @@
   "SELECT DISTINCT f.xt$id AS id, f.title, f.description, COUNT(i.xt$id) AS inventory_count
 FROM film f
 JOIN inventory i ON (i.film_id = f.xt$id AND i.store_id = ?)
-LEFT JOIN rental FOR ALL VALID_TIME r ON (r.inventory_id = i.xt$id AND r.xt$valid_from <= ?)
+LEFT JOIN rental r ON (r.inventory_id = i.xt$id AND r.xt$rental_date <= ?)
 GROUP BY f.xt$id, f.title, f.description
 ORDER BY f.title")
 
