@@ -1,0 +1,32 @@
+{% with rentals_category = query_raw|query %}
+    <div id="rentals-per-category-chart"></div>
+    <script type="text/javascript">
+        vegaEmbed("#rentals-per-category-chart",
+        {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "description": "Bar chart for rentals per category",
+            "data": {
+                "values": {{ rentals_category.result|json|safe }}
+            },
+            "encoding": {
+                "y": {"field": "category_name", "type": "nominal", "title": "Category" },
+                "x": {"field": "films_rented", "type": "quantitative", "title": "Number of rented films"}
+            },
+            "layer": [{
+                "mark": "bar"
+            }, {
+                "mark": {
+                "type": "text",
+                "align": "left",
+                "baseline": "middle",
+                "dx": 3
+                }
+                ,
+                "encoding": {
+                "text": {"field": "films_rented", "type": "quantitative"}
+                }
+            }]
+            }                
+        )
+    </script>
+{% endwith %}

@@ -20,26 +20,31 @@
 (selmer/add-filter! :resource-load (comp slurp resource))
 (selmer/add-filter! :url-load slurp)
 
-(defn ^{:web-path "rental-per-month"}
-  rental-per-month [_]
+(defn ^{:uri-template "rental-per-month/{view}"}
+  rental-per-month [{:keys [path-params]}]
   (html-templated-resource
-   {:template "templates/rental-analytics/rentals-per-month.html"}))
+   {:template "templates/rental-analytics/rentals-per-month.html"
+    :template-model {"selected" (get path-params "view")}}))
 
-(defn ^{:web-path "rental-per-category"}
-  rental-per-category [_]
+(defn ^{:uri-template "rental-per-category/{view}"}
+  rental-per-category [{:keys [path-params]}]
   (html-templated-resource
-   {:template "templates/rental-analytics/rentals-per-category.html"}))
+   {:template       "templates/rental-analytics/rentals-per-category.html"
+    :template-model {"selected" (get path-params "view")}}))
 
-(defn ^{:web-path "top-renting-customers"}
-  top-renting-customers [_]
+(defn ^{:uri-template "top-renting-customers/{view}"}
+  top-renting-customers [{:keys [path-params]}]
   (html-templated-resource
-   {:template "templates/rental-analytics/top-renting-customers.html"}))
+   {:template "templates/rental-analytics/top-renting-customers.html"
+    :template-model {"selected" (get path-params "view")}}))
 
-(defn ^{:web-path "top-rented-films"}
-  top-rented-films [_]
+(defn ^{:uri-template "top-rented-films/{view}"}
+  top-rented-films [{:keys [path-params]}]
   (html-templated-resource
-   {:template "templates/rental-analytics/top-rented-films.html"}))
+   {:template "templates/rental-analytics/top-rented-films.html"
+    :template-model {"selected" (get path-params "view")}}))
 
-(defn ^{:web-path "rentals"} rentals-per-year-month [x]
+(defn ^{:web-path "rentals"} 
+  rentals-per-year-month [_]
   (html-templated-resource
    {:template "templates/rental_analytics.html"}))

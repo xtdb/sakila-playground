@@ -7,19 +7,19 @@
         <h2>Rental Analytics</h2>
     </section>
 
-    <section style="overflow-y: auto;" hx-trigger="load" hx-get="/yry/rental-per-month">
+    <section id="rentals-per-month-tabs" style="overflow-y: auto;" hx-trigger="load" hx-get="/yry/rental-per-month/table" hx-target="#rentals-per-month-tabs" hx-swap="innerHTML">
         {% include "templates/rental-analytics/loading.html" %}
     </section>
 
-    <section style="overflow-y: auto;" hx-trigger="load" hx-get="/yry/rental-per-category">
+    <section id="category-tabs" style="overflow-y: auto;" hx-get="/yry/rental-per-category/table" hx-trigger="load" hx-target="#category-tabs" hx-swap="innerHTML">
         {% include "templates/rental-analytics/loading.html" %}
     </section>
 
-    <section style="overflow-y: auto;" hx-trigger="load" hx-get="/yry/top-renting-customers">
+    <section  id="top-renting-customers-tabs" style="overflow-y: auto;" hx-trigger="load" hx-get="/yry/top-renting-customers/table" hx-target="#top-renting-customers-tabs" hx-swap="innerHTML">
         {% include "templates/rental-analytics/loading.html" %}
     </section>
 
-    <section style="overflow-y: auto;" hx-trigger="load" hx-get="/yry/top-rented-films">
+    <section id="top-rented-films-tabs" style="overflow-y: auto;" hx-trigger="load" hx-get="/yry/top-rented-films/table" hx-target="#top-rented-films-tabs" hx-swap="innerHTML">
         {% include "templates/rental-analytics/loading.html" %}
     </section>
 </div>
