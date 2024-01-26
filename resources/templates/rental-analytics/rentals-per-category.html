@@ -1,25 +1,33 @@
-{% with rentals_category_path="sql/rentals-by-category.sql" 
-        rentals_category=rentals_category_path|resource-load|query 
-        query_error=rentals_category.error %}
-{% if query_error %}
-{% include "templates/rental-analytics/query-error.html" %}
-{% else %}
-<table>
-    <caption>Rentals per category</caption>
-    <thead>
-        <tr>
-            <th>Category</th>
-            <th>Rented</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for rental in rentals_category.result %}
-        <tr>
-            <td>{{ rental.category_name }}</td>
-            <td>{{ rental.films_rented }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% endif %}
-{% endwith %}
+<h3>Rentals per Category</h3>
+
+<section class="tab-list" role="tablist">
+	<button hx-get="/yry/rental-per-category/table" {% ifequal selected "table" %} class="selected" aria-selected="true" autofocus {% endifequal %} role="tab"  aria-controls="category-tab-content">Table</button>
+	<button hx-get="/yry/rental-per-category/query" {% ifequal selected "query" %} class="selected" aria-selected="true" autofocus {% endifequal %} role="tab"  aria-controls="category-tab-content">Query</button>
+	<button hx-get="/yry/rental-per-category/data"  {% ifequal selected "data" %} class="selected" aria-selected="true" autofocus {% endifequal %} role="tab" aria-controls="category-tab-content">Data</button>
+	<button hx-get="/yry/rental-per-category/chart"  {% ifequal selected "chart" %} class="selected" aria-selected="true" autofocus {% endifequal %} role="tab" aria-controls="category-tab-content">Chart</button>
+</section>
+
+<section id="category-tab-content" role="tabpanel" class="tab-content">
+    {% with query_path="sql/rentals-by-category.sql"
+            query_raw=query_path|resource-load %}
+        {% ifequal selected "query" %} 
+            <pre><code>{{ query_raw }}</code></pre> 
+        {% endifequal %}
+        {% ifequal selected "table" %}
+            {% include "templates/rental-analytics/tables/rentals-per-category.html" %}    
+        {% endifequal %}
+        {% ifequal selected "data"%}
+            {% with rentals_category = query_raw|query
+                query_error=rentals_category.error %}
+                {% if query_error %}
+                    {% include "templates/rental-analytics/query-error.html" %}
+                {% else %}
+                    <code>{{ rentals_category.result|json }}</code>
+                {% endif %}
+            {% endwith %}                
+        {% endifequal %}
+        {% ifequal selected "chart" %}
+                {% include "templates/rental-analytics/charts/rentals-per-category.html" %}
+        {% endifequal %}    
+    {% endwith %}
+</section>

@@ -1,0 +1,24 @@
+{% with rentals_ym=query_raw|query 
+        query_error=rentals_ym.error %}
+{% if query_error %}
+{% include "templates/rental-analytics/query-error.html" %}
+{% else %}
+<table>
+    <caption>Rentals per month</caption>
+    <thead>
+        <tr>
+            <th>Period </th>
+            <th>Rented</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for rental in rentals_ym.result %}
+        <tr>
+            <td>{{ rental.month }}/{{ rental.year }}</td>
+            <td>{{ rental.rented }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% endwith %}
