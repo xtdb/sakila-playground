@@ -1,0 +1,24 @@
+{% with rentals_top_films=query_raw|query 
+        query_error=rentals_top_films.error %}
+{% if query_error %}
+{% include "templates/rental-analytics/query-error.html" %}
+{% else %}
+<table>
+    <caption>Top rented films</caption>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Rented</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for film in rentals_top_films.result %}
+        <tr>
+            <td>{{ film.title }}</td>
+            <td>{{ film.count_rented }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% endwith %}
