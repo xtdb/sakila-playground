@@ -1,0 +1,26 @@
+{% with top_renting_customers=query_raw|query
+        query_error=top_renting_customers.error %}
+    {% if query_error %}
+        {% include "templates/rental-analytics/query-error.html" %}
+    {% else %}        
+        <table>
+            <caption>Top renting customers</caption>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>email</th>
+                    <th>Rented</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in top_renting_customers.result %}
+                <tr>
+                    <td>{{ customer.first_name }} {{ customer.last_name }} </td>
+                    <td>{{ customer.email }}</td>
+                    <td>{{ customer.films_rented }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endwith %}

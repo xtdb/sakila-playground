@@ -1,27 +1,33 @@
-{% with top_renting_customers_path="sql/top-renting-customers.sql" 
-        top_renting_customers=top_renting_customers_path|resource-load|query
-        query_error=top_renting_customers.error %}
-{% if query_error %}
-{% include "templates/rental-analytics/query-error.html" %}
-{% else %}        
-<table>
-    <caption>Top renting customers</caption>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>email</th>
-            <th>Rented</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for customer in top_renting_customers.result %}
-        <tr>
-            <td>{{ customer.first_name }} {{ customer.last_name }} </td>
-            <td>{{ customer.email }}</td>
-            <td>{{ customer.films_rented }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% endif %}
-{% endwith %}
+<h3>Top Renting Customers</h3>
+
+<section class="tab-list" role="tablist">
+	<button hx-get="/yry/top-renting-customers/table" {% ifequal selected "table" %} class="selected" aria-selected="true" autofocus {% endifequal %} role="tab"  aria-controls="top-renting-customers-tab-content">Table</button>
+	<button hx-get="/yry/top-renting-customers/query" {% ifequal selected "query" %} class="selected" aria-selected="true" autofocus {% endifequal %} role="tab"  aria-controls="top-renting-customers-tab-content">Query</button>
+	<button hx-get="/yry/top-renting-customers/data"  {% ifequal selected "data" %} class="selected" aria-selected="true" autofocus {% endifequal %} role="tab" aria-controls="top-renting-customers-tab-content">Data</button>
+	<button hx-get="/yry/top-renting-customers/chart"  {% ifequal selected "chart" %} class="selected" aria-selected="true" autofocus {% endifequal %} role="tab" aria-controls="top-renting-customers-tab-content">Chart</button>
+</section>
+
+<section id="top-renting-customers-tab-content" role="tabpanel" class="tab-content">
+    {% with query_path="sql/top-renting-customers.sql"
+            query_raw=query_path|resource-load %}
+        {% ifequal selected "query" %} 
+            <pre><code>{{ query_raw }}</code></pre> 
+        {% endifequal %}
+        {% ifequal selected "table" %}
+            {% include "templates/rental-analytics/tables/top-renting-customers.html" %}    
+        {% endifequal %}
+        {% ifequal selected "data"%}
+            {% with top_renting_customers = query_raw|query
+                query_error=rentals_category.error %}
+                {% if query_error %}
+                    {% include "templates/rental-analytics/query-error.html" %}
+                {% else %}
+                    <code>{{ top_renting_customers.result|json }}</code>
+                {% endif %}
+            {% endwith %}                
+        {% endifequal %}
+        {% ifequal selected "chart" %}
+                {% include "templates/rental-analytics/charts/top-renting-customers.html" %}
+        {% endifequal %}    
+    {% endwith %}
+</section>

@@ -1,0 +1,24 @@
+{% with rentals_category = query_raw|query
+        query_error=rentals_category.error %}
+    {% if query_error %}
+        {% include "templates/rental-analytics/query-error.html" %}
+    {% else %}
+    <table>
+        <caption>Rentals per category</caption>
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Rented</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rental in rentals_category.result %}
+            <tr>
+                <td>{{ rental.category_name }}</td>
+                <td>{{ rental.films_rented }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+{% endwith %}
