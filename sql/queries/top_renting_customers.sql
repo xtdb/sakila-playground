@@ -5,9 +5,10 @@ SELECT top_user.customer_id,
        customer.first_name,
        customer.email
 FROM (SELECT rental.customer_id,
-             DATE_DIFF(rental.xt$valid_to, rental.xt$valid_from, 'DAY')
+             DATE_DIFF(rental.return_date, rental.rental_date, 'DAY')
              count(*) AS films_rented
-      FROM rental FOR ALL VALID_TIME
+      FROM rental
+      WHERE rental.return_date IS NOT NULL
       GROUP BY rental.customer_id
       ORDER BY films_rented DESC
       LIMIT 10) top_user

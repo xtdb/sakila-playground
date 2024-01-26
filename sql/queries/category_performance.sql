@@ -8,7 +8,7 @@ FROM
        -- revenue of all films that are tagged in the category
        (SELECT SUM(p.amount)
         FROM payment p
-        JOIN rental FOR ALL VALID_TIME r ON p.rental_id = r.xt$id
+        JOIN rental r ON p.rental_id = r.xt$id
         JOIN inventory i ON r.inventory_id = i.xt$id
         WHERE i.film_id = ANY (SELECT fc.film_id FROM film_category fc WHERE fc.category_id = c.xt$id)) revenue,
        -- cost of all films tagged in the category

@@ -7,7 +7,7 @@ SELECT s.xt$id store_id,
    (SELECT
      COALESCE(FLOOR(SUM(p.amount)), 0.0)
     FROM payment p
-    JOIN rental FOR ALL VALID_TIME r ON r.xt$id = p.rental_id
+    JOIN rental VALID_TIME r ON r.xt$id = p.rental_id
     JOIN inventory FOR ALL VALID_TIME i ON i.xt$id = r.inventory_id
     WHERE EXTRACT(MONTH FROM p.xt$valid_from) = m.mon
     AND i.store_id = s.xt$id) revenue
