@@ -17,37 +17,15 @@
     (log/debugf "Submitting '%s' table" (name table-name))
     (with-open [rdr (io/reader file)]
       (doseq [line-batch (->> (line-seq rdr)
-                             (partition-all 1000))]
-        (xt/submit-tx node
-          (for [line line-batch]
-            (let [data (edn/read-string {:readers {'time/instant #(Instant/parse %)}}
-                                        line)
-                  valid-from (:xt/valid-from data)
-                  valid-to (:xt/valid-to data)
-                  enrich
-                  (cond
-                    (and valid-from valid-to)
-                    #(xt/during % valid-from valid-to)
-                    valid-from
-                    #(xt/starting-from % valid-from)
-                    valid-to
-                    #(xt/until % valid-to)
-                    :else
-                    identity)]
-              (-> (xt/put table-name data)
-                  enrich))))))))
-
-#_(defn submit-file! [node ^File file]
-  (let [table-name (-> (.getName file)
-                       (str/replace #"\.edn$" "")
-                       (keyword))]
-    (log/debugf "Submitting '%s' table" (name table-name))
-    (with-open [rdr (io/reader file)]
-      (doseq [line-batch (->> (line-seq rdr)
                               (partition-all 1000))]
-        (xt/submit-tx node (for [line line-batch]
-                             (xt/put table-name (edn/read-string {:readers {'time/instant #(Instant/parse %)}}
-                                                                 line))))))))
+        (xt/submit-tx node (for [line line-batch
+                                 :let [{vf :xt/valid-from
+                                        vt :xt/valid-to
+                                        :as doc} (edn/read-string {:readers {'time/instant #(Instant/parse %)}}
+                                                                  line)]]
+                             [:put-docs {:into table-name, :valid-from vf, :valid-to vt}
+                              (dissoc doc :xt/valid-from :xt/valid-to)]))))))
+
 
 ;; Convert edn to json. Can't work with this until I figure out how to
 ;; signal bitemp coords and ids.
@@ -87,7 +65,7 @@
   (apply xt/q (:xt-node xt-node) args))
 
 (defn sql-op [& args]
-  (xt/submit-tx (:xt-node xt-node) [(xt/sql-op (first args))]))
+  (xt/submit-tx (:xt-node xt-node) [[:sql (first args)]]))
 
 (comment
   ;; `SELECT title, description, length FROM film WHERE title = 'APOCALYPSE FLAMINGOS'`

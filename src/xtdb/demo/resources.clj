@@ -154,13 +154,10 @@
           (let [body (read-request-body resource request)]
             (xt/submit-tx
              (:xt-node xt-node)
-             [(xt/put
-               :customer
+             [[:put-docs :customer
                (into (update-keys body keyword)
                      {:xt/id (next-id :customer)
-                      :xt/valid-from (java.util.Date.)
-                      :active true
-                      }))]))
+                      :active true})]]))
           ;; Redirect
           {:ring.response/status 302
            :ring.response/headers {"location" (var->path #'customers)}})}}
@@ -279,7 +276,8 @@
 
             (xt/submit-tx
               (:xt-node xt-node)
-              [(cond-> (xt/delete :rental rental-id) return-instant (xt/starting-from return-instant))])
+              [[:delete-docs {:from :rental, :valid-from return-instant}
+                rental-id]])
 
             ;; returning 204 causes HTMX to not swap, even if a hx-swap=delete is set.
             {:ring.response/status 200}))}}})))
