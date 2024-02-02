@@ -1,8 +1,3 @@
-{% with rentals_ym=query_raw|query 
-        query_error=rentals_ym.error %}
-{% if query_error %}
-{% include "templates/rental-analytics/query-error.html" %}
-{% else %}
 <table>
     <caption>Rentals per month</caption>
     <thead>
@@ -20,5 +15,3 @@
         {% endfor %}
     </tbody>
 </table>
-{% endif %}
-{% endwith %}
