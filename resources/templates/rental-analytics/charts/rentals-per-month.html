@@ -1,23 +1,21 @@
-{% with rentals_per_month = query_raw|query %}
-    <div id="rentals-per-month-chart"></div>
-    <script type="text/javascript">
-        vegaEmbed("#rentals-per-month-chart",
-        {
-        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-            "description": "Bar chart for rentals per month",
-            "data": {
-                "values": {{ rentals_per_month.result|json|safe }}
-            },
-            "transform": [{
-                "calculate": "datetime(datum.year, datum.month)",
-                "as": "date"
-            }],
-            "encoding": {
-                "x": {"field": "date", "type": "temporal", "title": "Renting period" },
-                "y": {"field": "rented", "type": "quantitative", "title": "Number of rented films"}
-            },
-            "mark": "bar"
-        }                
-        )
-    </script>
-{% endwith %}
+<div id="rentals-per-month-chart"></div>
+<script type="text/javascript">
+    vegaEmbed("#rentals-per-month-chart",
+    {
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "description": "Bar chart for rentals per month",
+        "data": {
+            "values": {{ rentals_ym.result|json|safe }}
+        },
+        "transform": [{
+            "calculate": "datetime(datum.year, datum.month)",
+            "as": "date"
+        }],
+        "encoding": {
+            "x": {"field": "date", "type": "temporal", "title": "Renting period" },
+            "y": {"field": "rented", "type": "quantitative", "title": "Number of rented films"}
+        },
+        "mark": "bar"
+    }                
+    )
+</script>
