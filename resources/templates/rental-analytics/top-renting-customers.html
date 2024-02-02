@@ -12,22 +12,23 @@
             query_raw=query_path|resource-load %}
         {% ifequal selected "query" %} 
             <pre><code>{{ query_raw }}</code></pre> 
-        {% endifequal %}
-        {% ifequal selected "table" %}
-            {% include "templates/rental-analytics/tables/top-renting-customers.html" %}    
-        {% endifequal %}
-        {% ifequal selected "data"%}
+        {% else %}
             {% with top_renting_customers = query_raw|query
-                query_error=rentals_category.error %}
+                    query_error=rentals_category.error %}
                 {% if query_error %}
                     {% include "templates/rental-analytics/query-error.html" %}
                 {% else %}
-                    <code>{{ top_renting_customers.result|json }}</code>
-                {% endif %}
-            {% endwith %}                
+                    {% ifequal selected "data" %}
+                        <code>{{ top_renting_customers.result|json }}</code>    
+                    {% endifequal %}
+                    {% ifequal selected "table" %}
+                        {% include "templates/rental-analytics/tables/top-renting-customers.html" %}    
+                    {% endifequal %}
+                    {% ifequal selected "chart" %}
+                        {% include "templates/rental-analytics/charts/top-renting-customers.html" %}
+                    {% endifequal %}                    
+            {% endif %}
+            {% endwith %}
         {% endifequal %}
-        {% ifequal selected "chart" %}
-                {% include "templates/rental-analytics/charts/top-renting-customers.html" %}
-        {% endifequal %}    
     {% endwith %}
 </section>
