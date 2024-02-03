@@ -1,32 +1,30 @@
-{% with top_rented_films = query_raw|query %}
-    <div id="top-rented-films-charts"></div>
-    <script type="text/javascript">
-        vegaEmbed("#top-rented-films-charts",
-        {
-        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-            "description": "Bar chart for Top of Rented films",
-            "data": {
-                "values": {{ top_rented_films.result|json|safe }}
-            },
+<div id="top-rented-films-charts"></div>
+<script type="text/javascript">
+    vegaEmbed("#top-rented-films-charts",
+    {
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "description": "Bar chart for Top of Rented films",
+        "data": {
+            "values": {{ top_rented_films.result|json|safe }}
+        },
+        "encoding": {
+            "y": {"field": "title", "type": "nominal", "title": "Film Title" },
+            "x": {"field": "count_rented", "type": "quantitative", "title": "Number of times rented"}
+        },
+        "layer": [{
+            "mark": "bar"
+        }, {
+            "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "middle",
+            "dx": 3
+            }
+            ,
             "encoding": {
-                "y": {"field": "title", "type": "nominal", "title": "Film Title" },
-                "x": {"field": "count_rented", "type": "quantitative", "title": "Number of times rented"}
-            },
-            "layer": [{
-                "mark": "bar"
-            }, {
-                "mark": {
-                "type": "text",
-                "align": "left",
-                "baseline": "middle",
-                "dx": 3
-                }
-                ,
-                "encoding": {
-                "text": {"field": "count_rented", "type": "quantitative"}
-                }
-            }]
-            }                
-        )
-    </script>
-{% endwith %}
+            "text": {"field": "count_rented", "type": "quantitative"}
+            }
+        }]
+        }                
+    )
+</script>
