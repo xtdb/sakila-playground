@@ -12,22 +12,23 @@
             query_raw=query_path|resource-load %}
         {% ifequal selected "query" %} 
             <pre><code>{{ query_raw }}</code></pre> 
-        {% endifequal %}
-        {% ifequal selected "table" %}
-            {% include "templates/rental-analytics/tables/top-rented-films.html" %}    
-        {% endifequal %}
-        {% ifequal selected "data"%}
-            {% with rentals_category = query_raw|query
-                query_error=rentals_category.error %}
+        {% else %}
+            {% with top_rented_films = query_raw|query
+                    query_error=top_rented_films.error %}
                 {% if query_error %}
                     {% include "templates/rental-analytics/query-error.html" %}
                 {% else %}
-                    <code>{{ rentals_category.result|json }}</code>
+                    {% ifequal selected "data" %}
+                        <code>{{ top_rented_films.result|json }}</code>
+                    {% endifequal %}
+                    {% ifequal selected "table" %}
+                        {% include "templates/rental-analytics/tables/top-rented-films.html" %}    
+                    {% endifequal %}
+                    {% ifequal selected "chart" %}
+                        {% include "templates/rental-analytics/charts/top-rented-films.html" %}
+                    {% endifequal %}            
                 {% endif %}
-            {% endwith %}                
+            {% endwith %}
         {% endifequal %}
-        {% ifequal selected "chart" %}
-                {% include "templates/rental-analytics/charts/top-rented-films.html" %}
-        {% endifequal %}    
     {% endwith %}
 </section>
