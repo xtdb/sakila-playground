@@ -1,7 +1,8 @@
 (ns xtdb.demo.history
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [xtdb.api :as xt])
   (:import (java.io PushbackReader)
            (java.time Instant)))
 
@@ -29,14 +30,19 @@
 
   )
 
-(defn sql-munge [kw] (name kw))
+(defn sql-munge [kw]
+  (case kw
+    :xt/id "xt$id"
+    (name kw)))
 
 (defn insert-op [table records]
-  (let [cols (into #{} (mapcat keys records))
+  (let [cols (-> (into #{} (mapcat keys records)))
         table-name (sql-munge table)
         col-list (str/join "," (map sql-munge cols))
         value-placeholders (str/join "," (repeat (count cols) "?"))]
-    {:sql [(format "INSERT INTO %s (%s) VALUES (%s)" table-name col-list value-placeholders)]
+
+    {:xt-dml (mapv #(xt/put table %) records)
+     :sql (format "INSERT INTO %s (%s) VALUES (%s)" table-name col-list value-placeholders)
      :args [(mapv (fn [record] (mapv record cols)) records)]}))
 
 (defn satisfy-foreign-deps
@@ -48,7 +54,8 @@
              {:keys [state, init-state]} (history table)]
          (if (or (contains? state id) (cycle-break [table id]))
            [history operations]
-           (let [[history foreign-operations] (satisfy-foreign-deps history (find-foreign-deps (init-state id)) (conj cycle-break [table id]))]
+           (let [self-fdeps (find-foreign-deps (init-state id))
+                 [history foreign-operations] (satisfy-foreign-deps history self-fdeps (conj cycle-break [table id]))]
              [(-> history
                   (update-in [table :remaining-ids] disj id)
                   (assoc-in [table :state id] (init-state id)))
@@ -124,7 +131,10 @@
            ;; reference tables, do not see transactions (for now)
            ("city" "country" "language" "staff" "store" "category")
            [(keyword table-name)
-            {:init-state {}, :state @init-state, :remaining-ids #{}}]
+            {:ref-state @init-state
+             :init-state @init-state,
+             :state @init-state,
+             :remaining-ids #{}}]
            ;; other tables start empty and accrete over time
            [(keyword table-name)
             {:init-state @init-state,
@@ -133,8 +143,32 @@
        (into {})
        (satisfy-init-deps)))
 
+(defn insert-into-node [node]
+  (let [[history transactions]
+        (loop [n-transactions 100
+               h (init-history)
+               transactions []]
+          (if (= n-transactions 0)
+            [h transactions]
+            (let [;; weights
+                  gen-transaction (rand-nth [tx-add-stock])
+                  [history operations] (gen-transaction h)]
+              (recur (dec n-transactions)
+                     history
+                     (conj transactions (vec (mapcat :xt-dml operations)))))))]
+    (doseq [[table {:keys [ref-state]}] history]
+      (->> ref-state
+           (sort-by key)
+           (map val)
+           (map (fn [row] (xt/put table row)))
+           (partition-all 512)
+           (run! (fn [puts] (xt/submit-tx node puts)))))
+
+    (run! #(xt/submit-tx node %) transactions)))
+
 (comment
   (def h (init-history))
+  (keys h)
   (update-vals h (comp count :remaining-ids))
   (second (tx-new-customer h))
   )
