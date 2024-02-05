@@ -199,8 +199,11 @@
       query)))
 
 (defn tx-id-as-of [^Instant inst]
-  (let [;; todo committed? no sql-form exists for ?.
-        rs (q "SELECT t.xt$id, t.xt$tx_time FROM xt$txs t WHERE t.xt$tx_time <= ? ORDER BY t.xt$id DESC LIMIT 1" {:args [inst]})]
+  (let [rs (q "SELECT t.xt$id, t.xt$tx_time
+               FROM xt$txs t
+               WHERE t.xt$tx_time <= ?
+               AND t.\"xt/committed?\"
+               ORDER BY t.xt$id DESC LIMIT 1" {:args [inst]})]
     (when-some [{:xt/keys [id, ^ZonedDateTime tx_time]} (first rs)]
       (xtdb.api.TransactionKey. id (.toInstant tx_time)))))
 
