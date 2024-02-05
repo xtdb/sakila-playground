@@ -6,10 +6,11 @@
             [hiccup2.core :as h]
             [xtdb.demo.web.resource :refer [map->Resource]]
             [xtdb.demo.db :as db]
+            [xtdb.demo.history :as history]
             [ring.util.codec :refer [form-encode form-decode]]
             [clojure.repl])
   (:import (java.io PushbackReader)
-           (java.time Instant)))
+           (java.time Instant ZonedDateTime)))
 
 (defn q [q & [opts]]
   (db/q q (assoc opts :key-fn :snake-case-kw)))
@@ -125,9 +126,9 @@
     (str "[" (str/join "," value) "]")
     (str value)))
 
-(defn evaluate-query [{:keys [file-name, sql-string refs col-order]} args]
+(defn evaluate-query [{:keys [file-name, sql-string refs col-order]} basis args]
   (try
-    (let [rs (q sql-string {:args args})
+    (let [rs (q sql-string {:basis basis, :args args})
           cols (sort-cols (keys (first rs)) col-order)]
       (if (empty? rs)
         [:div "No results"]
@@ -186,13 +187,42 @@
           (param-label param t)
           (param-input param t (satisfied-params param))])])))
 
+(defn assume-one [decoded-qry-param]
+  (if (sequential? decoded-qry-param) (first decoded-qry-param) decoded-qry-param))
+
 (defn specialise-query [query req]
   (let [{user-sql "sql"} (some-> req :ring.request/query form-decode)
-        user-sql (if (sequential? user-sql) (first user-sql) user-sql)]
+        user-sql (assume-one user-sql)]
     (if user-sql
       ;; xt does not like carriage returns for some reason
       (assoc query :sql-string (str/replace user-sql "\r" ""))
       query)))
+
+(defn tx-id-as-of [^Instant inst]
+  (let [;; todo committed? no sql-form exists for ?.
+        rs (q "SELECT t.xt$id, t.xt$tx_time FROM xt$txs t WHERE t.xt$tx_time <= ? ORDER BY t.xt$id DESC LIMIT 1" {:args [inst]})]
+    (when-some [{:xt/keys [id, ^ZonedDateTime tx_time]} (first rs)]
+      (xtdb.api.TransactionKey. id (.toInstant tx_time)))))
+
+(comment
+
+  (q "SELECT t.* FROM xt$txs t WHERE t.xt$tx_time <= ? ORDER BY t.xt$id DESC LIMIT 1"
+     {:args [(Instant/now)]})
+
+  (q "SELECT t.* FROM xt$txs t WHERE t.xt$tx_time <= ? ORDER BY t.xt$id DESC LIMIT 1"
+     {:args [(.plus history/start-time (java.time.Duration/parse "PT48H"))]})
+
+  (tx-id-as-of (Instant/now))
+
+  )
+
+(defn query-basis [req]
+  (let [{:strs [system-time, valid-time]} (some-> req :ring.request/query form-decode)
+        system-time (assume-one system-time)
+        valid-time (assume-one valid-time)]
+    (when (and valid-time system-time)
+      {:current-time (Instant/ofEpochMilli (parse-long valid-time))
+       :at-tx (tx-id-as-of (Instant/ofEpochMilli (parse-long system-time)))})))
 
 (defn ^{:uri-template "queries/{file}"} query-file-resource [{:keys [path-params]}]
   (let [{:strs [file]} path-params
@@ -201,7 +231,8 @@
       {:representations
        [^{"content-type" "text/html;charset=utf-8"}
         (fn [req]
-          (let [query (specialise-query query req)]
+          (let [query (specialise-query query req)
+                end-time (Instant/now)]
             (page-response
               (str "queries/" file-name)
               [:div
@@ -213,10 +244,29 @@
                        :hx-get "",
                        :hx-target "#query-results",
                        :hx-select "#query-results"}
+                [:div
+                 ;; min/max vals?
+                 [:label {:style "display:inline-block; vertical-align:middle; margin-right:5px"} "st"]
+                 [:input {:style "display:inline-block; vertical-align:middle; width:auto"
+                          :onchange "htmx.trigger('#query-form', 'submit')"
+                          :name "system-time"
+                          :type "range"
+                          :min (inst-ms history/start-time)
+                          :max (inst-ms end-time)
+                          :value  (inst-ms end-time)}]]
+                [:div
+                 [:label {:style "display:inline-block; vertical-align:middle;  margin-right:5px"} "vt"]
+                 [:input {:style "display:inline-block; vertical-align:middle; width:auto"
+                          :onchange "htmx.trigger('#query-form', 'submit')"
+                          :name "valid-time"
+                          :type "range"
+                          :min (inst-ms history/start-time)
+                          :max (inst-ms end-time)
+                          :value (inst-ms end-time)}]]
                 (sql-editor query)
                 (parameter-view query req)
                 [:div {:id "query-results"}
-                 (evaluate-query query (satisfy-query-args query req))]]])))]})))
+                 (evaluate-query query (query-basis req) (satisfy-query-args query req))]]])))]})))
 
 (comment
 

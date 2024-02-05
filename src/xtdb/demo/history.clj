@@ -4,7 +4,7 @@
             [clojure.string :as str]
             [xtdb.api :as xt])
   (:import (java.io PushbackReader)
-           (java.time Instant)))
+           (java.time Duration Instant)))
 
 (defn foreign-key? [col-kw]
   (str/ends-with? (name col-kw) "_id"))
@@ -45,6 +45,8 @@
      :sql (format "INSERT INTO %s (%s) VALUES (%s)" table-name col-list value-placeholders)
      :args [(mapv (fn [record] (mapv record cols)) records)]}))
 
+;; todo film_actor, join-deps
+
 (defn satisfy-foreign-deps
   ([history foreign-deps] (satisfy-foreign-deps history foreign-deps #{}))
   ([history foreign-deps cycle-break]
@@ -65,12 +67,13 @@
 
 (defn add-records [history table new-records]
   (let [foreign-deps (mapcat find-foreign-deps new-records)
-        [history ops] (satisfy-foreign-deps history foreign-deps)]
+        [history ops] (satisfy-foreign-deps history foreign-deps)
+        history (update-in history [table :remaining-ids] #(reduce disj % (map :xt/id new-records)))]
     [history (conj ops (insert-op table new-records))]))
 
 (defn tx-add-stock [history]
   ;; find inventory for some film-ids, satisfy its films (and dependents like actors, actor films, categories, category films)
-  (let [n-records (inc (rand-int 42))
+  (let [n-records (inc (rand-int 16))
         {:keys [inventory]} history
         {:keys [remaining-ids, init-state]} inventory
         new-records (map init-state (take n-records remaining-ids))]
@@ -143,28 +146,33 @@
        (into {})
        (satisfy-init-deps)))
 
+(def start-time (Instant/parse "2023-01-01T00:00:00Z"))
+(def end-time (Instant/parse "2024-02-05T00:00:00Z"))
+
 (defn insert-into-node [node]
-  (let [[history transactions]
-        (loop [n-transactions 100
+  (let [tx-time (Duration/parse "PT24H")
+        [history transactions]
+        (loop [time (.plus start-time tx-time)
                h (init-history)
                transactions []]
-          (if (= n-transactions 0)
+          (if (<= (compare end-time time) 0)
             [h transactions]
             (let [;; weights
                   gen-transaction (rand-nth [tx-add-stock])
-                  [history operations] (gen-transaction h)]
-              (recur (dec n-transactions)
-                     history
-                     (conj transactions (vec (mapcat :xt-dml operations)))))))]
+                  [h operations] (gen-transaction h)]
+              (recur (.plus time tx-time)
+                     h
+                     (conj transactions {:opts {:system-time time}
+                                         :tx-ops (vec (mapcat :xt-dml operations))})))))]
     (doseq [[table {:keys [ref-state]}] history]
       (->> ref-state
            (sort-by key)
            (map val)
            (map (fn [row] (xt/put table row)))
            (partition-all 512)
-           (run! (fn [puts] (xt/submit-tx node puts)))))
+           (run! (fn [puts] (xt/submit-tx node puts {:system-time start-time})))))
 
-    (run! #(xt/submit-tx node %) transactions)))
+    (run! #(xt/submit-tx node (:tx-ops %) (:opts %)) transactions)))
 
 (comment
   (def h (init-history))
