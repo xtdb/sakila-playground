@@ -1,7 +1,7 @@
 WITH top_user AS 
     (SELECT rental.customer_id, 
             count(*) AS films_rented
-    FROM rental
+    FROM rental FOR VALID_TIME FROM ? TO ?
     GROUP BY rental.customer_id
     ORDER BY films_rented DESC
     LIMIT 10)

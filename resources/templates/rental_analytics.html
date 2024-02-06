@@ -3,23 +3,62 @@
 {% block content %}
 <div class="grid-container">
 
+    <form>
+        <label for="valid_from_date" >From: </label>
+        <input name="from_date" 
+               id="valid_from_date"
+               value="{{query_params.from}}" 
+               class="filter-params"
+               type="date"/>
+        <label for="valid_to_date" >To: </label>
+        <input name="to_date"
+               id="valid_to_date"
+               value="{{query_params.to}}" 
+               class="filter-params"
+               type="date" />
+    </form>
+
     <section class="detail">
         <h2>Rental Analytics</h2>
     </section>
 
-    <section id="rentals-per-month-tabs" style="overflow-y: auto;" hx-trigger="load" hx-get="/yry/rental-per-month/table" hx-target="#rentals-per-month-tabs" hx-swap="innerHTML">
+    <section id="rentals-per-month-tabs" 
+             style="overflow-y: auto;" 
+             hx-trigger="load" 
+             hx-get="/yry/rental-per-month/table" 
+             hx-target="#rentals-per-month-tabs" 
+             hx-swap="innerHTML" 
+             hx-include=".filter-params">
         {% include "templates/rental-analytics/loading.html" %}
     </section>
 
-    <section id="category-tabs" style="overflow-y: auto;" hx-get="/yry/rental-per-category/table" hx-trigger="load" hx-target="#category-tabs" hx-swap="innerHTML">
+    <section id="category-tabs" 
+             style="overflow-y: auto;" 
+             hx-get="/yry/rental-per-category/table" 
+             hx-trigger="load" 
+             hx-target="#category-tabs" 
+             hx-swap="innerHTML"
+             hx-include=".filter-params">
         {% include "templates/rental-analytics/loading.html" %}
     </section>
 
-    <section  id="top-renting-customers-tabs" style="overflow-y: auto;" hx-trigger="load" hx-get="/yry/top-renting-customers/table" hx-target="#top-renting-customers-tabs" hx-swap="innerHTML">
+    <section id="top-renting-customers-tabs" 
+             style="overflow-y: auto;" 
+             hx-trigger="load" 
+             hx-get="/yry/top-renting-customers/table"  
+             hx-target="#top-renting-customers-tabs" 
+             hx-swap="innerHTML"
+             hx-include=".filter-params">
         {% include "templates/rental-analytics/loading.html" %}
     </section>
 
-    <section id="top-rented-films-tabs" style="overflow-y: auto;" hx-trigger="load" hx-get="/yry/top-rented-films/table" hx-target="#top-rented-films-tabs" hx-swap="innerHTML">
+    <section id="top-rented-films-tabs" 
+             style="overflow-y: auto;" 
+             hx-trigger="load" 
+             hx-get="/yry/top-rented-films/table" 
+             hx-target="#top-rented-films-tabs" 
+             hx-swap="innerHTML"
+             hx-include=".filter-params">
         {% include "templates/rental-analytics/loading.html" %}
     </section>
 </div>

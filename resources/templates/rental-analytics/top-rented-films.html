@@ -13,7 +13,9 @@
         {% ifequal selected "query" %} 
             <pre><code>{{ query_raw }}</code></pre> 
         {% else %}
-            {% with top_rented_films = query_raw|query
+            {% with from_date = query_params.from_date|to-sql-date
+                    to_date = query_params.to_date|to-sql-date
+                    top_rented_films = query_raw|query:@from_date:@to_date
                     query_error=top_rented_films.error %}
                 {% if query_error %}
                     {% include "templates/rental-analytics/query-error.html" %}

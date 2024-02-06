@@ -1,7 +1,7 @@
 WITH rental_categories AS
      (SELECT film_category.category_id as category_id,
              count(*) as films_rented
-      FROM rental
+      FROM rental FOR VALID_TIME FROM ? TO ?
       LEFT JOIN inventory ON rental.inventory_id = inventory.xt$id
       LEFT JOIN film_category ON inventory.film_id = film_category.film_id
       GROUP BY film_category.category_id)

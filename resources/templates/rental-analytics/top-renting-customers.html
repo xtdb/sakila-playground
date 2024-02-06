@@ -1,10 +1,10 @@
 <h3>Top Renting Customers</h3>
 
 <section class="tab-list" role="tablist">
-	<button hx-get="/yry/top-renting-customers/table" {% ifequal selected "table" %} class="selected" aria-selected="true" autofocus {% endifequal %} role="tab"  aria-controls="top-renting-customers-tab-content">Table</button>
-	<button hx-get="/yry/top-renting-customers/query" {% ifequal selected "query" %} class="selected" aria-selected="true" autofocus {% endifequal %} role="tab"  aria-controls="top-renting-customers-tab-content">Query</button>
-	<button hx-get="/yry/top-renting-customers/data"  {% ifequal selected "data" %} class="selected" aria-selected="true" autofocus {% endifequal %} role="tab" aria-controls="top-renting-customers-tab-content">Data</button>
-	<button hx-get="/yry/top-renting-customers/chart"  {% ifequal selected "chart" %} class="selected" aria-selected="true" autofocus {% endifequal %} role="tab" aria-controls="top-renting-customers-tab-content">Chart</button>
+	<button hx-get="/yry/top-renting-customers/table" {% ifequal selected "table" %} class="selected" aria-selected="true" {% endifequal %} role="tab"  aria-controls="top-renting-customers-tab-content">Table</button>
+	<button hx-get="/yry/top-renting-customers/query" {% ifequal selected "query" %} class="selected" aria-selected="true" {% endifequal %} role="tab"  aria-controls="top-renting-customers-tab-content">Query</button>
+	<button hx-get="/yry/top-renting-customers/data"  {% ifequal selected "data" %}  class="selected" aria-selected="true" {% endifequal %} role="tab"  aria-controls="top-renting-customers-tab-content">Data</button>
+	<button hx-get="/yry/top-renting-customers/chart" {% ifequal selected "chart" %} class="selected" aria-selected="true" {% endifequal %} role="tab"  aria-controls="top-renting-customers-tab-content">Chart</button>
 </section>
 
 <section id="top-renting-customers-tab-content" role="tabpanel" class="tab-content">
@@ -13,7 +13,9 @@
         {% ifequal selected "query" %} 
             <pre><code>{{ query_raw }}</code></pre> 
         {% else %}
-            {% with top_renting_customers = query_raw|query
+            {% with from_date = query_params.from_date|to-sql-date
+                    to_date = query_params.to_date|to-sql-date
+                    top_renting_customers = query_raw|query:@from_date:@to_date
                     query_error=rentals_category.error %}
                 {% if query_error %}
                     {% include "templates/rental-analytics/query-error.html" %}
