@@ -1,7 +1,7 @@
 WITH film_rented AS 
     (SELECT inventory.film_id, 
             count(*) as count_rented
-    FROM rental
+    FROM rental FOR VALID_TIME FROM ? TO ?
     LEFT JOIN inventory ON rental.inventory_id = inventory.xt$id
     GROUP BY inventory.film_id
     ORDER BY count_rented DESC
