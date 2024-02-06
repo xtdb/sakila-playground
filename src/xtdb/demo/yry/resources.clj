@@ -10,13 +10,15 @@
 (def default-query-params {:default-all-valid-time? true})
 
 (defn sql-query
-  [query]
+  [query & args]
   (try
-    {:result (xt/q (:xt-node xt-node) query default-query-params)}
+    {:result (xt/q (:xt-node xt-node) query (cond-> default-query-params
+                                              args (assoc :args args)))}
     (catch Exception e
       {:error (ex-message e)})))
 
 (selmer/add-filter! :query sql-query)
+(selmer/add-filter! :to-sql-date #(java.sql.Date/valueOf %))
 (selmer/add-filter! :resource-load (comp slurp resource))
 (selmer/add-filter! :url-load slurp)
 

@@ -13,7 +13,9 @@
         {% ifequal selected "query" %} 
             <pre><code>{{ query_raw }}</code></pre> 
         {% else %}
-            {% with rentals_category = query_raw|query
+            {% with from_date = query_params.from_date|to-sql-date
+                    to_date = query_params.to_date|to-sql-date
+                    rentals_category = query_raw|query:@from_date:@to_date
                     query_error=rentals_category.error %}
                 {% if query_error %}
                     {% include "templates/rental-analytics/query-error.html" %}
