@@ -25,7 +25,7 @@
                               (dissoc doc :xt/valid-from :xt/valid-to)]))))))
 
 (def xt-node
-  (let [node (xtn/start-node {})]
+  (let [node (xtn/start-node {:http-server {}})]
     (doseq [file (sort (.listFiles (io/file "resources/sakila")))]
       (submit-file! node file))
 
