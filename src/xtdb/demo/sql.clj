@@ -227,6 +227,17 @@
       {:current-time (Instant/ofEpochMilli (parse-long valid-time))
        :at-tx (tx-id-as-of (Instant/ofEpochMilli (parse-long system-time)))})))
 
+(defn time-slider [label input-name start-time end-time]
+  [:div
+   [:label {:style "display:inline-block; vertical-align:middle; margin-right:15px"} label]
+   [:input {:style "display:inline-block; vertical-align:middle; width:95%;"
+            :onchange "htmx.trigger('#query-form', 'submit')"
+            :name input-name
+            :type "range"
+            :min (inst-ms start-time)
+            :max (inst-ms end-time)
+            :value  (inst-ms end-time)}]])
+
 (defn ^{:uri-template "queries/{file}"} query-file-resource [{:keys [path-params]}]
   (let [{:strs [file]} path-params
         {:keys [file-name, title, desc] :as query} (parse-sql-file (io/file "sql" "queries" file))]
@@ -247,25 +258,8 @@
                        :hx-get "",
                        :hx-target "#query-results",
                        :hx-select "#query-results"}
-                [:div
-                 ;; min/max vals?
-                 [:label {:style "display:inline-block; vertical-align:middle; margin-right:5px"} "st"]
-                 [:input {:style "display:inline-block; vertical-align:middle; width:auto"
-                          :onchange "htmx.trigger('#query-form', 'submit')"
-                          :name "system-time"
-                          :type "range"
-                          :min (inst-ms history/start-time)
-                          :max (inst-ms end-time)
-                          :value  (inst-ms end-time)}]]
-                [:div
-                 [:label {:style "display:inline-block; vertical-align:middle;  margin-right:5px"} "vt"]
-                 [:input {:style "display:inline-block; vertical-align:middle; width:auto"
-                          :onchange "htmx.trigger('#query-form', 'submit')"
-                          :name "valid-time"
-                          :type "range"
-                          :min (inst-ms history/start-time)
-                          :max (inst-ms end-time)
-                          :value (inst-ms end-time)}]]
+                (time-slider "st" "system-time" history/start-time end-time)
+                (time-slider "vt" "valid-time" history/start-time end-time)
                 (sql-editor query)
                 (parameter-view query req)
                 [:div {:id "query-results"}

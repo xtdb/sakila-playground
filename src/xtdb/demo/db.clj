@@ -63,9 +63,8 @@
 (def xt-node
   (let [node (xtn/start-node {})]
     (log/info "Loading data into XTDB...")
-    ((requiring-resolve `xtdb.demo.history/insert-into-node) node)
-    #_
-    (doseq [file (sort (.listFiles (io/file "resources/sakila")))]
+    ((requiring-resolve `xtdb.demo.history/setup-node) node 42)
+    #_(doseq [file (sort (.listFiles (io/file "resources/sakila")))]
       (submit-file! node file))
     (log/info "Sakila playground started!")
     {:xt-node node
