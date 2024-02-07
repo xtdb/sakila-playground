@@ -11,7 +11,8 @@
 (def ^:dynamic ^Random *rng* (Random. 42))
 (defn rand [] (.nextDouble *rng*))
 (defn rand-int [n] (.nextInt *rng* n))
-(defn rand-nth [coll] (nth coll (rand-int (count coll))))
+(defn rand-nth [coll] (if (indexed? coll) (nth coll (rand-int (count coll))) (recur (vec coll))))
+(defn rand-nth-or-nil [coll] (when (seq coll) (rand-nth coll)))
 (defn shuffle [coll] (Collections/shuffle coll *rng*))
 
 (defn foreign-key? [col-kw]
@@ -76,29 +77,79 @@
 (defn add-records [history table new-records]
   (let [foreign-deps (mapcat find-foreign-deps new-records)
         [history ops] (satisfy-foreign-deps history foreign-deps)
-        history (update-in history [table :remaining-ids] #(reduce disj % (map :xt/id new-records)))]
+        update-table
+        (fn [{:keys [remaining-ids, state] :as table-model} record]
+          (let [{:xt/keys [id]} record]
+            (-> table-model
+                (assoc :remaining-ids (disj remaining-ids id)
+                       :state (assoc state id record)
+                       :next-id (max (:next-id table-model 0) (inc id))))))
+        history (update history table #(reduce update-table % new-records))]
     [history (conj ops (insert-op table new-records))]))
 
-(defn tx-add-stock [history]
+(defn tx-add-stock [history _time]
   ;; find inventory for some film-ids, satisfy its films (and dependents like actors, actor films, categories, category films)
   (let [n-records (inc (rand-int 16))
         {:keys [inventory]} history
         {:keys [remaining-ids, sample-state]} inventory
-        new-records (map sample-state (take n-records remaining-ids))]
+        new-records (map sample-state (take n-records remaining-ids))
+        history (reduce (fn [history record] (update history :available-inventory (fnil conj #{}) (:xt/id record))) history new-records)]
     (add-records history :inventory new-records)))
 
-(defn tx-new-customer [history]
+(defn tx-add-customer [history _time]
   (let [{:keys [customer]} history
         {:keys [remaining-ids, sample-state]} customer
         new-records (map sample-state (take 1 remaining-ids))]
     (add-records history :customer new-records)))
 
-(defn tx-start-rental [history]
+(defn- mark-rental [history rental]
+  (let [{rental-id :xt/id, :keys [inventory-id]} rental]
+    (-> history
+        (update :current-rentals (fnil conj #{}) rental-id)
+        (update :available-inventory disj inventory-id))))
+
+(defn- mark-return [history rental]
+  (let [{rental-id :xt/id, :keys [inventory-id]} rental]
+    (-> history
+        (update :current-rentals disj rental-id)
+        (update :available-inventory conj inventory-id))))
+
+(defn tx-add-rental [history _time]
   (let [{:keys [rental]} history
         {:keys [remaining-ids, sample-state]} rental
-        new-records (map sample-state (take 1 remaining-ids))]
-    ;; you want to defer returning the rental here by some time period?
+        new-records (map sample-state (take 1 remaining-ids))
+        history (reduce (fn [history record]
+                          (if (nil? (:return_date record))
+                            (mark-rental history rental)
+                            history))
+                        history
+                        new-records)]
     (add-records history :rental new-records)))
+
+(defn tx-start-rental [history time]
+  (let [{:keys [available-inventory, rental, customer]} history
+        inventory-id (rand-nth-or-nil available-inventory)
+        customer-id (some-> (keys (:state customer)) not-empty rand-nth)
+        rental-id (:next-id rental)
+        record {:xt/id rental-id
+                :inventory_id inventory-id,
+                :customer_id customer-id,
+                :staff_id 1,
+                :rental_date time}]
+    (if (and inventory-id customer-id)
+      (let [history (mark-rental history record)]
+        (add-records history :rental [record]))
+      [history []])))
+
+(defn tx-end-rental [history time]
+  (let [{:keys [current-rentals, rental]} history
+        rental-id (rand-nth-or-nil current-rentals)]
+    (if-not rental-id
+      [history []]
+      (let [record (-> rental :state (get rental-id))
+            new-record (assoc record :return_date time)
+            history (mark-return history record)]
+        (add-records history :rental [new-record])))))
 
 (defn satisfy-init-deps [history]
   (reduce-kv
@@ -156,29 +207,50 @@
        (satisfy-init-deps)))
 
 (def start-time (Instant/parse "2023-01-01T00:00:00Z"))
+
 (def end-time (Instant/parse "2024-02-05T00:00:00Z"))
-(def tx-time (Duration/parse "PT24H"))
+
+(def tx-time
+  "The amount of time between transactions"
+  (Duration/parse "PT4H"))
+
+(def retry-count
+  "The number of times the generator can try again if it is unable to generate a transaction for the given time."
+  10)
 
 (def transactions-weighted
   ;; poor mans weighted sampler, I have code for an alias sampler but would need to bring in a minmaxpriorityqueue dep
   (->> {#'tx-add-stock 1
-        #'tx-new-customer 2}
+        #'tx-add-customer 2
+        #'tx-add-rental 4
+        #'tx-start-rental 4
+        #'tx-end-rental 4}
        (mapcat (fn [[f weight]] (repeat weight f)))
        vec))
 
 (defn generate-transactions [history]
   (loop [time (.plus start-time tx-time)
          h history
-         transactions []]
+         transactions []
+         retry-counter retry-count]
     (if (<= (compare end-time time) 0)
       transactions
-      (let [;; todo weights
-            gen-transaction (rand-nth transactions-weighted)
-            [h operations] (gen-transaction h)]
-        (recur (.plus time tx-time)
-               h
-               (conj transactions {:opts {:system-time time}
-                                   :tx-ops (vec (mapcat :xt-dml operations))}))))))
+      (let [gen-transaction (rand-nth transactions-weighted)
+            current-time (.plus time tx-time)
+            [h operations] (gen-transaction h current-time)]
+        (cond
+          (seq operations)
+          (recur current-time
+                 h
+                 (conj transactions {:opts {:system-time time}
+                                     :tx-ops (vec (mapcat :xt-dml operations))})
+                 retry-count)
+
+          (= 0 retry-count)
+          (recur current-time h transactions retry-count)
+
+          :else
+          (recur time h transactions (dec retry-counter)))))))
 
 (defn setup-node [node seed]
   (binding [*rng* (Random. seed)]
@@ -197,7 +269,7 @@
   (def h (init-history))
   (keys h)
   (update-vals h (comp count :remaining-ids))
-  (second (tx-new-customer h))
+  (second (tx-add-customer h))
   )
 
 ;; films are added over time
