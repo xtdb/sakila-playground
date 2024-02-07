@@ -123,8 +123,12 @@
                             (mark-rental history rental)
                             history))
                         history
-                        new-records)]
-    (add-records history :rental new-records)))
+                        new-records)
+        rental-id-set (set (map :xt/id new-records))
+        payment-records (->> history :payment :sample-state vals (filter (comp rental-id-set :rental_id)))
+        [history operations] (add-records history :rental new-records)
+        [history payment-operations] (add-records history :payment payment-records)]
+    [history (into operations payment-operations)]))
 
 (defn tx-start-rental [history time]
   (let [{:keys [available-inventory, rental, customer]} history
@@ -142,14 +146,27 @@
       [history []])))
 
 (defn tx-end-rental [history time]
-  (let [{:keys [current-rentals, rental]} history
+  (let [{:keys [current-rentals, payment, inventory, rental, film]} history
         rental-id (rand-nth-or-nil current-rentals)]
     (if-not rental-id
       [history []]
-      (let [record (-> rental :state (get rental-id))
-            new-record (assoc record :return_date time)
-            history (mark-return history record)]
-        (add-records history :rental [new-record])))))
+      (let [rental-record (-> rental :state (get rental-id))
+            inventory-id (:inventory_id rental-record)
+            inventory-record (-> inventory :state (get inventory-id))
+            film-id (:film_id inventory-record)
+            new-rental-record (assoc rental-record :return_date time)
+            film-record (-> film :state (get film-id))
+            payment-record
+            {:xt/id (:next-id payment),
+             :amount (:rental_rate film-record)
+             :customer_id (:customer_id rental-record)
+             :payment_date time
+             :rental_id (:xt/id rental-record)
+             :staff_id (:staff_id rental-record)}
+            history (mark-return history rental-record)
+            [history operations] (add-records history :rental [new-rental-record])
+            [history payment-operations] (add-records history :payment [payment-record])]
+        [history (into operations payment-operations)]))))
 
 (defn satisfy-init-deps [history]
   (reduce-kv
@@ -221,10 +238,10 @@
 (def transactions-weighted
   ;; poor mans weighted sampler, I have code for an alias sampler but would need to bring in a minmaxpriorityqueue dep
   (->> {#'tx-add-stock 1
-        #'tx-add-customer 2
-        #'tx-add-rental 4
-        #'tx-start-rental 4
-        #'tx-end-rental 4}
+        #'tx-add-customer 4
+        #'tx-add-rental 16
+        #'tx-start-rental 16
+        #'tx-end-rental 16}
        (mapcat (fn [[f weight]] (repeat weight f)))
        vec))
 
