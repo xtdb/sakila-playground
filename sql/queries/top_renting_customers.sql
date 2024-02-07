@@ -5,7 +5,6 @@ SELECT top_user.customer_id,
        customer.first_name,
        customer.email
 FROM (SELECT rental.customer_id,
-             DATE_DIFF(rental.return_date, rental.rental_date, 'DAY')
              count(*) AS films_rented
       FROM rental
       WHERE rental.return_date IS NOT NULL
