@@ -149,12 +149,17 @@
        [:h2 "Exception!"]
        [:pre (with-out-str (binding [*err* *out*] (clojure.repl/pst t)))]])))
 
+(defn assume-one [decoded-qry-param]
+  (if (sequential? decoded-qry-param)
+    (last decoded-qry-param)
+    decoded-qry-param))
+
 (defn satisfy-params [query req]
   (let [{:keys [params, defaults]} query
         {query-params :ring.request/query} req
         query-params (some-> query-params form-decode)]
     (->> (for [[param t] params
-               :let [query-param (get query-params (name param))]]
+               :let [query-param (assume-one (get query-params (name param)))]]
            [param (case t
                     :str query-param
                     :inst (try
@@ -186,9 +191,6 @@
          [:div {:style "padding:10px"}
           (param-label param t)
           (param-input param t (satisfied-params param))])])))
-
-(defn assume-one [decoded-qry-param]
-  (if (sequential? decoded-qry-param) (first decoded-qry-param) decoded-qry-param))
 
 (defn specialise-query [query req]
   (let [{user-sql "sql"} (some-> req :ring.request/query form-decode)
@@ -236,7 +238,7 @@
             :type "range"
             :min (inst-ms start-time)
             :max (inst-ms end-time)
-            :value  (inst-ms end-time)}]])
+            :value (inst-ms end-time)}]])
 
 (defn ^{:uri-template "queries/{file}"} query-file-resource [{:keys [path-params]}]
   (let [{:strs [file]} path-params
@@ -257,7 +259,8 @@
                        :hx-trigger "submit"
                        :hx-get "",
                        :hx-target "#query-results",
-                       :hx-select "#query-results"}
+                       :hx-select "#query-results"
+                       :hx-swap "outerHTML"}
                 (time-slider "st" "system-time" history/start-time end-time)
                 (time-slider "vt" "valid-time" history/start-time end-time)
                 (sql-editor query)
