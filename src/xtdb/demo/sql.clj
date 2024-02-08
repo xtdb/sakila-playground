@@ -91,6 +91,7 @@
         (page-response
           "queries"
           [:div
+           [:h2 [:a {:href "/"} "../"] "queries"]
            [:table
             (for [[category queries]
                   (->> (file-seq (io/file "sql/queries"))
@@ -252,7 +253,7 @@
             (page-response
               (str "queries/" file-name)
               [:div
-               [:h1 [:a {:href "/sql/queries"} "queries"] "/" file-name]
+               [:h2 [:a {:href "/"} "../"] [:a {:href "/sql/queries"} "queries"] "/" file-name]
                (when title [:h2 title])
                (when desc [:pre desc])
                [:form {:id "query-form",
