@@ -50,7 +50,7 @@
         col-list (str/join "," (map sql-munge cols))
         value-placeholders (str/join "," (repeat (count cols) "?"))]
 
-    {:xt-dml (mapv #(xt/put table %) records)
+    {:xt-dml [(into [:put-docs table] records)]
      :sql (format "INSERT INTO %s (%s) VALUES (%s)" table-name col-list value-placeholders)
      :args [(mapv (fn [record] (mapv record cols)) records)]}))
 
@@ -139,7 +139,8 @@
                 :inventory_id inventory-id,
                 :customer_id customer-id,
                 :staff_id 1,
-                :rental_date time}]
+                :rental_date time
+                :return_date nil}]
     (if (and inventory-id customer-id)
       (let [history (mark-rental history record)]
         (add-records history :rental [record]))
@@ -189,6 +190,12 @@
     history
     history))
 
+(defn fix-record [table-name record]
+  (case table-name
+    ;; absent handling is wierd at time of writing
+    "rental" (if (:return_date record) record (assoc record :return_date nil))
+    record))
+
 (defn init-history []
   (->> (for [table-name ["actor"
                          "address"
@@ -212,7 +219,7 @@
                        (let [read-next (fn [] (edn/read {:eof nil, :readers {'time/instant #(Instant/parse %)}} pb-rdr))]
                          (loop []
                            (when-some [obj (read-next)]
-                             (swap! file-state assoc (:xt/id obj) obj)
+                             (swap! file-state assoc (:xt/id obj) (fix-record table-name obj))
                              (recur)))))]]
          (case table-name
            ;; reference tables, do not see transactions (for now)
@@ -283,13 +290,13 @@
   (binding [*rng* (Random. seed)]
     (let [initial-history (init-history)
           transactions (generate-transactions initial-history)]
-      (doseq [[table {:keys [init-state]}] initial-history]
+      (doseq [[table {:keys [init-state]}] initial-history
+              :when init-state]
         (->> init-state
              (sort-by key)
              (map val)
-             (map (fn [row] (xt/put table row)))
              (partition-all 512)
-             (run! (fn [puts] (xt/submit-tx node puts {:system-time start-time})))))
+             (run! (fn [puts] (xt/submit-tx node [(into [:put-docs table] puts)] {:system-time start-time})))))
       (run! #(xt/submit-tx node (:tx-ops %) (:opts %)) transactions))))
 
 (comment

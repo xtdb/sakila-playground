@@ -13,7 +13,7 @@
            (java.time Instant ZonedDateTime)))
 
 (defn q [q & [opts]]
-  (db/q q (assoc opts :key-fn :snake_case)))
+  (db/q q (assoc opts :key-fn :snake-case-keyword)))
 
 (defn parse-comment-line [comment-line]
   (let [[kw arg] (str/split (subs comment-line 3) #"\s+" 2)]

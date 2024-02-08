@@ -279,9 +279,10 @@
 
             (xt/submit-tx
               (:xt-node xt-node)
-              [[:update '{:table :rental
-                          :bind [{:xt$id $rental-id}]
-                          :set {:return_date $return-date}}
+              [[:update
+                '{:table :rental
+                  :bind [{:xt/id $rental-id}]
+                  :set {:return_date $return-date}}
                 {:rental-id rental-id
                  :return-instant return-date}]])
 
