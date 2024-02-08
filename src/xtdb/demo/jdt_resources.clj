@@ -22,12 +22,10 @@
   "SELECT DISTINCT f.xt$id AS id, f.title, f.description, COUNT(i.xt$id) AS inventory_count
 FROM film f
 JOIN inventory i ON (i.film_id = f.xt$id AND i.store_id = ?)
-LEFT JOIN rental r ON (r.inventory_id = i.xt$id AND r.xt$rental_date <= ?)
+LEFT JOIN rental r ON (r.inventory_id = i.xt$id)
+WHERE r.return_date IS NULL
 GROUP BY f.xt$id, f.title, f.description
 ORDER BY f.title")
-
-;; NOTE: the data model does NOT include historic inventory or film availability information
-;; NOTE: this avoids using CURRENT_TIME because not all tables are loaded with valid-time, meaning explicit `FOR VALID_TIME AS OF ?` transformations would be needed (otherwise ~atemporal tables will appear empty in valid-time past, given XTDB's CURRENT_TIME override behaviour)
 
 (defn iso-string->instant [iso-string]
   (let [localDateTime (LocalDateTime/parse iso-string (DateTimeFormatter/ISO_LOCAL_DATE_TIME))
@@ -62,7 +60,7 @@ ORDER BY f.title")
              st (get-timestamp query-params "as_of_timestamp")
              vt (get-timestamp query-params "vt_timestamp")
              rows (q select-available-films
-                     {:args [store-id vt]
+                     {:args [store-id]
                       :basis {:at-tx (TransactionKey. -1 st)}})
              filter-str (get query-params "q")]
          (if filter-str
