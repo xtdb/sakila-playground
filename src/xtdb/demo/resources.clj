@@ -284,7 +284,7 @@
                   :bind [{:xt/id $rental-id}]
                   :set {:return_date $return-date}}
                 {:rental-id rental-id
-                 :return-instant return-date}]])
+                 :return-date return-date}]])
 
             ;; returning 204 causes HTMX to not swap, even if a hx-swap=delete is set.
             {:ring.response/status 200}))}}})))
