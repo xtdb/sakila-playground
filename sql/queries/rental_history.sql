@@ -1,6 +1,6 @@
 -- :category "Custom"
 -- :params {:id :long}
--- :defaults {:id 42}
+-- :defaults {:id 88}
 -- :param-order [:id]
 -- :desc "History of a particular tape"
 -- :col-order [:title :last_name :first_name, :rental_date, :return_date]
