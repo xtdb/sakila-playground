@@ -4,8 +4,8 @@
  :deps {org.clojure/clojure {:mvn/version "1.11.1"}
         integrant/integrant {:mvn/version "0.8.1"}
         integrant/repl {:mvn/version "0.3.3"}
-        com.xtdb/xtdb-api {:mvn/version "2.0.0-SNAPSHOT"}
-        com.xtdb/xtdb-core {:mvn/version "2.0.0-SNAPSHOT"}
+        com.xtdb.labs/xtdb-api {:mvn/version "2.0.0-SNAPSHOT"}
+        com.xtdb.labs/xtdb-core {:mvn/version "2.0.0-SNAPSHOT"}
         ch.qos.logback/logback-classic {:mvn/version "1.4.11"}
 
         org.clojure/data.xml {:mvn/version "0.2.0-alpha8"}
