@@ -237,7 +237,7 @@
 
 (def tx-time
   "The amount of time between transactions"
-  (Duration/parse "PT4H"))
+  (Duration/parse "PT1H"))
 
 (def retry-count
   "The number of times the generator can try again if it is unable to generate a transaction for the given time."
