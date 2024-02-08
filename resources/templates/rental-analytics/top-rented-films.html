@@ -1,10 +1,10 @@
 <h3>Top Rented Films</h3>
 
 <section class="tab-list" role="tablist">
-	<button hx-get="/yry/top-rented-films/table" {% ifequal selected "table" %} class="selected" aria-selected="true" autofocus {% endifequal %} role="tab"  aria-controls="top-rented-films-tab-content">Table</button>
-	<button hx-get="/yry/top-rented-films/query" {% ifequal selected "query" %} class="selected" aria-selected="true" autofocus {% endifequal %} role="tab"  aria-controls="top-rented-films-tab-content">Query</button>
-	<button hx-get="/yry/top-rented-films/data"  {% ifequal selected "data" %} class="selected" aria-selected="true" autofocus {% endifequal %} role="tab" aria-controls="top-rented-films-tab-content">Data</button>
-	<button hx-get="/yry/top-rented-films/chart"  {% ifequal selected "chart" %} class="selected" aria-selected="true" autofocus {% endifequal %} role="tab" aria-controls="top-rented-films-tab-content">Chart</button>
+	<button hx-get="/yry/top-rented-films/table" {% ifequal selected "table" %} class="selected" aria-selected="true"  {% endifequal %} role="tab"  aria-controls="top-rented-films-tab-content">Table</button>
+	<button hx-get="/yry/top-rented-films/query" {% ifequal selected "query" %} class="selected" aria-selected="true"  {% endifequal %} role="tab"  aria-controls="top-rented-films-tab-content">Query</button>
+	<button hx-get="/yry/top-rented-films/data"  {% ifequal selected "data" %} class="selected" aria-selected="true"  {% endifequal %} role="tab" aria-controls="top-rented-films-tab-content">Data</button>
+	<button hx-get="/yry/top-rented-films/chart"  {% ifequal selected "chart" %} class="selected" aria-selected="true"  {% endifequal %} role="tab" aria-controls="top-rented-films-tab-content">Chart</button>
 </section>
 
 <section id="top-rented-films-tab-content" role="tabpanel" class="tab-content">

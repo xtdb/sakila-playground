@@ -1,10 +1,10 @@
 <h3>Rentals per Category</h3>
 
 <section class="tab-list" role="tablist">
-	<button hx-get="/yry/rental-per-category/table" {% ifequal selected "table" %} class="selected" aria-selected="true" autofocus {% endifequal %} role="tab"  aria-controls="category-tab-content">Table</button>
-	<button hx-get="/yry/rental-per-category/query" {% ifequal selected "query" %} class="selected" aria-selected="true" autofocus {% endifequal %} role="tab"  aria-controls="category-tab-content">Query</button>
-	<button hx-get="/yry/rental-per-category/data"  {% ifequal selected "data" %} class="selected" aria-selected="true" autofocus {% endifequal %} role="tab" aria-controls="category-tab-content">Data</button>
-	<button hx-get="/yry/rental-per-category/chart"  {% ifequal selected "chart" %} class="selected" aria-selected="true" autofocus {% endifequal %} role="tab" aria-controls="category-tab-content">Chart</button>
+	<button hx-get="/yry/rental-per-category/table" {% ifequal selected "table" %} class="selected" aria-selected="true" {% endifequal %} role="tab"  aria-controls="category-tab-content">Table</button>
+	<button hx-get="/yry/rental-per-category/query" {% ifequal selected "query" %} class="selected" aria-selected="true" {% endifequal %} role="tab"  aria-controls="category-tab-content">Query</button>
+	<button hx-get="/yry/rental-per-category/data"  {% ifequal selected "data" %} class="selected" aria-selected="true" {% endifequal %} role="tab" aria-controls="category-tab-content">Data</button>
+	<button hx-get="/yry/rental-per-category/chart"  {% ifequal selected "chart" %} class="selected" aria-selected="true" {% endifequal %} role="tab" aria-controls="category-tab-content">Chart</button>
 </section>
 
 <section id="category-tab-content" role="tabpanel" class="tab-content">
