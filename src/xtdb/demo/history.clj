@@ -216,7 +216,7 @@
                              (recur)))))]]
          (case table-name
            ;; reference tables, do not see transactions (for now)
-           ("city" "country" "language" "staff" "store" "category")
+           ("city" "country" "language" "staff" "store" "category" "actor" "film_actor" "film_category")
            [(keyword table-name)
             {:init-state @file-state
              :sample-state @file-state,
