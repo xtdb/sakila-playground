@@ -17,8 +17,11 @@
     (catch Exception e
       {:error (ex-message e)})))
 
+(defn ->sql-date [x]
+  (when (and (string? x) (seq x)) (java.sql.Date/valueOf x)))
+
 (selmer/add-filter! :query sql-query)
-(selmer/add-filter! :to-sql-date #(java.sql.Date/valueOf %))
+(selmer/add-filter! :to-sql-date ->sql-date)
 (selmer/add-filter! :resource-load (comp slurp resource))
 (selmer/add-filter! :url-load slurp)
 
