@@ -85,7 +85,7 @@
   (apply xt/q (:xt-node xt-node) args))
 
 (defn q [q & [opts]]
-  (xt/q (:xt-node xt-node) q (assoc opts :key-fn :snake-case-kw)))
+  (xt/q (:xt-node xt-node) q (assoc opts :key-fn :snake_case)))
 
 (defn sql-op [& args]
   (xt/submit-tx (:xt-node xt-node) [[:sql (first args)]]))
