@@ -17,25 +17,17 @@
     (log/debugf "Submitting '%s' table" (name table-name))
     (with-open [rdr (io/reader file)]
       (doseq [line-batch (->> (line-seq rdr)
-                             (partition-all 1000))]
+                              (partition-all 1000))]
         (xt/submit-tx node
           (for [line line-batch]
             (let [data (edn/read-string {:readers {'time/instant #(Instant/parse %)}}
                                         line)
                   valid-from (:xt/valid-from data)
-                  valid-to (:xt/valid-to data)
-                  enrich
-                  (cond
-                    (and valid-from valid-to)
-                    #(xt/during % valid-from valid-to)
-                    valid-from
-                    #(xt/starting-from % valid-from)
-                    valid-to
-                    #(xt/until % valid-to)
-                    :else
-                    identity)]
-              (-> (xt/put table-name data)
-                  enrich))))))))
+                  valid-to (:xt/valid-to data)]
+              [:put-docs (cond-> {:into table-name}
+                           valid-from (assoc :xt/valid-from valid-from)
+                           valid-to (assoc :xt/valid-to valid-to))
+               (dissoc data :xt/valid-from :xt/valid-to)])))))))
 
 #_(defn submit-file! [node ^File file]
   (let [table-name (-> (.getName file)
@@ -87,7 +79,7 @@
   (apply xt/q (:xt-node xt-node) args))
 
 (defn sql-op [& args]
-  (xt/submit-tx (:xt-node xt-node) [(xt/sql-op (first args))]))
+  (xt/submit-tx (:xt-node xt-node) [[:sql (first args)]]))
 
 (comment
   ;; `SELECT title, description, length FROM film WHERE title = 'APOCALYPSE FLAMINGOS'`
