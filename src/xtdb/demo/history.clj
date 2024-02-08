@@ -168,6 +168,14 @@
             [history payment-operations] (add-records history :payment [payment-record])]
         [history (into operations payment-operations)]))))
 
+(defn tx-change-price [history _time]
+  (let [{:keys [film]} history
+        film (rand-nth-or-nil (vals (:state film)))]
+    (if film
+      (let [new-film (update film :rental_rate + (rand-nth [0.25, 0.5, 1.0, 1.5, 2.0]))]
+        (add-records history :film [new-film]))
+      [history []])))
+
 (defn satisfy-init-deps [history]
   (reduce-kv
     (fn [history _table {:keys [state]}]
@@ -237,7 +245,9 @@
 
 (def transactions-weighted
   ;; poor mans weighted sampler, I have code for an alias sampler but would need to bring in a minmaxpriorityqueue dep
-  (->> {#'tx-add-stock 1
+  ;; should not matter here
+  (->> {#'tx-add-stock 2
+        #'tx-change-price 1
         #'tx-add-customer 4
         #'tx-add-rental 16
         #'tx-start-rental 16
