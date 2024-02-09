@@ -7,7 +7,7 @@
    [selmer.parser :as selmer]
    [clojure.java.io :refer [resource]]))
 
-(def default-query-params {:default-all-valid-time? true})
+(def default-query-params {:default-all-valid-time? true, :key-fn :snake-case-keyword})
 
 (defn sql-query
   [query & args]

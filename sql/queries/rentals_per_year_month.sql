@@ -1,8 +1,8 @@
 -- :category "Custom"
 WITH rentals_ym AS (
-    SELECT EXTRACT (YEAR FROM rental.xt$valid_from) as year,
-           EXTRACT (MONTH FROM rental.xt$valid_from) as month,
-           rental.xt$valid_from as ts
+    SELECT EXTRACT (YEAR FROM rental.rental_date) as year,
+           EXTRACT (MONTH FROM rental.rental_date) as month,
+           rental.rental_date as ts
     FROM rental)
 SELECT A.year, A.month, count(*) as rented, max(A.ts) as ts
 FROM rentals_ym as A

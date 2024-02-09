@@ -14,7 +14,7 @@ FROM
       (SELECT COUNT(1) FROM inventory i WHERE i.film_id = f.xt$id) units,
       (SELECT SUM(p.amount)
        FROM inventory i
-       JOIN rental FOR ALL VALID_TIME r ON r.xt$id = i.rental_id
+       JOIN rental r ON r.xt$id = i.rental_id
        JOIN payment p ON p.rental_id = r.xt$id
        WHERE i.film_id = f.xt$id) revenue
     FROM film AS f

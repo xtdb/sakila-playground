@@ -60,11 +60,17 @@
             (.write writer json-line)
             (.write writer "\n")))))))
 
+(def use-history true)
+
+(def history-seed 42)
+
 (def xt-node
   (let [node (xtn/start-node {})]
     (log/info "Loading data into XTDB...")
-    (doseq [file (sort (.listFiles (io/file "resources/sakila")))]
-      (submit-file! node file))
+    (if use-history
+      ((requiring-resolve `xtdb.demo.history/setup-node) node history-seed)
+      (doseq [file (sort (.listFiles (io/file "resources/sakila")))]
+        (submit-file! node file)))
     (log/info "Sakila playground started!")
     {:xt-node node
      :ids (atom (into {}
@@ -77,6 +83,9 @@
 
 (defn q [& args]
   (apply xt/q (:xt-node xt-node) args))
+
+(defn q [q & [opts]]
+  (xt/q (:xt-node xt-node) q (assoc opts :key-fn :snake-case-keyword)))
 
 (defn sql-op [& args]
   (xt/submit-tx (:xt-node xt-node) [[:sql (first args)]]))

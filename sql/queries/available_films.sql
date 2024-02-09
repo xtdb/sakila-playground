@@ -8,7 +8,7 @@ SELECT
 FROM store s
 JOIN inventory i ON i.store_id = s.xt$id
 JOIN film f ON f.xt$id = i.film_id
-LEFT JOIN rental r ON r.inventory_id = i.xt$id
+LEFT JOIN rental r ON r.inventory_id = i.xt$id AND r.return_date IS NULL
 WHERE r.xt$id IS NULL
 GROUP BY s.xt$id, f.title
 ORDER BY store_id, title
