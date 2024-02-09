@@ -63,7 +63,7 @@
      (fn [[history operations] [fk id]]
        (let [table (foreign-table fk)
              {:keys [state, sample-state]} (history table)]
-         (if (or (contains? state id) (cycle-break [table id]))
+         (if (or (contains? state id) (nil? (sample-state id)) (cycle-break [table id]))
            [history operations]
            (let [self-fdeps (find-foreign-deps (sample-state id))
                  [history foreign-operations] (satisfy-foreign-deps history self-fdeps (conj cycle-break [table id]))]
@@ -177,19 +177,6 @@
         (add-records history :film [new-film]))
       [history []])))
 
-(defn satisfy-init-deps [history]
-  (reduce-kv
-    (fn [history _table {:keys [state]}]
-      (reduce-kv
-        (fn [history _id record]
-          (let [foreign-deps (find-foreign-deps record)
-                [history] (satisfy-foreign-deps history foreign-deps)]
-            history))
-        history
-        state))
-    history
-    history))
-
 (defn fix-record [table-name record]
   (case table-name
     ;; absent handling is wierd at time of writing
@@ -235,8 +222,7 @@
              :sample-state @file-state,
              :remaining-ids (set (keys @file-state))
              :state {}}]))
-       (into {})
-       (satisfy-init-deps)))
+       (into {})))
 
 (def start-time (Instant/parse "2023-01-01T00:00:00Z"))
 
