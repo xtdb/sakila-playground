@@ -1,12 +1,12 @@
 WITH rental_categories AS
      (SELECT film_category.category_id as category_id,
              count(*) as films_rented
-      FROM rental 
+      FROM rental
       LEFT JOIN inventory ON rental.inventory_id = inventory.xt$id
       LEFT JOIN film_category ON inventory.film_id = film_category.film_id
-      WHERE rental.xt$valid_from >= COALESCE(?, rental.xt$valid_from) 
-          AND 
-          rental.xt$valid_from<=COALESCE(?, rental.xt$valid_from)
+     WHERE rental.rental_date >= COALESCE(?, rental.rental_date)
+       AND
+       rental.rental_date <= COALESCE(?, rental.rental_date)
       GROUP BY film_category.category_id)
 SELECT category.name AS category_name,
        rental_categories.category_id,
