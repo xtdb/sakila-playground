@@ -42,7 +42,7 @@
                 (from :inventory [{:xt/id inventory_id} film_id])
                 (from :film [{:xt/id film_id} title]))
         {:args {:customer_id 560}
-         :key-fn :snake-case-kw}))
+         :key-fn :snake-case-keyword}))
 
 (comment
   (for [result
@@ -63,7 +63,7 @@
                 (from :inventory [{:xt/id inventory_id} film_id])
                 (from :film [{:xt/id film_id} title]))
         {:args {:customer_id 560}
-         :key-fn :snake-case-kw})
+         :key-fn :snake-case-keyword})
 
   (xt/delete :rental 14425))
 
