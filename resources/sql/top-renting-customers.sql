@@ -1,10 +1,10 @@
 WITH top_user AS 
     (SELECT rental.customer_id, 
             count(*) AS films_rented
-    FROM rental 
-    WHERE rental.xt$valid_from >= COALESCE(?, rental.xt$valid_from) 
-        AND 
-        rental.xt$valid_from<=COALESCE(?, rental.xt$valid_from)
+    FROM rental
+    WHERE rental.rental_date >= COALESCE(?, rental.rental_date)
+      AND
+      rental.rental_date <= COALESCE(?, rental.rental_date)
     GROUP BY rental.customer_id
     ORDER BY films_rented DESC
     LIMIT 10)
