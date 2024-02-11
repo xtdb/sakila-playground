@@ -1,16 +1,44 @@
 ---
+async function postData() {
+  try {
+    const response = await fetch('http://localhost:3000/tx', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ txOps: [] }),
+    });
 
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+
+    return responseData
+  } catch (error) {
+    console.error('Error posting data:', error.message);
+  }
+}
+
+const status = await postData()
 ---
 
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
 		<title>Astro</title>
+		<script is:inline
+				src="https://unpkg.com/htmx.org@1.9.10"
+				integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+				crossorigin="anonymous" />
 	</head>
 	<body>
-		<h1>Astro</h1>
+		<div hx-get="/partial" hx-trigger=load>before</div>
+
+		<h2>XTDB Status</h2>
+		<code>{JSON.stringify(status)}</code>
 	</body>
 </html>

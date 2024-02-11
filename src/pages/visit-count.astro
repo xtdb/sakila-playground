@@ -1,0 +1,64 @@
+---
+export const partial = true;
+
+import {v4 as uuidv4} from 'uuid'
+
+async function postVisit() {
+  try {
+    const response = await fetch('http://localhost:3000/tx', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ txOps: [{
+        putDocs: [{ "xt$id": uuidv4() }],
+        into: "visits"
+      }] }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+
+    return responseData
+  } catch (error) {
+    console.error('Error posting data:', error.message);
+  }
+}
+
+const tx = await postVisit()
+
+async function fetchQuery() {
+  return fetch('http://localhost:3000/query', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: [{"from": "visits"}, {"aggregate": [{"rowCount": {"xt:call": "rowCount", "args": []}}]}],
+      queryOpts: {}
+    })
+  })
+}
+
+async function getCount() {
+
+  const response = await fetchQuery().catch((e) => console.error('Error posting data:', e.message));
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+  }
+
+  const responseData = await response.json().catch((e) => console.log('error parsing return:', e.message));
+
+  return responseData[0]["row-count"]
+}
+
+const visits = await getCount()
+---
+
+Visits: {visits}
