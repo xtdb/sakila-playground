@@ -1,5 +1,4 @@
 ;; Copyright © 2023, JUXT LTD.
-
 (ns xtdb.demo.db
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
@@ -8,7 +7,10 @@
             [xtdb.api :as xt]
             [xtdb.node :as xtn])
   (:import java.io.File
-           java.time.Instant))
+           java.time.Instant
+           (java.util TimeZone)))
+
+(TimeZone/setDefault (TimeZone/getTimeZone "UTC"))
 
 (defn submit-file! [node ^File file]
   (let [table-name (-> (.getName file)
