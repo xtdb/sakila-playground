@@ -44,13 +44,15 @@
     :xt/id "xt$id"
     (name kw)))
 
+(def ^:dynamic *valid-time* nil)
+
 (defn insert-op [table records]
-  (let [cols (-> (into #{} (mapcat keys records)))
+  (let [cols (into #{} (mapcat keys) records)
         table-name (sql-munge table)
         col-list (str/join "," (map sql-munge cols))
-        value-placeholders (str/join "," (repeat (count cols) "?"))]
-
-    {:xt-dml [(into [:put-docs table] records)]
+        value-placeholders (str/join "," (repeat (count cols) "?"))
+        table-or-opts (if *valid-time* {:into table, :valid-from *valid-time*} table)]
+    {:xt-dml [(into [:put-docs table-or-opts] records)]
      :sql (format "INSERT INTO %s (%s) VALUES (%s)" table-name col-list value-placeholders)
      :args [(mapv (fn [record] (mapv record cols)) records)]}))
 
@@ -131,43 +133,60 @@
     [history (into operations payment-operations)]))
 
 (defn tx-start-rental [history time]
-  (let [{:keys [available-inventory, rental, customer]} history
+  (let [{:keys [available-inventory, film, payment, inventory, rental, customer]} history
         inventory-id (rand-nth-or-nil available-inventory)
         customer-id (some-> (keys (:state customer)) not-empty rand-nth)
         rental-id (:next-id rental)
-        record {:xt/id rental-id
+        inventory-record (-> inventory :state (get inventory-id))
+        film-id (:film_id inventory-record)
+        film-record (-> film :state (get film-id))
+        rental-record {:xt/id rental-id
                 :inventory_id inventory-id,
                 :customer_id customer-id,
                 :staff_id 1,
                 :rental_date time
-                :return_date nil}]
+                :return_date nil}
+        payment-record
+        {:xt/id (:next-id payment),
+         :amount (:rental_rate film-record)
+         :customer_id (:customer_id rental-record)
+         :payment_date time
+         :rental_id (:xt/id rental-record)
+         :staff_id (:staff_id rental-record)}]
     (if (and inventory-id customer-id)
-      (let [history (mark-rental history record)]
-        (add-records history :rental [record]))
+      (let [[history operations] (add-records history :rental [rental-record])
+            history (mark-rental history rental-record)
+            [history payment-operations] (add-records history :payment [payment-record])]
+        [history (into operations payment-operations)])
       [history []])))
 
 (defn tx-end-rental [history time]
-  (let [{:keys [current-rentals, payment, inventory, rental, film]} history
+  (let [{:keys [current-rentals,rental]} history
         rental-id (rand-nth-or-nil current-rentals)]
     (if-not rental-id
       [history []]
       (let [rental-record (-> rental :state (get rental-id))
-            inventory-id (:inventory_id rental-record)
-            inventory-record (-> inventory :state (get inventory-id))
-            film-id (:film_id inventory-record)
             new-rental-record (assoc rental-record :return_date time)
-            film-record (-> film :state (get film-id))
-            payment-record
-            {:xt/id (:next-id payment),
-             :amount (:rental_rate film-record)
-             :customer_id (:customer_id rental-record)
-             :payment_date time
-             :rental_id (:xt/id rental-record)
-             :staff_id (:staff_id rental-record)}
-            history (mark-return history rental-record)
-            [history operations] (add-records history :rental [new-rental-record])
-            [history payment-operations] (add-records history :payment [payment-record])]
-        [history (into operations payment-operations)]))))
+            history (mark-return history rental-record)]
+        (add-records history :rental [new-rental-record])))))
+
+(defn tx-retro-active-return [history time]
+  (binding [*valid-time* nil]
+    (let [{:keys [current-rentals, rental]} history
+          rental-id (rand-nth-or-nil current-rentals)]
+      (if-not rental-id
+        [history []]
+        (let [rental-record (-> rental :state (get rental-id))
+              new-time (.minus ^Instant time
+                               (-> (Duration/ofDays (inc (rand-int 4)))
+                                   (.plus (Duration/ofHours (inc (rand-int 23))))
+                                   (.plus (Duration/ofMinutes (inc (rand-int 59))))
+                                   (.plus (Duration/ofSeconds (inc (rand-int 59))))))
+              valid-time (if (<= (compare new-time (:rental_date rental-record)) 0) time new-time)
+              _ (set! *valid-time* valid-time)
+              new-rental-record (assoc rental-record :return_date valid-time)
+              history (mark-return history rental-record)]
+          (add-records history :rental [new-rental-record]))))))
 
 (defn tx-change-price [history _time]
   (let [{:keys [film]} history
@@ -244,7 +263,8 @@
         #'tx-add-customer 4
         #'tx-add-rental 16
         #'tx-start-rental 16
-        #'tx-end-rental 16}
+        #'tx-end-rental 16
+        #'tx-retro-active-return 1}
        (mapcat (fn [[f weight]] (repeat weight f)))
        vec))
 
@@ -291,40 +311,3 @@
   (update-vals h (comp count :remaining-ids))
   (second (tx-add-customer h))
   )
-
-;; films are added over time
-;; - add one film
-;;   - add some initial inventory
-;;   - further inventory may be added
-;; - add n films
-;; the rental duration and rate can vary
-;; - increase price
-;; data entry mistakes are possible
-;; - flub a price or duration or name
-;; - later correct
-
-;; inventory
-;; added (new stock)
-;; mark lost (tape lost, do these columns exist)?
-
-;; transactions
-;; new stock
-;; add the films, categories, actors (if they do not exist) and inventory
-;; sometimes include a name mistake, or price mis entry
-
-;; price increase
-;; increase the rental rates of a few films
-
-;; mistaken name correction
-;; fix a mistaken name
-
-;; address change
-
-;; new customer
-
-;; customer rents a film
-;; customer returns a film (pays)
-;; customer returns a film late (pays + late fee)
-
-;; offline period
-;; future time scheduled updates?
