@@ -258,12 +258,12 @@
 (def events
   [
    ;; martin fowler example
-   ;; Jons 1st of jan pay rise was not recorded until february despite
+   ;; Jons 1st of jan pay rise was not recorded until february
    {:desc "Jon Stephens pay rise"
     :system-time (Instant/parse "2024-02-03T09:04:14Z")
     :valid-time (Instant/parse "2024-01-01T00:00:00Z")
-    :tx [[:update '{:table :staff,
-                    :valid-from (Instant/parse "2024-01-01T00:00:00Z")
+    :tx [[:update `{:table :staff,
+                    :for-valid-time (~'from #inst "2024-01-01")
                     :bind [{:xt/id 2}],
                     :set {:salary 2900}}]]}
 
@@ -271,8 +271,8 @@
    {:desc "Fix dracula rating"
     :system-time (Instant/parse "2024-02-01T00:00:00Z")
     :valid-time start-time
-    :tx [[:update '{:table :film
-                    :valid-from start-time
+    :tx [[:update `{:table :film
+                    :for-valid-time (~'from ~start-time)
                     :bind [{:xt/id 249}]
                     :set {:rating "R"}}]]}])
 
