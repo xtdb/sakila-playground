@@ -10,7 +10,7 @@
 (defn q [& sql]
   (let [sql (str/join "\n" sql)]
     (clerk/col
-      (clerk/code {::clerk/opts {:language "sql"}} sql)
+      (clerk/code {::clerk/render-opts {:language "sql"}} sql)
       (clerk/table (db/q sql)))))
 
 {::clerk/visibility {:code :hide}}
