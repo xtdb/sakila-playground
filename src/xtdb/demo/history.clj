@@ -141,11 +141,11 @@
         film-id (:film_id inventory-record)
         film-record (-> film :state (get film-id))
         rental-record {:xt/id rental-id
-                :inventory_id inventory-id,
-                :customer_id customer-id,
-                :staff_id 1,
-                :rental_date time
-                :return_date nil}
+                       :inventory_id inventory-id,
+                       :customer_id customer-id,
+                       :staff_id 1,
+                       :rental_date time
+                       :return_date nil}
         payment-record
         {:xt/id (:next-id payment),
          :amount (:rental_rate film-record)
@@ -161,7 +161,7 @@
       [history []])))
 
 (defn tx-end-rental [history time]
-  (let [{:keys [current-rentals,rental]} history
+  (let [{:keys [current-rentals, rental]} history
         rental-id (rand-nth-or-nil current-rentals)]
     (if-not rental-id
       [history []]
@@ -245,7 +245,7 @@
 
 (def start-time (Instant/parse "2023-01-01T00:00:00Z"))
 
-(def end-time (Instant/parse "2024-02-05T00:00:00Z"))
+(def end-time (Instant/parse "2024-02-28T00:00:00Z"))
 
 (def tx-time
   "The amount of time between transactions"
@@ -254,6 +254,27 @@
 (def retry-count
   "The number of times the generator can try again if it is unable to generate a transaction for the given time."
   10)
+
+(def events
+  [
+   ;; martin fowler example
+   ;; Jons 1st of jan pay rise was not recorded until february despite
+   {:desc "Jon Stephens pay rise"
+    :system-time (Instant/parse "2024-02-03T09:04:14Z")
+    :valid-time (Instant/parse "2024-01-01T00:00:00Z")
+    :tx [[:update '{:table :staff,
+                    :valid-from (Instant/parse "2024-01-01T00:00:00Z")
+                    :bind [{:xt/id 2}],
+                    :set {:salary 2900}}]]}
+
+   ;; "DRACULA CRYSTAL" was mistakenly given a G rating, lets correct that
+   {:desc "Fix dracula rating"
+    :system-time (Instant/parse "2024-02-01T00:00:00Z")
+    :valid-time start-time
+    :tx [[:update '{:table :film
+                    :valid-from start-time
+                    :bind [{:xt/id 249}]
+                    :set {:rating "R"}}]]}])
 
 (def transactions-weighted
   ;; poor mans weighted sampler, I have code for an alias sampler but would need to bring in a minmaxpriorityqueue dep
@@ -272,9 +293,32 @@
   (loop [time (.plus start-time tx-time)
          h history
          transactions []
-         retry-counter retry-count]
-    (if (<= (compare end-time time) 0)
+         retry-counter retry-count
+         events events]
+    (cond
+      (<= (compare end-time time) 0)
       transactions
+
+      (some #(<= (compare (:system-time %) time) 0) events)
+      (let [relevant-events
+            (->> events
+                 (filter #(<= (compare (:system-time %) time) 0))
+                 (sort-by :system-time))
+            ops (for [{:keys [desc, system-time, valid-time, tx]} relevant-events]
+                  {:opts {:system-time system-time}
+                   :tx-ops (conj tx [:put-docs :event {:xt/id (inst-ms system-time)
+                                                       :st system-time
+                                                       :vt valid-time
+                                                       :desc desc}])})]
+        ;; if we recur with this op time we will offset all future times
+        ;; is this a problem tho in practice
+        (recur (:system-time (last relevant-events))
+               h
+               (into transactions ops)
+               retry-count
+               (vec (remove #(<= (compare (:system-time %) time) 0) events))))
+
+      :else
       (let [gen-transaction (rand-nth transactions-weighted)
             current-time (.plus time tx-time)
             [h operations] (gen-transaction h current-time)]
@@ -284,13 +328,14 @@
                  h
                  (conj transactions {:opts {:system-time time}
                                      :tx-ops (vec (mapcat :xt-dml operations))})
-                 retry-count)
+                 retry-count
+                 events)
 
           (= 0 retry-count)
-          (recur current-time h transactions retry-count)
+          (recur current-time h transactions retry-count events)
 
           :else
-          (recur time h transactions (dec retry-counter)))))))
+          (recur time h transactions (dec retry-counter) events))))))
 
 (defn setup-node [node seed]
   (binding [*rng* (Random. seed)]
@@ -304,10 +349,3 @@
              (partition-all 512)
              (run! (fn [puts] (xt/submit-tx node [(into [:put-docs table] puts)] {:system-time start-time})))))
       (run! #(xt/submit-tx node (:tx-ops %) (:opts %)) transactions))))
-
-(comment
-  (def h (init-history))
-  (keys h)
-  (update-vals h (comp count :remaining-ids))
-  (second (tx-add-customer h))
-  )
