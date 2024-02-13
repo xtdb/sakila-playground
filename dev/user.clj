@@ -1,14 +1,15 @@
 (ns user
   (:require
-   [xtdb.demo.web.server :refer [run-server]]
-   [xtdb.demo.web.locator :as locator]
-   [xtdb.demo.web.var-based-locator :refer [resource-tree]]
-   xtdb.demo.db
-   xtdb.demo.resources
-   xtdb.demo.sql
-   xtdb.demo.jdt-resources
-   xtdb.demo.yry.resources
-   xtdb.demo.static-resources))
+    [nextjournal.clerk :as clerk]
+    [xtdb.demo.web.server :refer [run-server]]
+    [xtdb.demo.web.locator :as locator]
+    [xtdb.demo.web.var-based-locator :refer [resource-tree]]
+    xtdb.demo.db
+    xtdb.demo.resources
+    xtdb.demo.sql
+    xtdb.demo.jdt-resources
+    xtdb.demo.yry.resources
+    xtdb.demo.static-resources))
 
 (declare http-server)
 
@@ -22,3 +23,5 @@
                           (locator/find-resource
                            (resource-tree)
                            (:ring.request/path req)))}))
+
+(clerk/serve! {:watch-paths ["dev/nb"]})
