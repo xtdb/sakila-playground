@@ -1,2 +1,19 @@
-{:email "Mike.Hillyer@sakilastaff.com", :first_name "Mike", :password "8cb2237d0679ca88db6464eac60da96345513964", :username "Mike", :active true, :last_name "Hillyer", :address_id 3, :xt/id 1, :store_id 1}
-{:email "Jon.Stephens@sakilastaff.com", :first_name "Jon", :username "Jon", :active true, :last_name "Stephens", :address_id 4, :xt/id 2, :store_id 2}
+{:email "Mike.Hillyer@sakilastaff.com",
+ :first_name "Mike",
+ :password "8cb2237d0679ca88db6464eac60da96345513964",
+ :username "Mike",
+ :active true,
+ :last_name "Hillyer",
+ :address_id 3,
+ :xt/id 1,
+ :store_id 1
+ :salary 3000}
+{:email "Jon.Stephens@sakilastaff.com",
+ :first_name "Jon",
+ :username "Jon",
+ :active true,
+ :last_name "Stephens",
+ :address_id 4,
+ :xt/id 2,
+ :store_id 2
+ :salary 2300}
