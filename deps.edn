@@ -8,7 +8,6 @@
         com.xtdb/xtdb-core {:mvn/version "2.0.0-SNAPSHOT"}
         com.xtdb/xtdb-http-server {:mvn/version "2.0.0-SNAPSHOT"}
         ch.qos.logback/logback-classic {:mvn/version "1.4.11"}
-
         org.clojure/data.xml {:mvn/version "0.2.0-alpha8"}
 
         ring/ring-jetty-adapter {:mvn/version "1.11.0"}
@@ -22,7 +21,9 @@
 
         juxt/pick
         {:git/url "https://github.com/juxt/pick.git"
-         :sha "dabc8c456eacf4246a9b8b449fcf554c5bb2b79f"}}
+         :sha "dabc8c456eacf4246a9b8b449fcf554c5bb2b79f"}
+
+        io.github.nextjournal/clerk {:mvn/version "0.15.957"}}
 
  :aliases {:xtdb {:jvm-opts
                   ;; needed on JDK16+
