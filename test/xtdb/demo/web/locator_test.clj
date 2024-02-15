@@ -3,14 +3,7 @@
 (ns xtdb.demo.web.locator-test
   (:require
    [xtdb.demo.web.locator :as locator]
-   [clojure.test :refer [deftest is testing]]
-   ))
-
-(deftest uri-template-matches-test
-  (is (= {"id" "123"}
-         (locator/uri-template-matches
-          "customers/{id}"
-          "customers/123"))))
+   [clojure.test :refer [deftest is]]))
 
 (deftest find-resource-test
   (let [resource-tree

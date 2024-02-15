@@ -14,19 +14,19 @@
    [clojure.java.io :as io])
   )
 
-(let [sql (slurp (io/file "resources/sql/rentals-by-category.sql"))
+#_(let [sql (slurp (io/file "resources/sql/rentals-by-category.sql"))
       resultset (xt/q (:xt-node xt-node) sql {:default-all-valid-time? true})]
   resultset
   )
 
-(defn ^{:uri-template "rentals-by-category{.suffix}"}
+(defn ^{:uri-template "rentals-by-category{.suffix}"
+        :uri-variables {:suffix :string}}
   rentals-by-category
   ;; path-params is a misnomer. It's from OpenAPI but really it's the
   ;; map of uri-template variables and their expansions. So expect
   ;; path-params to be renamed at some point!
-  [{:keys [path-params]}]
-  (let [suffix (get path-params "suffix")
-        sql (slurp (io/file "resources/sql/rentals-by-category.sql"))
+  [{:keys [suffix]}]
+  (let [sql (slurp (io/file "resources/sql/rentals-by-category.sql"))
         resultset (xt/q (:xt-node xt-node) sql {:default-all-valid-time? true})]
     (map->Resource
      {:representations

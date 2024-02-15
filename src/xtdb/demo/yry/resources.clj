@@ -25,31 +25,35 @@
 (selmer/add-filter! :resource-load (comp slurp resource))
 (selmer/add-filter! :url-load slurp)
 
-(defn ^{:uri-template "rental-per-month/{view}"}
-  rental-per-month [{:keys [path-params]}]
+(defn ^{:uri-template "rental-per-month/{view}"
+        :uri-variables {:view :string}}
+  rental-per-month [{:keys [view]}]
   (html-templated-resource
    {:template "templates/rental-analytics/rentals-per-month.html"
-    :template-model {"selected" (get path-params "view")}}))
+    :template-model {"selected" view}}))
 
-(defn ^{:uri-template "rental-per-category/{view}"}
-  rental-per-category [{:keys [path-params]}]
+(defn ^{:uri-template "rental-per-category/{view}"
+        :uri-variables {:view :string}}
+  rental-per-category [{:keys [view]}]
   (html-templated-resource
-   {:template       "templates/rental-analytics/rentals-per-category.html"
-    :template-model {"selected" (get path-params "view")}}))
+   {:template "templates/rental-analytics/rentals-per-category.html"
+    :template-model {"selected" view}}))
 
-(defn ^{:uri-template "top-renting-customers/{view}"}
-  top-renting-customers [{:keys [path-params]}]
+(defn ^{:uri-template "top-renting-customers/{view}"
+        :uri-variables {:view :string}}
+  top-renting-customers [{:keys [view]}]
   (html-templated-resource
    {:template "templates/rental-analytics/top-renting-customers.html"
-    :template-model {"selected" (get path-params "view")}}))
+    :template-model {"selected" view}}))
 
-(defn ^{:uri-template "top-rented-films/{view}"}
-  top-rented-films [{:keys [path-params]}]
+(defn ^{:uri-template "top-rented-films/{view}"
+        :uri-variables {:view :string}}
+  top-rented-films [{:keys [view]}]
   (html-templated-resource
    {:template "templates/rental-analytics/top-rented-films.html"
-    :template-model {"selected" (get path-params "view")}}))
+    :template-model {"selected" view}}))
 
-(defn ^{:web-path "rentals"} 
+(defn ^{:web-path "rentals"}
   rentals-per-year-month [_]
   (html-templated-resource
    {:template "templates/rental_analytics.html"}))

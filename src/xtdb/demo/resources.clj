@@ -95,22 +95,23 @@
 
 ;; See https://www.jooq.org/img/sakila.png
 
-(defn ^{:uri-template "films/{id}"} film [{:keys [path-params]}]
-  (let [id (get path-params "id")]
-    (html-templated-resource
-     {:template "templates/film.html"
-      :template-model
-      {"film"
-       (let [film (first
-                   (case *language*
-                     :sql (q "SELECT film.*, language.name AS language FROM film LEFT JOIN language ON language.xt$id = film.language_id WHERE film.xt$id = ?"
-                             {:args [(Long/parseLong id)]})
+(defn ^{:uri-template "films/{id}"
+        :uri-variables {:id :string}}
+  film [{:keys [id]}]
+  (html-templated-resource
+   {:template "templates/film.html"
+    :template-model
+    {"film"
+     (let [film (first
+                 (case *language*
+                   :sql (q "SELECT film.*, language.name AS language FROM film LEFT JOIN language ON language.xt$id = film.language_id WHERE film.xt$id = ?"
+                           {:args [(Long/parseLong id)]})
 
-                     :xtql (q '(unify (from :film [{:xt/id $film-id} title description language_id release_year rating])
-                                      (from :language [{:xt/id language_id} {:name language}]))
-                              {:args {:film-id (Long/parseLong id)}
-                               })))]
-         (assoc film :id id))}})))
+                   :xtql (q '(unify (from :film [{:xt/id $film-id} title description language_id release_year rating])
+                                    (from :language [{:xt/id language_id} {:name language}]))
+                            {:args {:film-id (Long/parseLong id)}
+                             })))]
+       (assoc film :id id))}}))
 
 (defn customers-table [_]
   (let [customers (fn [request]
@@ -173,12 +174,12 @@
             (cond-> template-model
               query-params (assoc "query_params" query-params)))))]})))
 
-(defn ^{:uri-template "customers/{id}/historic-rentals{.suffix}"}
+(defn ^{:uri-template "customers/{id}/historic-rentals{.suffix}"
+        :uri-variables {:id :string :suffix :string}}
   customer-historic-rentals
-  [{:keys [path-params]}]
-  (let [suffix (get path-params "suffix")
-        sql (slurp "resources/sql/customer-historic-rentals.sql")
-        customer-id (Long/parseLong (get path-params "id"))]
+  [{:keys [id suffix]}]
+  (let [sql (slurp "resources/sql/customer-historic-rentals.sql")
+        customer-id (Long/parseLong id)]
     (map->Resource
      {:representations
       (case suffix
@@ -194,8 +195,10 @@
                      {:args [customer-id]})})]
         [])})))
 
-(defn ^{:uri-template "customers/{id}/"} customer [{:keys [path-params]}]
-  (let [customer-id (Long/parseLong (get path-params "id"))]
+(defn ^{:uri-template "customers/{id}/"
+        :uri-variables {:id :string}}
+  customer [id]
+  (let [customer-id (Long/parseLong id)]
 
     (html-templated-resource
      {:template "templates/customer.html"
@@ -219,10 +222,12 @@
 
        }})))
 
-(defn ^{:uri-template "customers/{id}/detail"} customer-detail [{:keys [path-params]}]
+(defn ^{:uri-template "customers/{id}/detail"
+        :uri-variables {:id :string}}
+  customer-detail [{:keys [id]}]
   (html-resource
    (fn [_]
-     (let [customer (first (xt/q (:xt-node xt-node) (format "SELECT customer.xt$id AS id, customer.first_name, customer.last_name, customer.email, address.phone FROM customer, address WHERE customer.xt$id = %s AND customer.address_id = address.xt$id" (get path-params "id"))))]
+     (let [customer (first (xt/q (:xt-node xt-node) (format "SELECT customer.xt$id AS id, customer.first_name, customer.last_name, customer.email, address.phone FROM customer, address WHERE customer.xt$id = %s AND customer.address_id = address.xt$id" id)))]
        {:ring.response/body
         (str (h/html [:dl
                       [:dt "First name"]
@@ -259,7 +264,9 @@
                   {:args {:customer_id 560}
                    })}}))
 
-(defn ^{:uri-template "rentals/{id}"} rental [{:keys [path-params]}]
+(defn ^{:uri-template "rentals/{id}"
+        :uri-variables {:id :string}}
+  rental [{:keys [path-params]}]
   (let [rental-id (Long/parseLong (get path-params "id"))]
     (map->Resource
      {:methods
