@@ -31,3 +31,4 @@
 /external
 *.iml
 /.idea
+/.clerk/
