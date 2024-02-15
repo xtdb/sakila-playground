@@ -245,7 +245,7 @@
 
 (def start-time (Instant/parse "2023-01-01T00:00:00Z"))
 
-(def end-time (Instant/parse "2024-02-28T00:00:00Z"))
+(def end-time (Instant/parse "2024-02-15T00:00:00Z"))
 
 (def tx-time
   "The amount of time between transactions"
