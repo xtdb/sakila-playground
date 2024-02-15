@@ -244,7 +244,6 @@
 (defn ^{:uri-template "queries/{file}"
         :uri-variables {:file :string}}
   query-file-resource [{:keys [file]}]
-  (throw (ex-info (format "file: %s" (str file)) {:file file}))
   (let [{:keys [file-name, title, desc] :as query} (parse-sql-file (io/file "sql" "queries" file))]
     (map->Resource
       {:representations
