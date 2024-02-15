@@ -26,25 +26,45 @@
 
 ;; ## Pay rise example
 
-;; in this notebook we demonstrate valid times ability to include information we learn
-;; about the past, without erasing what-we-knew at some previous time.
+;; The distinction between 'when something happens' (`VALID_TIME`) and 'when we found out' (`SYSTEM_TIME`) can have important implications for reporting, debugging and so on.
+
+;; Lets imagine a debugging scenario.
+
+;; Jon received a pay rise on the 1st of Jan, but was surprised to find the wrong amount in his pay packet.
+;; let us find out what his salary is.
 (q "SELECT staff.username, staff.salary"
    "FROM staff"
    "WHERE staff.username = 'Jon'")
 
-;; Jon's salary is currently `2900`. Let us find out what it was in the past.
-;; first we will query our staff table across `SYSTEM_TIME` to find
-;; changes to Jon's staff record.
-(q "SELECT staff.xt$system_from, staff.salary"
+;; What was the salary on the 1st of Jan?
+(q "SELECT staff.salary"
+   "FROM staff FOR VALID_TIME AS OF TIMESTAMP '2024-01-01 00:00:00'"
+   "WHERE staff.username = 'Jon'")
+
+;; What about previously, on the 31st of December?
+(q "SELECT staff.salary"
+   "FROM staff FOR VALID_TIME AS OF TIMESTAMP '2023-12-31 00:00:00'"
+   "WHERE staff.username = 'Jon'")
+
+;; Another view is to ask for the valid time history of the salary.
+(q "SELECT staff.salary, staff.xt$valid_from, staff.xt$valid_to"
+   "FROM staff FOR ALL VALID_TIME"
+   "WHERE staff.username = 'Jon'")
+
+;; We can see that the salary did indeed change on the 1st, and the new salary still applies (infinity is represented as nil).
+
+;; So why did Jon receive the incorrect pay packet? Valid time denotes the actual time of an event,
+;; but this is not necessarily the same as when the event was recorded. For that we need `SYSTEM_TIME`.
+
+(q "SELECT"
+   "  staff.salary,"
+   "  staff.xt$valid_from, staff.xt$valid_to,"
+   "  staff.xt$system_from, staff.xt$system_to"
    "FROM staff FOR ALL SYSTEM_TIME"
    "WHERE staff.username = 'Jon'")
 
-;; We can see jons salary changes at 2024-02-03. Or did it?
-;; Remember `SYSTEM_TIME` denotes the event time of the record change.
-;; let us check `VALID_TIME`.
-(q "SELECT staff.xt$system_from, staff.xt$valid_from, staff.salary"
-   "FROM staff FOR ALL VALID_TIME"
-   "WHERE staff.username = 'Jon'")
+;; We can see Jon's salary change was recorded at `2024-02-03T09:04:14`. So in this case, the salary changed in the database
+;; after the salary change should have been in effect - and after payroll.
 
 ^{::clerk/visibility {:code :hide, :result :hide}}
 (comment
