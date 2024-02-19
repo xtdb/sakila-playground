@@ -197,7 +197,7 @@
 
 (defn ^{:uri-template "customers/{id}/"
         :uri-variables {:id :string}}
-  customer [id]
+  customer [{:keys [id]}]
   (let [customer-id (Long/parseLong id)]
 
     (html-templated-resource
