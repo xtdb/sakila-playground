@@ -62,5 +62,15 @@
              hx-include=".filter-params">
         {% include "templates/rental-analytics/loading.html" %}
     </section>
+
+    <section id="most-recent-rentals-tabs" 
+             style="overflow-y: auto;" 
+             hx-trigger="load, change from:input delay:500ms" 
+             hx-get="/yry/most-recent-rentals/table" 
+             hx-target="#most-recent-rentals-tabs" 
+             hx-swap="innerHTML"
+             hx-include=".filter-params">
+        {% include "templates/rental-analytics/loading.html" %}
+    </section>
 </div>
 {% endblock %}
