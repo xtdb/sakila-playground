@@ -49,6 +49,12 @@
    {:template "templates/rental-analytics/top-rented-films.html"
     :template-model {"selected" (get path-params "view")}}))
 
+(defn ^{:uri-template "most-recent-rentals/{view}"}
+  most-recent-rentals [{:keys [path-params]}]
+  (html-templated-resource
+   {:template "templates/rental-analytics/most-recent-rentals.html"
+    :template-model {"selected" (get path-params "view")}}))
+
 (defn ^{:web-path "rentals"} 
   rentals-per-year-month [_]
   (html-templated-resource

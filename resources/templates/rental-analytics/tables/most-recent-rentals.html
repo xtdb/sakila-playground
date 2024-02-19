@@ -1,0 +1,19 @@
+<table>
+    <caption>Most Recent Rentals</caption>
+    <thead>
+        <tr>
+            <th>Customer</th>
+            <th>Rented Date</th>
+            <th>Return Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for rental in most_recent_rentals.result %}
+        <tr>
+            <td>{{rental.first_name}} {{rental.last_name}}</td>
+            <td>{{rental.rental_day}}/{{rental.rental_month}}/{{rental.rental_year}}</td>
+            <td>{{rental.return_day}}/{{rental.return_month}}/{{rental.return_year}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

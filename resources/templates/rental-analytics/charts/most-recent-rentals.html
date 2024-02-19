@@ -1,0 +1,40 @@
+<div id="most-recent-rentals-chart"></div>
+<script type="text/javascript">
+    vegaEmbed("#most-recent-rentals-chart",
+    {
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "description": "Bar chart for most recent rentals",
+        "width":"500",
+        "data": {
+            "values": {{ most_recent_rentals.result|json|safe }}
+            
+        },
+        "transform": [{
+            "calculate": "datetime(datum.rental_year, datum.rental_month, datum.rental_day,datum.rental_hour)",
+            "as": "rental_date"
+        },
+        {
+            "calculate": "datetime(datum.return_year, datum.return_month, datum.return_day, datum.return_hour)",
+            "as": "return_date"
+        },
+        {
+            "calculate":"[datum.customer_id, datum.first_name, datum.last_name]",
+            "as": "customer"
+
+        }],
+        "encoding": {
+            "x":{"field":"rental_date", 
+                 "type":"temporal"}  ,
+            "x2":{"field":"return_date", 
+                  "type":"temporal"},
+            "y":{"field":"customer", 
+                 "type": "nominal", 
+                 "title": "Customer",
+                 "axis":{"labelExpr":"datum.value[1] +' '+ datum.value[2]"}
+                 },
+            "color":{"field":"category_name", "type":"nominal", "title": "Category"}     
+                },
+        "mark":"bar"
+        }                
+    )
+</script>
