@@ -10,7 +10,8 @@
             [ring.util.codec :refer [form-encode form-decode]]
             [clojure.repl])
   (:import (java.io PushbackReader)
-           (java.time Instant ZonedDateTime)))
+           (java.time Instant ZoneId ZonedDateTime)
+           (java.time.format DateTimeFormatter)))
 
 (defn q [q & [opts]]
   (db/q q (assoc opts :key-fn :snake-case-keyword)))
@@ -230,16 +231,35 @@
       {:current-time (Instant/ofEpochMilli (parse-long valid-time))
        :at-tx (tx-id-as-of (Instant/ofEpochMilli (parse-long system-time)))})))
 
-(defn time-slider [label input-name start-time end-time]
-  [:div
-   [:label {:style "display:inline-block; vertical-align:middle; margin-right:15px"} label]
-   [:input {:style "display:inline-block; vertical-align:middle; width:95%;"
-            :onchange "htmx.trigger('#query-form', 'submit')"
-            :name input-name
-            :type "range"
-            :min (inst-ms start-time)
-            :max (inst-ms end-time)
-            :value (inst-ms end-time)}]])
+(defn uk-time [inst]
+  (.atZone inst (ZoneId/of "Europe/London")))
+
+(defn format-datetime-html5-local [temporal]
+  (.format (DateTimeFormatter/ofPattern "YYYY-MM-dd'T'hh:mm") temporal))
+
+(defn time-slider [{:keys [label input-name start end value]}]
+  (let [slider-id (str "slider" (random-uuid))
+        input-id (str "input" (random-uuid))]
+    [:div {:style "display:grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px;"}
+     [:label label]
+     [:input {:id slider-id
+              :onchange
+              (->> [(format "Sakila.copySliderValueToDateInput(this, document.getElementById('%s'));" input-id)
+                    "htmx.trigger('#query-form', 'submit');"]
+                   (str/join " "))
+              :name input-name
+              :type "range"
+              :min (inst-ms start)
+              :max (inst-ms end)
+              :value (inst-ms value)}]
+     [:input {:id input-id
+              :style "width:190px;"
+              :type "datetime-local"
+              :onchange
+              (->> [(format "Sakila.copyDateInputToSlider(this, document.getElementById('%s'));" slider-id)
+                    "htmx.trigger('#query-form', 'submit');"]
+                   (str/join " "))
+              :value (format-datetime-html5-local (uk-time value))}]]))
 
 (defn ^{:uri-template "queries/{file}"
         :uri-variables {:file :string}}
@@ -263,8 +283,17 @@
                        :hx-target "#query-results",
                        :hx-select "#query-results"
                        :hx-swap "outerHTML"}
-                [:div {:style "display:none;"} (time-slider "st" "system-time" history/start-time end-time)]
-                (time-slider "vt" "valid-time" history/start-time end-time)
+                [:div {:style "display:none;"}
+                 (time-slider {:label "st"
+                               :input-name "system-time"
+                               :start history/start-time
+                               :end end-time
+                               :value end-time})]
+                (time-slider {:label "vt"
+                              :input-name "valid-time"
+                              :start history/start-time
+                              :end end-time
+                              :value end-time})
                 (sql-editor query)
                 (parameter-view query req)
                 [:div {:id "query-results"}
