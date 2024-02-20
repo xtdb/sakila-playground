@@ -243,7 +243,7 @@
     [:div {:style "display:grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px;"}
      [:label label]
      [:input {:id slider-id
-              :onchange
+              :oninput
               (->> [(format "Sakila.copySliderValueToDateInput(this, document.getElementById('%s'));" input-id)
                     "htmx.trigger('#query-form', 'submit');"]
                    (str/join " "))
@@ -278,7 +278,7 @@
                (when title [:h2 title])
                (when desc [:pre desc])
                [:form {:id "query-form",
-                       :hx-trigger "submit"
+                       :hx-trigger "submit throttle:500ms"
                        :hx-get "",
                        :hx-target "#query-results",
                        :hx-select "#query-results"
