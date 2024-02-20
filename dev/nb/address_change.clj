@@ -72,20 +72,19 @@
 
 ^{::clerk/no-cache true}
 (e "INSERT INTO address (xt$id, address, district, city_id, phone, postal_code)"
-   "VALUES (-1, '23 Workhaven Lane', 'Alberta', 300, '140333335568', '10672')")
+   "VALUES (1, '23 Workhaven Lane', 'Alberta', 300, '140333335568', '10672')")
 
 ^{::clerk/no-cache true}
 (e "INSERT INTO customer (xt$id, email, first_name, last_name, store_id, address_id, active)"
-   "VALUES (-1, 'john.smith@sakilacustomer.org', 'John', 'Smith', 1, -1, true)")
+   "VALUES (1, 'john.smith@sakilacustomer.org', 'John', 'Smith', 1, 1, true)")
 
 #_#_
 ^{::clerk/no-cache true}
 (q "SELECT 'customer' row, customer.xt$system_from st FROM customer"
-   "WHERE customer.xt$id = -1"
+   "WHERE customer.xt$id = 1"
    "UNION"
    "SELECT 'address', address.xt$system_from FROM address"
-   "WHERE address.xt$id = -1")
-
+   "WHERE address.xt$id = 1")
 
 ^{::clerk/no-cache true}
 (set-time #inst "2023-05-12")
@@ -113,13 +112,13 @@
 
 ^{::clerk/no-cache true}
 (e "INSERT INTO address (xt$id, address, district, city_id, phone, postal_code, xt$valid_from)"
-   "VALUES (-2, '1121 Loja Avenue', 'California', 449, '838635286649', '17886', TIMESTAMP '2023-05-12 00:00:00')")
+   "VALUES (2, '1121 Loja Avenue', 'California', 449, '838635286649', '17886', TIMESTAMP '2023-05-12 00:00:00')")
 
 ^{::clerk/no-cache true}
 (e "UPDATE customer"
    "FOR PORTION OF VALID_TIME FROM TIMESTAMP '2023-05-12 00:00:00' TO NULL"
-   "SET address_id = -2"
-   "WHERE customer.xt$id = -1")
+   "SET address_id = 2"
+   "WHERE customer.xt$id = 1")
 
 ;; the address is updated for subsequent. Importantly, historical views such as 'addresses held by' are corrected.
 
@@ -127,7 +126,7 @@
 (q "SELECT c.first_name, c.last_name, a.address, a.xt$valid_from change_date"
    "FROM address FOR ALL VALID_TIME a"
    "JOIN customer FOR ALL VALID_TIME c ON c.address_id = a.xt$id"
-   "WHERE c.xt$id = -1")
+   "WHERE c.xt$id = 1")
 
 ^{::clerk/no-cache true}
 (set-time #inst "2024-01-17")
@@ -141,7 +140,7 @@
    "  c.xt$valid_from valid_from, c.xt$valid_to valid_to,"
    "  c.xt$system_from system_from, c.xt$system_to system_to"
    "FROM customer FOR ALL VALID_TIME FOR ALL SYSTEM_TIME c"
-   "WHERE c.xt$id = -1")
+   "WHERE c.xt$id = 1")
 
 ;; The presentation of the evidence satisfied the ombudsman that the companies record keeping was satisfactory in order to
 ;; resolve disputes.
