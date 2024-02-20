@@ -263,7 +263,7 @@
                        :hx-target "#query-results",
                        :hx-select "#query-results"
                        :hx-swap "outerHTML"}
-                (time-slider "st" "system-time" history/start-time end-time)
+                [:div {:style "display:none;"} (time-slider "st" "system-time" history/start-time end-time)]
                 (time-slider "vt" "valid-time" history/start-time end-time)
                 (sql-editor query)
                 (parameter-view query req)
