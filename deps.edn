@@ -23,7 +23,10 @@
         {:git/url "https://github.com/juxt/pick.git"
          :sha "dabc8c456eacf4246a9b8b449fcf554c5bb2b79f"}
 
-        io.github.nextjournal/clerk {:mvn/version "0.15.957"}}
+        io.github.nextjournal/clerk {:mvn/version "0.15.957"}
+        io.github.nextjournal/clerk-slideshow
+        {:git/url "https://github.com/nextjournal/clerk-slideshow"
+         :sha "11a83fea564da04b9d17734f2031a4921d917893"}}
 
  :aliases {:xtdb {:jvm-opts
                   ;; needed on JDK16+

@@ -2,6 +2,7 @@
   nb.address-change
   (:require [clojure.string :as str]
             [nextjournal.clerk :as clerk]
+            [nextjournal.clerk-slideshow :as slideshow]
             [xtdb.api :as xt]
             [xtdb.node :as xt-node])
   (:import (java.time Instant ZoneId ZonedDateTime)
@@ -10,7 +11,8 @@
 {::clerk/visibility {:code :hide, :result :hide}}
 
 (clerk/add-viewers!
-  [{:pred #(instance? ZonedDateTime %)
+  [slideshow/viewer
+   {:pred #(instance? ZonedDateTime %)
     :transform-fn (clerk/update-val #(.format % DateTimeFormatter/ISO_LOCAL_DATE_TIME))}])
 
 (defonce xtdb nil)
@@ -23,9 +25,8 @@
     #'xtdb
     (fn [n]
       (when n (.close n))
-      (xt-node/start-node {}))))
-
-^{::clerk/no-cache true} (reset)
+      (xt-node/start-node {})))
+  (clerk/md ""))
 
 (defn e [& sql]
   (let [sql (str/join "\n" sql)]
@@ -58,12 +59,16 @@
 
 (defn set-time [inst]
   (alter-var-root #'current-time (constantly inst))
-  (clerk/md (format "🕐: `%s`" (format-inst inst))))
+  (clerk/html [:span (format "🕐: %s" (format-inst inst))]))
 
 {::clerk/visibility {:code :hide, :result :show}}
 
+^{::clerk/no-cache true} (reset)
+
 ;; In this example, the video store has been sending late fee letters to an old address. The customer had actually contacted
 ;; CS to process an address change - but it was not carried out.
+
+;; ---
 
 ^{::clerk/no-cache true}
 (set-time #inst "2021-03-14")
@@ -91,11 +96,16 @@
 
 ;; John calls CS and asks to change his address - the CS agent agrees but forgets to click 'save'.
 
+;; ---
+
+
 ^{::clerk/no-cache true}
 (set-time #inst "2023-07-22")
 
 ;; The company sends letters to old address regarding pending payments.
 ;; the letters are missed as the customer has since moved.
+
+;; ---
 
 ^{::clerk/no-cache true}
 (set-time #inst "2023-12-18")
@@ -103,6 +113,8 @@
 ;; eventually - a debt collection agency is employed to chase down the customer for payment.
 ;; the customer is found - but is highly annoyed that the address change was not processed. She remembers phoning, and even has kept
 ;; a reference number from the phone call.
+
+;; ---
 
 ^{::clerk/no-cache true}
 (set-time #inst "2023-12-19")
@@ -120,13 +132,17 @@
    "SET address_id = 2"
    "WHERE customer.xt$id = 1")
 
-;; the address is updated for subsequent. Importantly, historical views such as 'addresses held by' are corrected.
+;; ---
+
+;; Importantly, historical views such as 'addresses held by' are corrected.
 
 ^{::clerk/no-cache true}
 (q "SELECT c.first_name, c.last_name, a.address, a.xt$valid_from change_date"
    "FROM address FOR ALL VALID_TIME a"
    "JOIN customer FOR ALL VALID_TIME c ON c.address_id = a.xt$id"
    "WHERE c.xt$id = 1")
+
+;; ---
 
 ^{::clerk/no-cache true}
 (set-time #inst "2024-01-17")
