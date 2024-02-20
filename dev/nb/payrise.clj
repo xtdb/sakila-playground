@@ -1,4 +1,4 @@
-(ns ^{::clerk/visibility {:code :hide}}
+(ns ^{:nextjournal.clerk/visibility {:code :hide}}
   nb.payrise
   (:require [clojure.string :as str]
             [nextjournal.clerk :as clerk]
