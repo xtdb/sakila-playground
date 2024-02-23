@@ -65,15 +65,20 @@
 
 ^{::clerk/no-cache true} (reset)
 
+;; ## A History of Address Changes
+
+;; TODO describe hero's journey / graphic
+
 ;; In this example, the video store has been sending late fee letters to an old address. The customer had actually contacted
-;; CS to process an address change - but it was not carried out.
+;; Customer Services to process an address change - but it was not carried out.
 
 ;; ---
+;; ## Prelude
 
 ^{::clerk/no-cache true}
 (set-time #inst "2021-03-14")
 
-;; John Smith signs up for our online rental service.
+;; Jane Smith signs up for our online rental service.
 
 ^{::clerk/no-cache true}
 (e "INSERT INTO address (xt$id, address, district, city_id, phone, postal_code)"
@@ -81,7 +86,7 @@
 
 ^{::clerk/no-cache true}
 (e "INSERT INTO customer (xt$id, email, first_name, last_name, store_id, address_id, active)"
-   "VALUES (1, 'john.smith@sakilacustomer.org', 'John', 'Smith', 1, 1, true)")
+   "VALUES (1, 'jane.smith@sakilacustomer.org', 'Jane', 'Smith', 1, 1, true)")
 
 #_#_
 ^{::clerk/no-cache true}
@@ -94,23 +99,35 @@
 ^{::clerk/no-cache true}
 (set-time #inst "2023-05-12")
 
-;; John calls CS and asks to change his address - the CS agent agrees but forgets to click 'save'.
-
 ;; ---
-
+;; ## Late Return + Mistyped Address Change
 
 ^{::clerk/no-cache true}
 (set-time #inst "2023-07-22")
 
-;; The company sends letters to old address regarding pending payments.
-;; the letters are missed as the customer has since moved.
+;; Jane recently moved house and after unpacking a rented film from the moving boxes, Jane returns it late via the post. This prompts her to then call customer services to update her address, but the agent mistypes it.
+
+;; TODO INSERT wrong address, with comment showing the fat finger
 
 ;; ---
+;; ## Late Fees Letter
+
+^{::clerk/no-cache true}
+(set-time #inst "2023-09-10")
+
+;; TODO Letterhead "overdue" image
+
+;; The company sends automated letters to the invalid address regarding non-payment of late fees.
+
+;; ---
+;; ## Debt Collectors Finds Jane's New Address
 
 ^{::clerk/no-cache true}
 (set-time #inst "2023-12-18")
 
-;; eventually - a debt collection agency is employed to chase down the customer for payment.
+;; Eventually, the debt department is engaged to chase down Jane for payment.
+;; They find that Jane now appears to live at a new address along with the adress when she moved in (2023-07-17).
+;; Seeing that the current address in the system is probably wrong, they record this new information and ensure that the timeline of Jane's address move is recorded clearly.
 ;; the customer is found - but is highly annoyed that the address change was not processed. She remembers phoning, and even has kept
 ;; a reference number from the phone call.
 
@@ -147,7 +164,7 @@
 ^{::clerk/no-cache true}
 (set-time #inst "2024-01-17")
 
-;; Problem, in dispute of the late fee John has gone to an ombudsman for assistance. The ombudsman has asked for evidence regardling
+;; Problem, in dispute of the late fee Jane has gone to an ombudsman for assistance. The ombudsman has asked for evidence regardling
 ;; the address history - when it was edited and what edits were made.
 
 ^{::clerk/no-cache true}
