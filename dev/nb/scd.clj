@@ -67,9 +67,17 @@
 
 ;; The query is quite straightforward but:
 ;;
-;; - Code or a trigger needs to exist to make copy the data. It needs to be correct.
+;; - Code or a trigger needs to exist to make copy the data.
+;; When rentals are recorded, it is likely the price is looked up and saved with the rental.
+;;   - What if there is a bug in this code? The data might need correction. The prior price information may be lost.
+;;
 ;; - You must predict the need for this de-normalization ahead of time.
+;;   - Had the need not been predicted, this would often manifest in a schema migration.
+;;   - You might need to back-fill? Is the information even available?
+
 ;; - You have limited capability to explain why the price is what it is
+;;   - When you look at the definition of 'what should we charge customers for months X' one input to the query is not the brute facts, but rather the output state of
+;;     a separate process or trigger.
 
 ;; In this example, copying the price is probably satisfactory but this is a simple example.
 ;; You might have several such attributes changing at different times, transitively through many different relationships.
@@ -84,7 +92,7 @@
   [255, 2.99, "2020-11-01T15:14:19Z" "2020-12-17T12:38:45Z"]
   [255, 3.99, "2024-01-15T13:14:59Z" "NULL"])
 
-;; > *note* One could omit the end date and derive it as a view, as the prices are continuous (there are no gaps).
+;; > **note** One could omit the end date and derive it as a view, as the prices are continuous (there are no gaps).
 
 ;; ```sql
 ;; SELECT r.customer_id, SUM(f.price) amount
@@ -100,7 +108,6 @@
 ;;   to change its end date
 ;; - Assumption of non overlapping ranges, if by accident or error there are overlapping prices for a date range
 ;;   you might get surprising results
-;; - Needs code, triggers and so on to maintain - written by you.
 ;; - You must predict which tables need history like this ahead of time, if you discover a query that cannot be satisfied
 ;;   you will need to first change your schema or add to it to model history before you can answer the query.
 
@@ -130,21 +137,20 @@
 
 ;; ## Valid time corrections
 
-;; One ability alluded to prior was to edit historical data in order to correct mistakes.
-;; for example, suppose the price was mistakenly set to 399.0 by mistake due to a data entry error.
+;; One ability alluded to was editing historical data in order to correct mistakes.
+;; for example, suppose the price was mistakenly set to `399.0` due to a data entry error.
 
 (tbl
   ["film_id" "title" "price"]
-  [255 "Jurassic Park", 399.0])
+  [255 "Jurassic Park", "399.0"])
 
-;; a day later, we add a new price to the table fixing the problem, and send out an email to customers who have recently rented
+;; A day later, we update the price, and send out an email to customers who have recently rented
 ;; the film to explain the pricing was in error.
 
 (tbl
   ["film_id" "title" "price"]
-  [255 "Jurassic Park", 3.99])
+  [255 "Jurassic Park", "3.99"])
 
-;; In a bi-temporal database, the mistaken state is preserved by default.
 ;; A problem arises, customers who rented the film while the price was incorrect will be charged the mistaken value.
 ;;
 ;; To remedy this, we can issue an update in the past.
