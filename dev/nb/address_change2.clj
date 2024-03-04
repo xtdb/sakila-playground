@@ -132,7 +132,7 @@
    "JOIN customer2 AS c ON c.address_id = a.xt$id"
    "WHERE c.xt$id = 1")
 
-;; Here we see that the earlier address is not returned by default, however it is still trivially available whenever we may need it in the future:
+;; Here we see that the earlier address is not returned by default, however it is still readily accessible whenever we may need it in the future:
 
 ^{::clerk/no-cache true}
 (q "SELECT c.name, a.address, a.xt$valid_from"
@@ -145,7 +145,7 @@
 
 ;; In the normal course of recording any kind of historical information, it is often necessary to be able to correct data and compensate for mistakes. Therefore, in addition to capturing the validity of records, XTDB maintains a full audit history that is capable of revealing changes to history, before and after any corrections have been applied.
 
-;; For example, if we later find out that the previous street address of `12 Upper Street` was meant to be `11` we can make a correcting inserting that affects the same validity period (overwriting the regular view of the previous insert):
+;; For example, if we later find out that the previous street address of `12 Upper Street` was meant to be `11` we can make a correcting INSERT that affects the same validity period (overwriting the regular view of the previous insert):
 
 ^{::clerk/no-cache true ::clerk/visibility {:code :hide :result :hide}}
 (set-time #inst "2022-01-03")
@@ -169,6 +169,12 @@
    "WHERE c.xt$id = 1")
 
 ;; Such curated views of history - across the full evolution of your database - can be essential both for satisfying external audits by regulators, but also for enabling comprehensive analysis and decision support for your business without introducing additional sources of error-prone complexity into your systems (extensive schema workarounds, ETL etc.)
+
+;; TODO Controlled Forgetting vs Controlled Remebering
+
+;; just about assigning relations different values in valid time
+;; it's about mechanical state changes, not about modelling directly, just membership -- "i want this row to change" -- if modelling requirements line up then great
+;; valid time is not useful for fuzzy / low-granularity / possible speculative projections / probablistic RA
 
 ^{::clerk/visibility {:code :hide, :result :hide}}
 (comment
