@@ -70,7 +70,10 @@
 
 ;; ## Understanding your customer
 
-;; How do you record information about the history of your customers in a structured, auditable a way?
+;; Data comes in all shapes and sizes. Some data is suitable for recording in a log or ledger, such as transactions and events. Other data might be static or fixed, which we might call _reference data_, such as a customer name and address.
+
+;; How do you record the reference data and transaction data of your customers in a structured, auditable a way?
+;; By auditable, we mean that when we examine a particular customer event, we see the customer's reference data exactly as it was when the event happened.
 
 ;; Let's examine a trivial requirement to correctly record and interpret the address changes of a customer...
 
