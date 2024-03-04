@@ -293,6 +293,6 @@
 
 ^{::clerk/visibility {:code :hide, :result :hide}}
 (comment
-  (clerk/show! 'nb.scd)
+  (clerk/show! 'nb.time-matters)
   ((requiring-resolve 'clojure.java.browse/browse-url) "http://localhost:7777")
   )
