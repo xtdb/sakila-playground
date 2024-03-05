@@ -1,44 +1,49 @@
 ---
-async function postData() {
-  try {
-    const response = await fetch('http://localhost:3000/tx', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ txOps: [] }),
-    });
+import Xtdb from '@xtdb/xtdb'
+import * as q from '@xtdb/xtdb/query'
+import * as ex from '@xtdb/xtdb/expr'
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
+const node = new Xtdb('http://localhost:3000')
 
-    const responseData = await response.json();
+async function tableCount(table: string): Promise<number> {
+  const [{rc}] = await node.query([
+    q.from(table),
+    q.aggregate({rc: ex.call("rowCount")})
+  ])
 
-    return responseData
-  } catch (error) {
-    console.error('Error posting data:', error.message);
-  }
+  return rc
 }
 
-const status = await postData()
+const tables = {
+  films: await tableCount('film'),
+  actors: await tableCount('actor'),
+  customers: await tableCount('customer'),
+  stores: await tableCount('store'),
+  rentals: await tableCount('rental'),
+}
+
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<title>Astro</title>
-		<script is:inline
-				src="https://unpkg.com/htmx.org@1.9.10"
-				integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
-				crossorigin="anonymous" />
-	</head>
-	<body>
-		<div hx-get="/partial" hx-trigger=load>before</div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Sakila Store</title>
+    <script is:inline
+        src="https://unpkg.com/htmx.org@1.9.10"
+        integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+        crossorigin="anonymous" />
+  </head>
+  <body>
+    <h1>Sakila Store</h1>
 
-		<h2>XTDB Status</h2>
-		<code>{JSON.stringify(status)}</code>
-	</body>
+    <dl>
+      {Object.keys(tables).map(table =>
+        <>
+          <dt>{table}</dt>
+          <dd>{tables[table]}</dd>
+        </>)}
+    </dl>
+
+  </body>
 </html>

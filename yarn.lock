@@ -730,6 +730,13 @@
   resolved "https://registry.yarnpkg.com/@vscode/l10n/-/l10n-0.0.18.tgz#916d3a5e960dbab47c1c56f58a7cb5087b135c95"
   integrity sha512-KYSIHVmslkaCDyw013pphY+d7x1qV8IZupYfeIfzNA+nsaWHbn5uPuQRvdRFsa9zFzGeudPuoGoZ1Op4jrJXIQ==
 
+"@xtdb/xtdb@^0.0.0-2024.3.5":
+  version "0.0.0-2024.3.5"
+  resolved "https://registry.yarnpkg.com/@xtdb/xtdb/-/xtdb-0.0.0-2024.3.5.tgz#586f48d45a60d65d03953eba9c3c791f572957d7"
+  integrity sha512-Kd0HMBd3YipluQ2ezv3wMIwUsVbzQrOnXYEiE0Bb5tthiQ4WSvtY3YYJf4aoFIiQ1TYjIVf5yPWbWUH6O828xQ==
+  dependencies:
+    luxon "^3.4.4"
+
 acorn@^8.11.2:
   version "8.11.3"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.11.3.tgz#71e0b14e13a4ec160724b38fb7b0f233b1b81d7a"
@@ -1915,6 +1922,11 @@ lru-cache@^6.0.0:
   integrity sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==
   dependencies:
     yallist "^4.0.0"
+
+luxon@^3.4.4:
+  version "3.4.4"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-3.4.4.tgz#cf20dc27dc532ba41a169c43fdcc0063601577af"
+  integrity sha512-zobTr7akeGHnv7eBOXcRgMeCP6+uyYsczwmeRCauvpvaAltgNyTbLH/+VaEAPUeWBT+1GuNmz4wC/6jtQzbbVA==
 
 magic-string@^0.30.3:
   version "0.30.6"

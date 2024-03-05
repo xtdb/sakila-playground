@@ -12,6 +12,7 @@
   "dependencies": {
     "@astrojs/check": "^0.4.1",
     "@astrojs/node": "^8.1.0",
+    "@xtdb/xtdb": "^0.0.0-2024.3.5",
     "astro": "^4.2.8",
     "typescript": "^5.3.3",
     "uuid": "^9.0.1"
