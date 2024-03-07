@@ -301,8 +301,8 @@
 
 (comment
 
-  (clojure.java.browse/browse-url "http://localhost:3000/sql/queries")
-  (clojure.java.browse/browse-url "http://localhost:3000/sql/queries/customers.sql")
+  (clojure.java.browse/browse-url "http://localhost:3010/sql/queries")
+  (clojure.java.browse/browse-url "http://localhost:3010/sql/queries/customers.sql")
 
   )
 
@@ -376,7 +376,7 @@
 
 (comment
 
-  (clojure.java.browse/browse-url "http://localhost:3000/sql/schema")
+  (clojure.java.browse/browse-url "http://localhost:3010/sql/schema")
   )
 
 (comment

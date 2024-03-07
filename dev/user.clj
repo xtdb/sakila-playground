@@ -17,7 +17,7 @@
   (.stop http-server))
 
 (def http-server
-  (run-server {:port 3000
+  (run-server {:port 3010
                :join? false
                :locator (fn [req]
                           (locator/find-resource

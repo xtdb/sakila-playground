@@ -16,7 +16,7 @@ import xtdb.api.query.QueryOptions
 import xtdb.api.query.queryOpts
 import java.net.URL
 
-XtdbClient.openClient(URL("http://localhost:3000")).use { xtdb ->
+XtdbClient.openClient(URL("http://localhost:3010")).use { xtdb ->
     xtdb.openQuery(
         pipeline(
             unify(
@@ -43,5 +43,3 @@ XtdbClient.openClient(URL("http://localhost:3000")).use { xtdb ->
         println(it.toList().joinToString("\n"))
     }
 }
-
-

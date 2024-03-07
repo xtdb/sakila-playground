@@ -19,9 +19,9 @@ clojure -M:test -m kaocha.runner test
 
 == Web serving
 
-Run `make` to download dependencies. With a Clojure REPL started, evaluate `user.clj` to start the HTTP server on port 3000.
+Run `make` to download dependencies. With a Clojure REPL started, evaluate `user.clj` to start the HTTP server on port 3010.
 
-Open a web browser at http://localhost:3000/
+Open a web browser at http://localhost:3010/
 
 A https://github.com/ring-clojure/ring[Ring] handler is provided.
 Incoming requests are handled by locating the resource corresponding with the URI of the request.
