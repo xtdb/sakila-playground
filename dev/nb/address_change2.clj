@@ -143,6 +143,15 @@
    "JOIN customer2 FOR ALL VALID_TIME AS c ON c.address_id = a.xt$id"
    "WHERE c.xt$id = 1")
 
+;; Or, if we wanted to see the address as of the business time 2021-06-06:
+
+^{::clerk/no-cache true}
+(q "SELECT c.name, a.address, a.xt$valid_from"
+   "FROM address2 FOR VALID_TIME AS OF DATE '2021-06-06' AS a"
+   "JOIN customer2 FOR VALID_TIME AS OF DATE '2021-06-06' AS c"
+   "ON c.address_id = a.xt$id"
+   "WHERE c.xt$id = 1")
+
 ;; ---
 ;; ## Correcting and auditing your business data
 
