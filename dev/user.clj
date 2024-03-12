@@ -9,6 +9,7 @@
     xtdb.demo.sql
     xtdb.demo.jdt-resources
     xtdb.demo.yry.resources
+    xtdb.demo.xtsql
     xtdb.demo.static-resources))
 
 (declare http-server)
