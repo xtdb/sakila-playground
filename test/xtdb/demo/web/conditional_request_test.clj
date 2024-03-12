@@ -11,21 +11,21 @@
 (deftest last-modified-test
   (is
    (=
-    {:ring.response/status 201,
-     :ring.response/headers
+    {:status 201,
+     :headers
      {"content-type" "text/plain",
       "last-modified" "Mon, 1 Jan 2024 10:00:00 GMT"},
-     :ring.response/body "foo"}
+     :body "foo"}
 
     (let [resource
           (map->Resource
            {:representations
             [^{"content-type" "text/plain"}
              (fn [_]
-               {:ring.response/status 201
-                :ring.response/headers {"last-modified" (format-http-date (java.util.Date/from (java.time.Instant/parse "2024-01-01T10:00:00Z")))}
-                :ring.response/body "foo"})]})]
-      (methods/GET resource {:ring.request/method :get})))))
+               {:status 201
+                :headers {"last-modified" (format-http-date (java.util.Date/from (java.time.Instant/parse "2024-01-01T10:00:00Z")))}
+                :body "foo"})]})]
+      (methods/GET resource {:request-method :get})))))
 
 (deftest not-modified-test
   (testing "more recent if-modified-since yields not modified"
@@ -41,12 +41,12 @@
                         "last-modified"
                         (format-http-date (Date/from (:last-modified @state)))}
                       (fn [_]
-                        {:ring.response/body "foo"})]})))]
+                        {:body "foo"})]})))]
 
            (methods/GET
             (resource {})
-            {:ring.request/method :get
-             :ring.request/headers
+            {:request-method :get
+             :headers
              {"if-modified-since"
               (-> "2024-01-20T00:00:00Z" Instant/parse Date/from format-http-date)}})))))
 
@@ -54,18 +54,18 @@
     (is
      (=
       200
-      (:ring.response/status
+      (:status
        (let [resource
              (fn [_]
                (map->Resource
                 {:representations
                  [^{"content-type" "text/plain"}
                   (fn [_]
-                    {:ring.response/body "foo"})]}))]
+                    {:body "foo"})]}))]
 
          (methods/GET
           (resource {})
-          {:ring.request/method :get
-           :ring.request/headers
+          {:request-method :get
+           :headers
            {"if-modified-since"
             (-> "2024-01-20T00:00:00Z" Instant/parse Date/from format-http-date)}})))))))

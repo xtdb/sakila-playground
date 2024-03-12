@@ -22,6 +22,6 @@
                :locator (fn [req]
                           (locator/find-resource
                            (resource-tree)
-                           (:ring.request/path req)))}))
+                           (:uri req)))}))
 
 (clerk/serve! {:watch-paths ["dev/nb"]})

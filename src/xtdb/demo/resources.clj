@@ -20,7 +20,7 @@
      {:representations
       [^{"content-type" "text/html;charset=utf-8"}
        (fn [request]
-         {:ring.response/body (format "<h1>%s World!</h1>\r\n" (:greeting @state))})]})))
+         {:body (format "<h1>%s World!</h1>\r\n" (:greeting @state))})]})))
 
 (defn ^{:web-path "index.html"} index [_]
   (html-templated-resource
@@ -32,8 +32,8 @@
    {:methods
     {"GET" {:handler
             (fn [resource request]
-              {:ring.response/status 302
-               :ring.response/headers {"location" (var->path #'index)}})}}}))
+              {:status 302
+               :headers {"location" (var->path #'index)}})}}}))
 
 (def select-films
   "SELECT film.xt$id AS id, film.title, film.description FROM film ORDER BY film.title")
@@ -54,7 +54,7 @@
     {"films"
      (fn [request]
        (let [rows (q select-films)
-             query-params (when-let [query (:ring.request/query request)]
+             query-params (when-let [query (:query-string request)]
                             (form-decode query))
              q (get query-params "q")]
          (if q
@@ -72,12 +72,12 @@
         (fn [resource req]
           ;; TODO: Insert into database
           ;; Redirect
-          {:ring.response/status 302
-           :ring.response/headers {"location" (var->path #'films)}})}}
+          {:status 302
+           :headers {"location" (var->path #'films)}})}}
       :representations
       [^{"content-type" "text/html;charset=utf-8"}
        (fn [req]
-         (let [query-params (when-let [query (:ring.request/query req)]
+         (let [query-params (when-let [query (:query-string req)]
                               (form-decode query))]
            (selmer/render-file
             template
@@ -116,7 +116,7 @@
 (defn customers-table [_]
   (let [customers (fn [request]
                     (let [rows (q "SELECT customer.xt$id AS id, customer.first_name, customer.last_name FROM customer ORDER BY customer.last_name")
-                          query-params (when-let [query (:ring.request/query request)]
+                          query-params (when-let [query (:query-string request)]
                                          (form-decode query))
                           q (get query-params "q")]
                       (if q
@@ -130,7 +130,7 @@
         {"customers" customers})
 
        ^{"content-type" "application/edn"}
-       (fn [req] {:ring.response/body (pr-str (customers req))})]})))
+       (fn [req] {:body (pr-str (customers req))})]})))
 
 (defn customers [_]
   (html-templated-resource
@@ -162,12 +162,12 @@
                       :xt/valid-from (java.util.Date.)
                       :active true})]]))
           ;; Redirect
-          {:ring.response/status 302
-           :ring.response/headers {"location" (var->path #'customers)}})}}
+          {:status 302
+           :headers {"location" (var->path #'customers)}})}}
       :representations
       [^{"content-type" "text/html;charset=utf-8"}
        (fn [req]
-         (let [query-params (when-let [query (:ring.request/query req)]
+         (let [query-params (when-let [query (:query-string req)]
                               (form-decode query))]
            (selmer/render-file
             template
@@ -185,7 +185,7 @@
       (case suffix
         "sql" [^{"content-type" "text/plain"}
                (fn [req]
-                 {:ring.response/body sql})]
+                 {:body sql})]
         "html" [^{"content-type" "text/html"}
                 (templated-responder
                  "templates/customer-historic-rentals.html"
@@ -228,7 +228,7 @@
   (html-resource
    (fn [_]
      (let [customer (first (xt/q (:xt-node xt-node) (format "SELECT customer.xt$id AS id, customer.first_name, customer.last_name, customer.email, address.phone FROM customer, address WHERE customer.xt$id = %s AND customer.address_id = address.xt$id" id)))]
-       {:ring.response/body
+       {:body
         (str (h/html [:dl
                       [:dt "First name"]
                       [:dd (:first_name customer)]
@@ -279,7 +279,7 @@
                               (try
                                 (LocalDate/parse return-date)
                                 (catch Exception _
-                                  (throw (ex-info "Invalid return date" {:ring.response/status 400})))))
+                                  (throw (ex-info "Invalid return date" {:status 400})))))
                 return-date (or return-date (LocalDate/now))]
 
             (println "Returning" rental-id)
@@ -294,7 +294,7 @@
                  :return-date return-date}]])
 
             ;; returning 204 causes HTMX to not swap, even if a hx-swap=delete is set.
-            {:ring.response/status 200}))}}})))
+            {:status 200}))}}})))
 
 (defn analytics [_]
   (let [rows (xt/q (:xt-node xt-node)

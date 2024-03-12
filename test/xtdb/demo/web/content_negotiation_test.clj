@@ -9,20 +9,20 @@
 (deftest content-negotiation-test
   (is
    (=
-    {:ring.response/status 200,
-     :ring.response/headers {"content-type" "text/html"},
-     :ring.response/body "<h1>Hello</h1>"}
+    {:status 200,
+     :headers {"content-type" "text/html"},
+     :body "<h1>Hello</h1>"}
 
     (let [resource
           (map->Resource
            {:representations
             [^{"content-type" "text/plain"}
-             (fn [_] {:ring.response/body "Hello"})
+             (fn [_] {:body "Hello"})
 
              ^{"content-type" "text/html"}
-             (fn [_] {:ring.response/body "<h1>Hello</h1>"})]})]
+             (fn [_] {:body "<h1>Hello</h1>"})]})]
 
       (methods/GET
        resource
-       {:ring.request/method :get
-        :ring.request/headers {"accept" "text/html"}})))))
+       {:request-method :get
+        :headers {"accept" "text/html"}})))))

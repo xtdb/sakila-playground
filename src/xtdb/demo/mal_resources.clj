@@ -34,7 +34,7 @@
         "html"
         [^{"content-type" "text/html"}
          (fn [req]
-           {:ring.response/body
+           {:body
             (selmer/render-file
              "templates/mal/rentals-by-category.html"
              {"resultset" resultset})})]
@@ -42,7 +42,7 @@
         "sql"
         [^{"content-type" "application/sql"}
          (fn [req]
-           {:ring.response/body sql})]
+           {:body sql})]
 
         ;; Otherwise, we don't have a representation
         []

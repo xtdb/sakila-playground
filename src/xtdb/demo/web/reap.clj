@@ -17,5 +17,5 @@
              (throw
               (ex-info
                "Malformed content-type"
-               {:ring.request/status 400
+               {:status 400
                 :input v}))))))))

@@ -11,7 +11,7 @@
   [selected-representation-metadata empty-current-representations? req]
   ;; (All quotes in this function's comments are from Section 3.2, RFC 7232,
   ;; unless otherwise stated).
-  (when-let [header-field (reap/if-match (get-in req [:ring.request/headers "if-match"]))]
+  (when-let [header-field (reap/if-match (get-in req [:headers "if-match"]))]
     (cond
       ;; "If the field-value is '*' …"
       (and (map? header-field)
@@ -22,7 +22,7 @@
       (throw
        (ex-info
         "If-Match precondition failed"
-        {:ring.response/status 412}))
+        {:status 412}))
 
       (sequential? header-field)
       (let [rep-etag (some-> (get selected-representation-metadata "etag") reap/entity-tag)
@@ -49,7 +49,7 @@
   [selected-representation req]
   ;; (All quotes in this function's comments are from Section 3.2, RFC 7232,
   ;; unless otherwise stated).
-  (let [header-field (reap/if-none-match (get-in req [:ring.request/headers "if-none-match"]))]
+  (let [header-field (reap/if-none-match (get-in req [:headers "if-none-match"]))]
     (cond
       (sequential? header-field)
       (when-let [rep-etag (some-> (get selected-representation :juxt.http/etag) reap/entity-tag)]
@@ -61,16 +61,16 @@
           ;; entity-tags …"
           (when (rfc7232/weak-compare-match? etag rep-etag)
             (throw
-             (if (#{:get :head} (:ring.request/method req))
+             (if (#{:get :head} (:request-method req))
                (ex-info
                 "Not modified"
-                {:ring.response/status 304
+                {:status 304
                  ::matching-entity-tag etag})
                ;; "… or 412 (Precondition Failed) status code for all other
                ;; request methods."
                (ex-info
                 "If-None-Match precondition failed"
-                {:ring.response/status 412
+                {:status 412
                  ::matching-entity-tag etag}))))))
 
       ;; "If-None-Match can also be used with a value of '*' …"
@@ -84,8 +84,8 @@
           {:juxt.site/request-context
            (assoc
             req
-            :ring.response/status
-            (if (#{:get :head} (:ring.request/method req))
+            :status
+            (if (#{:get :head} (:request-method req))
               ;; "the origin server MUST respond with either a) the 304 (Not
               ;; Modified) status code if the request method is GET or HEAD
               ;; …"
@@ -97,7 +97,7 @@
 (defn evaluate-if-unmodified-since! [selected-representation request]
   (let [if-unmodified-since-date
         (-> request
-            (get-in [:ring.request/headers "if-unmodified-since"])
+            (get-in [:headers "if-unmodified-since"])
             reap/http-date
             ::rfc7231/date)]
     (when (.isAfter
@@ -106,7 +106,7 @@
       (throw
        (ex-info
         "Precondition failed"
-        {:ring.response/status 304})))))
+        {:status 304})))))
 
 (defn evaluate-if-modified-since! [representation-metadata req]
   (when-let [last-modified (some-> representation-metadata (get "last-modified")
@@ -114,7 +114,7 @@
                                     :juxt.reap.rfc7231/date)]
     (let [if-modified-since-date
           (-> req
-              (get-in [:ring.request/headers "if-modified-since"])
+              (get-in [:headers "if-modified-since"])
               reap/http-date
               :juxt.reap.rfc7231/date)]
 
@@ -125,12 +125,12 @@
         (throw
          (ex-info
           "Not modified"
-          {:ring.response/status 304}))))))
+          {:status 304}))))))
 
 (defn evaluate-if-unmodified-since! [selected-representation req]
   (let [if-unmodified-since-date
         (-> req
-            (get-in [:ring.request/headers "if-unmodified-since"])
+            (get-in [:headers "if-unmodified-since"])
             reap/http-date
             ::rfc7231/date)]
     (when (.isAfter
@@ -149,20 +149,20 @@
   ;; received with a request method that does not involve the selection or
   ;; modification of a selected representation, such as CONNECT, OPTIONS, or
   ;; TRACE." -- Section 5, RFC 7232
-  (when (not (#{:connect :options :trace} (:ring.request/method request)))
+  (when (not (#{:connect :options :trace} (:request-method request)))
 
-    (if (get-in request [:ring.request/headers "if-match"])
+    (if (get-in request [:headers "if-match"])
       ;; Step 1
       (evaluate-if-match! selected-representation-metadata request)
       ;; Step 2
-      (when (get-in request [:ring.request/headers "if-unmodified-since"])
+      (when (get-in request [:headers "if-unmodified-since"])
         (evaluate-if-unmodified-since! selected-representation-metadata request)))
     ;; Step 3
-    (if (get-in request [:ring.request/headers "if-none-match"])
+    (if (get-in request [:headers "if-none-match"])
       (evaluate-if-none-match! selected-representation-metadata request)
       ;; Step 4, else branch: if-none-match is not present
-      (when (#{:get :head} (:ring.request/method request))
-        (when (get-in request [:ring.request/headers "if-modified-since"])
+      (when (#{:get :head} (:request-method request))
+        (when (get-in request [:headers "if-modified-since"])
           (evaluate-if-modified-since! selected-representation-metadata request))))
     ;; (Step 5 is handled elsewhere)
     ))

@@ -34,7 +34,7 @@
     (map->Resource
      {:representations
       [^{"content-type" "application/json"}
-       (fn [req] {:ring.response/body
+       (fn [req] {:body
                   (json/write-str
                    {"width" 500,
                     "height" 410,

@@ -28,27 +28,27 @@
 (defn GET [resource request]
   (if-let [f (get-in resource [:methods "GET" :handler])]
     (let [response (f resource request)]
-      (merge {:ring.response/status 200} response))
+      (merge {:status 200} response))
     ;; No explicit handler, so check for representations
     (let [representation
           (-> resource :representations (select-representation request))]
       (evaluate-preconditions! (meta representation) request)
       (if-not representation
         (let [response (get-in resource [:responses 404])]
-          (cond-> {:ring.response/status 404}
+          (cond-> {:status 404}
             response (merge (response request))))
         (let [representation-metadata (request-applied-metadata representation request)
-              {:ring.response/keys [status headers body]} (representation request)]
-          {:ring.response/status (or status 200)
-           :ring.response/headers (into representation-metadata headers)
-           :ring.response/body body})
+              {:keys [status headers body]} (representation request)]
+          {:status (or status 200)
+           :headers (into representation-metadata headers)
+           :body body})
         ))))
 
 (defn HEAD [resource request]
   (let [representation
         (-> resource :representations (select-representation request))]
-    {:ring.response/status 200
-     :ring.response/headers (request-applied-metadata representation request)}))
+    {:status 200
+     :headers (request-applied-metadata representation request)}))
 
 (defn PUT [resource request]
   (throw (ex-info "TODO" {})))
@@ -57,16 +57,16 @@
   (if-let [f (get-in resource [:methods "POST" :handler])]
     ;; Lazily receive representation from request
     (let [response (f resource request)]
-      (merge {:ring.response/status 201} response))
-    {:ring.response/status 405}))
+      (merge {:status 201} response))
+    {:status 405}))
 
 (defn DELETE [resource request]
   (if-let [f (get-in resource [:methods "DELETE" :handler])]
     (let [response (f resource request)]
-      (merge {:ring.response/status 204} response))
-    {:ring.response/status 405}))
+      (merge {:status 204} response))
+    {:status 405}))
 
 (defn OPTIONS [resource request]
   (let [methods (allowed-methods resource request)]
-    {:ring.response/status 200
-     :ring.response/headers {"allow" (str/join ", " methods)}}))
+    {:status 200
+     :headers {"allow" (str/join ", " methods)}}))

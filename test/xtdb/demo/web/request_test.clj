@@ -15,10 +15,10 @@
 
 (defn test-request
   ([method headers body-str]
-   (let [req {:ring.request/method method
-              :ring.request/headers headers}]
+   (let [req {:request-method method
+              :headers headers}]
      (cond-> req
-       body-str (assoc :ring.request/body (java.io.ByteArrayInputStream. (.getBytes body-str)))
+       body-str (assoc :body (java.io.ByteArrayInputStream. (.getBytes body-str)))
        true (assoc :header-reader (make-header-reader headers)))))
   ([method headers]
    (test-request method headers nil)))
@@ -33,7 +33,7 @@
         #"No Content-Length header found"
         (req/read-request-body
          resource
-         {:ring.request/method :post}))))
+         {:request-method :post}))))
 
     (testing "Bad content length"
       (is

@@ -5,24 +5,24 @@
    [xtdb.demo.web.locator :as locator]))
 
 (def handler
-  (handler/make-base-ring2-handler
+  (handler/make-base-ring-handler
    {:locator (fn [req]
                (locator/find-resource
-                [] ; resource tree
-                (:ring.request/path req)))}))
+                []                      ; resource tree
+                (:uri req)))}))
 
 (deftest handler-test
   (testing "Not found"
     (is
      (=
-      {:ring.response/status 404
-       :ring.response/headers {"content-type" "text/plain;charset=utf-8"}
-       :ring.response/body "Not found\r\n"}
+      {:status 404
+       :headers {"content-type" "text/plain;charset=utf-8"}
+       :body "Not found\r\n"}
       (handler
-       {:ring.request/method :get
-        :ring.request/path "/foo"})))))
+       {:request-method :get
+        :uri "/foo"})))))
 
 
 #_(handler
- {:ring.request/method :get
-  :ring.request/path "/foo"})
+ {:method :get
+  :uri "/foo"})

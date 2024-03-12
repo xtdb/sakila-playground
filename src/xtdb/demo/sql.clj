@@ -73,7 +73,7 @@
    (body content)])
 
 (defn page-response [title content]
-  {:ring.response/body (str (h/html (page title content)))})
+  {:body (str (h/html (page title content)))})
 
 (defn query-url
   ([file-name] (query-url file-name {}))
@@ -158,7 +158,7 @@
 
 (defn satisfy-params [query req]
   (let [{:keys [params, defaults]} query
-        {query-params :ring.request/query} req
+        {query-params :query-string} req
         query-params (some-> query-params form-decode)]
     (->> (for [[param t] params
                :let [query-param (assume-one (get query-params (name param)))]]
@@ -195,7 +195,7 @@
           (param-input param t (satisfied-params param))])])))
 
 (defn specialise-query [query req]
-  (let [{user-sql "sql"} (some-> req :ring.request/query form-decode)
+  (let [{user-sql "sql"} (some-> req :query-string form-decode)
         user-sql (assume-one user-sql)]
     (if user-sql
       ;; xt does not like carriage returns for some reason
@@ -224,7 +224,7 @@
   )
 
 (defn query-basis [req]
-  (let [{:strs [system-time, valid-time]} (some-> req :ring.request/query form-decode)
+  (let [{:strs [system-time, valid-time]} (some-> req :query-string form-decode)
         system-time (assume-one system-time)
         valid-time (assume-one valid-time)]
     (when (and valid-time system-time)

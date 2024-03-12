@@ -36,8 +36,8 @@
   (map->Resource
    {:representations []
     :responses {404 (fn [_]
-                      {:ring.response/headers {"content-type" "text/plain;charset=utf-8"}
-                       :ring.response/body "Not found\r\n"})}}))
+                      {:headers {"content-type" "text/plain;charset=utf-8"}
+                       :body "Not found\r\n"})}}))
 
 (extend-protocol UniformInterface
   clojure.lang.Var
@@ -64,9 +64,9 @@
 (defn templated-responder [template content-type template-model]
   ^{"content-type" content-type}
   (fn [req]
-    {:ring.response/body
+    {:body
      (let [template-model (update-vals template-model (fn [x] (if (fn? x) (x req) x)))
-           query-params (when-let [query (:ring.request/query req)]
+           query-params (when-let [query (:query-string req)]
                           (form-decode query))]
        (selmer/render-file
         template
@@ -84,4 +84,4 @@
     [^{"content-type" content-type
        "last-modified" (format-http-date (java.util.Date. (.lastModified file)))}
      (fn [req]
-       {:ring.response/body file})]}))
+       {:body file})]}))

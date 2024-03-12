@@ -51,7 +51,7 @@ ORDER BY f.title")
     :template-model
     {"available_films"
      (fn [request]
-       (let [query-params (when-let [query (:ring.request/query request)]
+       (let [query-params (when-let [query (:query-string request)]
                             (form-decode query))
              store-id (let [s (get query-params "store")]
                         (if (empty? s)
@@ -69,7 +69,7 @@ ORDER BY f.title")
            )))
      "store_id"
      (fn [request]
-       (let [query-params (when-let [query (:ring.request/query request)]
+       (let [query-params (when-let [query (:query-string request)]
                             (form-decode query))
              store-id (let [s (get query-params "store")]
                         (if (empty? s)
@@ -78,13 +78,13 @@ ORDER BY f.title")
          store-id))
      "vt_timestamp"
      (fn [request]
-       (let [query-params (when-let [query (:ring.request/query request)]
+       (let [query-params (when-let [query (:query-string request)]
                             (form-decode query))]
          (-> (get-timestamp query-params "vt_timestamp")
              instant->iso-string)))
      "as_of_timestamp"
      (fn [request]
-       (let [query-params (when-let [query (:ring.request/query request)]
+       (let [query-params (when-let [query (:query-string request)]
                             (form-decode query))]
          (-> (get-timestamp query-params "as_of_timestamp")
              instant->iso-string)))}}))
