@@ -68,8 +68,10 @@
 
 ;; # Understanding change
 
-;; In part 1, we covered deleted data. In this part, we'll expand more
-;; on the idea of controlling the timeline.
+;; In part 1, we covered deleted data, and the fact that in an immutable database, data is never truly gone.
+
+;; In this part, we'll expand more
+;; on the idea of querying the timeline.
 
 ;; Let's use a single record for this example.
 
@@ -118,13 +120,13 @@
 ^{::clerk/no-cache true}
 (q "SELECT * FROM product")
 
-;; Our CFO is running a report about January sales and needs to know
+;; Let's say we need to do an audit query, and we need to know
 ;; the price of every product as of 2024-01-15.
 
 ^{::clerk/no-cache true}
 (q "SELECT * FROM product FOR VALID_TIME AS OF DATE '2024-01-15'")
 
-;; Now the CFO wants to how the prices have increased over Q1.
+;; Now lets say our the CFO wants to how the prices have increased over Q1?
 
 ^{::clerk/no-cache true}
 (q "SELECT product.*, product.xt$valid_from, product.xt$valid_to"

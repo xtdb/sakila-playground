@@ -98,7 +98,7 @@
 ;; *This is a trivial example but one that clearly demonstrates the
 ;; fragility and complexity of managing time in data systems.*
 
-;; ## Controlling the timeline with XTDB
+;; ## Using an Immutable Database
 
 ;; Using an immutable database we keep everything, including the
 ;; history of any change to the database. Therefore, we can get back
@@ -135,7 +135,7 @@
 ^{::clerk/no-cache true}
 (q "SELECT * FROM product")
 
-;; The product is gone!
+;; The product is gone! Oh no!
 
 ;; However, don't worry. Since the database is immutable, we can make
 ;; a historical query different time. We can do this by adding a
