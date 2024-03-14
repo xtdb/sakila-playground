@@ -68,7 +68,7 @@
 
 ;; # Understanding change
 
-;; In part 1, we covered deleted data, and the fact that in an immutable database, data is never truly gone.
+;; In [part 1](tutorial_part_1), we covered deleted data, and the fact that in an immutable database, data is never truly gone.
 
 ;; In this part, we'll expand more
 ;; on the idea of querying the timeline.
