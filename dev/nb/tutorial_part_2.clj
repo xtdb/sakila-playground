@@ -75,9 +75,9 @@
 
 ;; Let's use a single record for this example.
 
-;; Let's pretend the first version is inserted on 2024-01-01.
+;; Let's pretend the first version is inserted on `2024-01-01`.
 
-^{::clerk/no-cache true ::clerk/visibility {:code :hide :result :show}}
+^{::clerk/no-cache true ::clerk/visibility {:code :hide :result :hide}}
 (set-time #inst "2024-01-01")
 
 ^{::clerk/no-cache true}
@@ -92,9 +92,9 @@
 ^{::clerk/no-cache true}
 (q "SELECT * FROM product")
 
-;; A month later, we decide to update the price of the product.
+;; A month later on `2024-02-01`, we decide to update the price of the product.
 
-^{::clerk/no-cache true ::clerk/visibility {:code :hide :result :show}}
+^{::clerk/no-cache true ::clerk/visibility {:code :hide :result :hide}}
 (set-time #inst "2024-02-01")
 
 ^{::clerk/no-cache true}
@@ -107,9 +107,9 @@
 ^{::clerk/no-cache true}
 (q "SELECT * FROM product")
 
-;; A month later, with part costs still increasing, we increase the price again.
+;; A month later on `2024-03-01`, with part costs still increasing, we increase the price again.
 
-^{::clerk/no-cache true ::clerk/visibility {:code :hide :result :show}}
+^{::clerk/no-cache true ::clerk/visibility {:code :hide :result :hide}}
 (set-time #inst "2024-03-01")
 
 ^{::clerk/no-cache true}
@@ -121,12 +121,12 @@
 (q "SELECT * FROM product")
 
 ;; Let's say we need to do an audit query, and we need to know
-;; the price of every product as of 2024-01-15.
+;; the price of every product as of `2024-01-15`.
 
 ^{::clerk/no-cache true}
 (q "SELECT * FROM product FOR VALID_TIME AS OF DATE '2024-01-15'")
 
-;; Here you can see we have the correct historical price for 2024-01-15, which is 340
+;; Here you can see we have the correct historical price for `2024-01-15`, which is 340
 
 ;; Now lets say our the CFO wants to how the prices have increased over Q1?
 
@@ -146,7 +146,7 @@
    "ORDER BY product.xt$valid_from"
    "LIMIT 1")
 
-;; Yes, it was the price change of 2024-02-01 where the bicycle's
+;; Yes, it was the price change of `2024-02-01` where the bicycle's
 ;; price exceeded $350.
 
 ;; ## Conclusion
