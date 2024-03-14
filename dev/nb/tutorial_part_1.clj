@@ -1,5 +1,5 @@
 (ns ^{:nextjournal.clerk/visibility {:code :hide}}
-  nb.simple-delete
+  nb.tutorial-part-1
   (:require [clojure.string :as str]
             [nextjournal.clerk :as clerk]
             [xtdb.api :as xt]
@@ -65,9 +65,9 @@
 
 ;; # Avoiding a lossy database
 
-;; Imagine a system that stores product data.  Suppose, after a
-;; review, somebody decides to delete a product from our
-;; database (perhaps it was no longer available from the supplier).
+;; Imagine a system that stores product data.
+
+;; Suppose somebody decides to delete a product from our database.
 
 ;; ```
 ;; DELETE product WHERE product.id = 1;
@@ -155,5 +155,5 @@
 ^{::clerk/visibility {:code :hide, :result :hide}}
 (comment
   (clojure.java.browse/browse-url "http://localhost:7777")
-  (clerk/show! 'nb.simple-delete)
+  (clerk/show! 'nb.tutorial-part-1)
   )
