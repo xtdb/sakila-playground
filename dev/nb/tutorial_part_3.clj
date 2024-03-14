@@ -66,14 +66,13 @@
 
 ^{::clerk/no-cache true} (reset)
 
-;; # Understanding change
+;; # Updating the Past
 
-;; In part 1, we covered deleted data. In this part, we'll expand more
-;; on the idea of controlling the timeline.
+;; In XTDB, we allow uses to make updates into the past.
 
-;; Let's use a single record for this example.
+;; How does this work with an immutable database?! Let's find out together.
 
-;; Let's pretend the first version is inserted on 2024-01-01.
+;; Let's pretend the first version of a product is inserted on 2024-01-01.
 
 ^{::clerk/no-cache true ::clerk/visibility {:code :hide :result :show}}
 (set-time #inst "2024-01-01")
@@ -83,12 +82,47 @@
    "VALUES "
    "(1, 'Pendleton Electric Bicycle', 340)")
 
-;; (Notice how we don't have to create a database table explicitly, or tell our database about the columns - the database will learn the schema from the data we give it)
-
-;; Let's query this product:
+;; Let's query the day after this insert:
 
 ^{::clerk/no-cache true}
-(q "SELECT * FROM product")
+(q "SELECT * FROM product FOR VALID_TIME AS OF DATE '2024-01-02'")
+
+;; Now, let's query against the past - 2023
+;; We should NOT see any data, because the product was inserted into the database on 2024-01-01:
+
+^{::clerk/no-cache true}
+(q "SELECT * FROM product FOR VALID_TIME AS OF DATE '2023-01-01'")
+
+;; But let's say, we want to insert some historical data into our database - 2022.
+;; This could an import from another system, into our golden store
+;; We can do this in XT but setting the xt$valid_from column
+
+^{::clerk/no-cache true}
+(e "INSERT INTO product (xt$id, name, price, xt$valid_from)"
+   "VALUES "
+   "(1, 'Pendleton Electric Bicycle', 300, TIMESTAMP '2022-01-01 00:00:00')")
+
+;; Now if we query in 2024, we still get the 2024 value
+
+^{::clerk/no-cache true}
+(q "SELECT * FROM product FOR VALID_TIME AS OF DATE '2024-01-02'")
+
+;; But if we query in 2023, we should see the older 2022 value:
+
+^{::clerk/no-cache true}
+(q "SELECT * FROM product FOR VALID_TIME AS OF DATE '2023-01-01'")
+
+;; If we query in 2021, we should see nothing:
+
+^{::clerk/no-cache true}
+(q "SELECT * FROM product FOR VALID_TIME AS OF DATE '2020-01-01'")
+
+
+;; NEED TO INSERT WITH VALID_TIME
+
+;; THEN SHOW WITH SYSTEM_TIME, CAN GET ORIGINAL DATA BACK
+;; SYSTEM_TIME shadows VALID_TIME, but is completely immutable
+;; This is the concept of bitemporality
 
 ;; A month later, we decide to update the price of the product.
 
@@ -148,5 +182,4 @@
 ^{::clerk/visibility {:code :hide, :result :hide}}
 (comment
   (clojure.java.browse/browse-url "http://localhost:7777")
-  (clerk/show! 'nb.tutorial-part-3)
-  )
+  (clerk/show! 'nb.tutorial-part-3))
