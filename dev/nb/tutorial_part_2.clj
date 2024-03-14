@@ -60,7 +60,7 @@
 
 (defn set-time [inst]
   (alter-var-root #'current-time (constantly inst))
-  (clerk/html [:span (format "(Setting the time 🕐 to: %s)" (format-inst inst))]))
+  (clerk/html [:span (format "(Setting the time of the demo 🕐 to: %s)" (format-inst inst))]))
 
 {::clerk/visibility {:code :hide, :result :show}}
 
