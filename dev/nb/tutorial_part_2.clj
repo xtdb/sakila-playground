@@ -149,6 +149,14 @@
 ;; Yes, it was the price change of 2024-02-01 where the bicycle's
 ;; price exceeded $350.
 
+;; ## Conclusion
+
+;; We've shown that it's possible to view the past history of records
+;; in our database without creating any special views, audit tables or
+;; workarounds.
+
+;; Let's move ahead to [part 3](tutorial_part_3)
+
 ^{::clerk/visibility {:code :hide, :result :hide}}
 (comment
   (clojure.java.browse/browse-url "http://localhost:7777")
