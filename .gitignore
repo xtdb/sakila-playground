@@ -1,5 +1,6 @@
 .calva/output-window/
 .classpath
+.clj-kondo/
 .clj-kondo/.cache
 .clj-kondo/inline-configs
 .clj-kondo/.lock
