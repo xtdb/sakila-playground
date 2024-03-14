@@ -2,7 +2,6 @@
   nb.simple-delete
   (:require [clojure.string :as str]
             [nextjournal.clerk :as clerk]
-            [nextjournal.clerk-slideshow :as slideshow]
             [xtdb.api :as xt]
             [xtdb.node :as xt-node])
   (:import (java.time Instant ZoneId ZonedDateTime)
@@ -58,53 +57,100 @@
 
 (defn set-time [inst]
   (alter-var-root #'current-time (constantly inst))
-  (clerk/html [:span (format "🕐: %s" (format-inst inst))]))
+  (clerk/html [:span (format "(Setting the time 🕐 to: %s)" (format-inst inst))]))
 
 {::clerk/visibility {:code :hide, :result :show}}
 
 ^{::clerk/no-cache true} (reset)
 
-^{::clerk/no-cache true ::clerk/visibility {:code :hide :result :hide}}
-(set-time #inst "2021-09-10")
+;; # Avoiding a lossy database
 
-;; ## Inserting records
+;; Imagine a system that stores product data.  Suppose, after a
+;; review, somebody decides to delete a product from our
+;; database (perhaps it was no longer available from the supplier).
 
-;; Let's examine a trivial requirement to correctly record and interpret the address changes of a customer...
+;; ```
+;; DELETE product WHERE product.id = 1;
+;; ```
 
-;; ---
-;; ## A mutable database schema
+;; In a traditional database, this record is now gone for good, and
+;; unrecoverable (except for restoring from backups, which is
+;; expensive, time-consuming and notoriously unreliable!).
 
-;; The most basic database schema for recording customer information might be a customers table that simply includes a freeform address column:
+;; One common workaround is the use of a status column:
+
+;; ```
+;; UPDATE product SET status = 'UNAVAILABLE'
+;; WHERE product.id = 1;
+;; ```
+
+;; The downside of this approach is that *all* queries to the product
+;; table now need to be aware of this workaround and add explicit
+;; clauses to their queries.
+
+;; ```
+;; SELECT * FROM product WHERE status <> 'UNAVAILABLE'
+;; ```
+
+;; Another downside is that we no longer have any historic record of
+;; when a status changed.
+
+;; *This is a trivial example but one that clearly demonstrates the
+;; fragility and complexity of managing time in data systems.*
+
+;; ## Controlling the timeline with XTDB
+
+;; Using an immutable database we keep everything, including the
+;; history of any change to the database. Therefore, we can get back
+;; deleted data.
+
+;; For example, let's set up a scenario by inserting some product records:
+
+;; Let's pretend the day we are inserting these records is 2024-01-01.
+
+^{::clerk/no-cache true ::clerk/visibility {:code :hide :result :show}}
+(set-time #inst "2024-01-01")
 
 ^{::clerk/no-cache true}
-(e "INSERT INTO customer0 (xt$id, name, address)"
-   "VALUES (1, 'Jane Smith', '23 Workhaven Lane, Alberta, 10672')")
+(e "INSERT INTO product (xt$id, name)"
+   "VALUES "
+   "(1, 'Pendleton Electric Bicycle'),"
+   "(2, 'Bicycle Pump')")
 
-;; Finding out the latest address for a customer is simple:
-
-^{::clerk/no-cache true}
-(q "SELECT c.address"
-   "FROM customer0 AS c"
-   "WHERE c.xt$id = 1")
-
-;; Now delete
-(set-time #inst "2021-09-20")
+;; Let's query these products:
 
 ^{::clerk/no-cache true}
-(e "DELETE FROM customer0")
+(q "SELECT * FROM product")
+
+;; A month later, someone deletes the product.
+
+^{::clerk/no-cache true ::clerk/visibility {:code :hide :result :show}}
+(set-time #inst "2024-02-01")
 
 ^{::clerk/no-cache true}
-(q "SELECT c.address"
-   "FROM customer0 AS c"
-   "WHERE c.xt$id = 1")
+(e "DELETE FROM product WHERE product.name = 'Pendleton Electric Bicycle'")
 
-;; Now time-travel
-(set-time #inst "2021-09-10")
+;; Let's check that the bicycle is no longer in our database:
 
 ^{::clerk/no-cache true}
-(q "SELECT c.address"
-   "FROM customer0 AS c"
-   "WHERE c.xt$id = 1")
+(q "SELECT * FROM product")
+
+;; The product is gone!
+
+;; However, don't worry. Since the database is immutable, we can make
+;; a historical query different time. We can do this by adding a
+;; qualifier to the query:
+
+^{::clerk/no-cache true}
+(q "SELECT *"
+   "FROM product"
+   "FOR VALID_TIME AS OF DATE '2024-01-01'")
+
+;; ## Conclusion
+
+;; We've shown that it's possible to use standard SQL to make
+;; historical queries against an immutable database, to bring back
+;; deleted data.
 
 ^{::clerk/visibility {:code :hide, :result :hide}}
 (comment
