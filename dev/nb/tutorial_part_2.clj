@@ -126,6 +126,8 @@
 ^{::clerk/no-cache true}
 (q "SELECT * FROM product FOR VALID_TIME AS OF DATE '2024-01-15'")
 
+;; Here you can see we have the correct historical price for 2024-01-15, which is 340
+
 ;; Now lets say our the CFO wants to how the prices have increased over Q1?
 
 ^{::clerk/no-cache true}
