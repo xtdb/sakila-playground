@@ -100,32 +100,43 @@
 ^{::clerk/no-cache true}
 (q "SELECT * FROM product FOR VALID_TIME AS OF DATE '2024-01-02'")
 
-;; Now let's say we know that the price for `2023` was INCORRECT. This could have been due to a multitude of reasons, a developer bug, a faulty database update, or an incorrect manual data entry.
+;; Now let's say we know that the price for **2023** was INCORRECT. This could have been due to a multitude of reasons, a developer bug, a faulty database update, or an incorrect manual data entry.
 
-;; Let's correct the price for 2023:
+;; Let's correct the price for **2023**:
 
 ^{::clerk/no-cache true}
-(e "INSERT INTO product (xt$id, name, price, xt$valid_from)"
+(e "INSERT INTO product (xt$id, name, price, xt$valid_from, xt$valid_to)"
    "VALUES "
-   "(1, 'Pendleton Electric Bicycle', 350, TIMESTAMP '2023-01-01 00:00:00')")
+   "(1, 'Pendleton Electric Bicycle', 350,
+     TIMESTAMP '2023-01-01 00:00:00',
+     TIMESTAMP '2024-01-01 00:00:00')")
 
-;; Now when we query in 2023, we get the updated price back:
+;; Now when we query in **2023**, we get the updated price back:
 
 ^{::clerk/no-cache true}
 (q "SELECT * FROM product FOR VALID_TIME AS OF DATE '2023-01-02'")
+
+;; ## Immutability
 
 ;; BUT - aren't we mutating an immutable database here?
 
 ;; Aren't we blasting over the top of original data, and thus losing that original data?
 
-;; The answer is no. We have been updating the `VALID_TIME` line. But our XTDB database has another, completely immutable database called SYSTEM_TIME.
+;; The answer is no. We have been updating the `VALID_TIME` line. But our XTDB database has another, completely immutable timeline called SYSTEM_TIME.
 
 ;; Using a query against `SYSTEM_TIME`, we can query the database exactly how it was at a point in database-time.
 
 ;; No updates to this line are possible, we can only add to the end of the timeline. We call this append-only.
 
+;; For example, querying against SYSTEM_TIME, we should see the original, unmutated data:
+
 ^{::clerk/no-cache true}
-(q "SELECT * FROM product FOR SYSTEM_TIME AS OF DATE '2023-01-02'")
+(q "SELECT product.*,
+    product.xt$system_from,
+    product.xt$system_to,
+    product.xt$valid_from,
+    product.xt$valid_to
+    FROM product FOR ALL SYSTEM_TIME FOR ALL VALID_TIME")
 
 ;; ## Conclusion
 

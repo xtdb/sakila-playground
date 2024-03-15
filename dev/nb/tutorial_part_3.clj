@@ -89,35 +89,37 @@
 ^{::clerk/no-cache true}
 (q "SELECT * FROM product FOR VALID_TIME AS OF DATE '2024-01-02'")
 
-;; Now, let's query against the past, in `2023`
+;; Now, let's query against the past, in **2023**
 
 ;; We should NOT see any data, because the product was inserted into the database on `2024-01-01`:
 
 ^{::clerk/no-cache true}
 (q "SELECT * FROM product FOR VALID_TIME AS OF DATE '2023-01-01'")
 
-;; But let's say, we want to insert some historical data into our database, all the way back in `2022`.
+;; ## Inserting Historical Data
+
+;; But let's say, we want to insert some historical data into our database, all the way back in **2022**.
 
 ;; This could an import from another system, into our XTDB golden store.
 
-;; We achieve this in XT by setting the xt$valid_from column
+;; We achieve this in XT by setting the `xt$valid_from` and `xt$valid_to` column
 
 ^{::clerk/no-cache true}
-(e "INSERT INTO product (xt$id, name, price, xt$valid_from)"
+(e "INSERT INTO product (xt$id, name, price, xt$valid_from, xt$valid_to)"
    "VALUES "
-   "(1, 'Pendleton Electric Bicycle', 300, TIMESTAMP '2022-01-01 00:00:00')")
+   "(1, 'Pendleton Electric Bicycle', 300, DATE '2022-01-01', DATE '2024-01-01')")
 
-;; Now if we query in 2024, we still get the 2024 value
+;; Now if we query in **2024**, we still get the **2024** value
 
 ^{::clerk/no-cache true}
 (q "SELECT * FROM product FOR VALID_TIME AS OF DATE '2024-01-02'")
 
-;; But if we query in 2023, we should see the older 2022 value:
+;; But if we query in **2023**, we should see the older **2022** value:
 
 ^{::clerk/no-cache true}
 (q "SELECT * FROM product FOR VALID_TIME AS OF DATE '2023-01-01'")
 
-;; If we query in 2021, we should see nothing:
+;; If we query in **2020**, we should see nothing:
 
 ^{::clerk/no-cache true}
 (q "SELECT * FROM product FOR VALID_TIME AS OF DATE '2020-01-01'")
@@ -126,7 +128,7 @@
 
 ;; We've shown that it's possible to insert records into the past.
 ;;
-;; What about if we want to update historial data? How does this work with
+;; What about if we want to update historical data? How does this work with
 ;; an immutable database?
 
 ;; Let's find out in [part 4](tutorial_part_4)
