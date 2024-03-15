@@ -70,17 +70,64 @@
 
 ;; In this part, we will understand how to update past data, but we will also learn how to access the raw, un-changed data also.
 
-;; Now show an update OVER historical data
+;; First, let's insert three versions of the same product into different points in the past:
 
-;; THEN SHOW WITH SYSTEM_TIME, CAN GET ORIGINAL DATA BACK
-;; SYSTEM_TIME shadows VALID_TIME, but is completely immutable
-;; This is the concept of bitemporality
+^{::clerk/no-cache true}
+(e "INSERT INTO product (xt$id, name, price, xt$valid_from)"
+   "VALUES "
+   "(1, 'Pendleton Electric Bicycle', 300, TIMESTAMP '2022-01-01 00:00:00')")
 
-;; products
-;; option 1 - Correcting a mistake
-;; Option 2 - inserting history
+^{::clerk/no-cache true}
+(e "INSERT INTO product (xt$id, name, price, xt$valid_from)"
+   "VALUES "
+   "(1, 'Pendleton Electric Bicycle', 400, TIMESTAMP '2023-01-01 00:00:00')")
 
-;; A month later, we decide to update the price of the product.
+^{::clerk/no-cache true}
+(e "INSERT INTO product (xt$id, name, price, xt$valid_from)"
+   "VALUES "
+   "(1, 'Pendleton Electric Bicycle', 500, TIMESTAMP '2024-01-01 00:00:00')")
+
+;; Let's prove to ourselves that querying at various points in the past, gives us the correct data:
+
+^{::clerk/no-cache true}
+(q "SELECT * FROM product FOR VALID_TIME AS OF DATE '2022-01-02'")
+
+^{::clerk/no-cache true}
+(q "SELECT * FROM product FOR VALID_TIME AS OF DATE '2023-01-02'")
+
+^{::clerk/no-cache true}
+(q "SELECT * FROM product FOR VALID_TIME AS OF DATE '2024-01-02'")
+
+;; Now let's say we know that the price for `2023` was INCORRECT. This could have been due to a multitude of reasons, a developer bug, a faulty database update, or an incorrect manual data entry.
+
+;; Let's correct the price for 2023:
+
+^{::clerk/no-cache true}
+(e "INSERT INTO product (xt$id, name, price, xt$valid_from)"
+   "VALUES "
+   "(1, 'Pendleton Electric Bicycle', 350, TIMESTAMP '2023-01-01 00:00:00')")
+
+;; Now when we query in 2023, we get the updated price back:
+
+^{::clerk/no-cache true}
+(q "SELECT * FROM product FOR VALID_TIME AS OF DATE '2023-01-02'")
+
+;; BUT - aren't we mutating an immutable database here?
+
+;; Aren't we blasting over the top of original data, and thus losing that original data?
+
+;; The answer is no. We have been updating the `VALID_TIME` line. But our XTDB database has another, completely immutable database called SYSTEM_TIME.
+
+;; Using a query against `SYSTEM_TIME`, we can query the database exactly how it was at a point in database-time.
+
+;; No updates to this line are possible, we can only add to the end of the timeline. We call this append-only.
+
+^{::clerk/no-cache true}
+(q "SELECT * FROM product FOR SYSTEM_TIME AS OF DATE '2023-01-02'")
+
+;; This is the concept of bitemporality: having two timelines.
+
+;; One you can update:`VALID_TIME`, and one you can only ever append to: `SYSTEM_TIME`.
 
 ^{::clerk/visibility {:code :hide, :result :hide}}
 (comment
