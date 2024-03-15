@@ -1,32 +1,32 @@
-(ns basic-test
+(ns xtdb.basic-test
   (:require [clojure.test :as t]
-            [user :refer [xt-node]]
+            [xtdb.demo.db :refer [xt-node]]
             [xtdb.api :as xt]))
 
 ;; Try modifying some of these yourself!
 (t/deftest basic-query
   ;; How long is "APOCALYPSE FLAMINGOS"?
   (t/is (= [{:length 119}]
-           (xt/q xt-node
+           (xt/q (:xt-node xt-node)
              '(from :film [{:title $film-name} length])
              {:args {:film-name "APOCALYPSE FLAMINGOS"}})))
 
   ;; How many films are being rented right now?
-  (t/is (= [{:count 183}]
-           (xt/q xt-node
+  (t/is (= [{:count 5763}]
+           (xt/q (:xt-node xt-node)
              '(-> (from :rental [inventory-id])
                   (aggregate {:count (row-count)})))))
 
   ;; How many films have ever been rented?
-  (t/is (= [{:count 16044}]
-           (xt/q xt-node
+  (t/is (= [{:count 8581}]
+           (xt/q (:xt-node xt-node)
              '(-> (from :rental {:bind [inventory-id]
                                  :for-valid-time :all-time})
                   (aggregate {:count (row-count)})))))
 
   ;; What is the most popular film rented right now?
-  (t/is (= [{:title "CLUB GRAFFITI" :count 2}]
-           (xt/q xt-node
+  (t/is (= [{:title "BUCKET BROTHERHOOD" :count 25}]
+           (xt/q (:xt-node xt-node)
              '(-> (unify (from :rental [inventory-id])
                          (from :inventory [{:xt/id inventory-id} film-id])
                          (from :film [{:xt/id film-id} title]))
@@ -35,8 +35,8 @@
                   (limit 1)))))
 
   ;; What is the most popular film rented ever?
-  (t/is (= [{:title "BUCKET BROTHERHOOD" :count 34}]
-           (xt/q xt-node
+  (t/is (= [{:title "BUCKET BROTHERHOOD" :count 42}]
+           (xt/q (:xt-node xt-node)
              '(-> (unify (from :rental {:bind [inventory-id]
                                         :for-valid-time :all-time})
                          (from :inventory [{:xt/id inventory-id} film-id])
@@ -46,8 +46,8 @@
                   (limit 1)))))
 
   ;; Who last rented "JAWS HARRY"?
-  (t/is (= [{:first-name "ARLENE", :last-name "HARVEY"}]
-           (xt/q xt-node
+  (t/is (= [{:first-name "ALLAN", :last-name "CORNISH"}]
+           (xt/q (:xt-node xt-node)
              '(-> (unify (from :film [{:xt/id film-id, :title $film-name}])
                          (from :inventory [{:xt/id inventory-id} film-id])
                          (from :rental {:bind [inventory-id customer-id xt/valid-from]
@@ -62,7 +62,7 @@
 ;; Just checks that we can join on all the tables
 (t/deftest e2e
   (t/is (not= []
-              (xt/q xt-node
+              (xt/q (:xt-node xt-node)
                    '(-> (unify (from :film [{:xt/id film-id} language-id])
                                (from :film-actor [film-id actor-id])
                                (from :actor [{:xt/id actor-id}])

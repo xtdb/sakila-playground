@@ -5,7 +5,8 @@ XTDB playground for the https://dev.mysql.com/doc/sakila/en/[Sakila] sample data
 == Getting started
 
 * To start a REPL, run `clj -M:xtdb:nrepl`, and then connect to it from your editor of choice.
-* You'll then have a running XTDB node at `user/xt-node` - query it to your heart's content!
+* Evaluating `xtdb.demo.db` will start and seed an XTDB node, which will be available at (:xt-node xtdb.demo.db/xt-node)`
+* Query away to your heart's content!
 
 For more information, see the https://docs.xtdb.com[main XTDB docs].
 
