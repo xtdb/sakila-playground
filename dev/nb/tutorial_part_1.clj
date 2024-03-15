@@ -152,7 +152,7 @@
 ;; historical queries against an immutable database, to bring back
 ;; deleted data.
 
-;; Now try [part 2](tutorial_part_2)
+;; Now try [part 2](tutorial_part_2).
 
 ^{::clerk/visibility {:code :hide, :result :hide}}
 (comment

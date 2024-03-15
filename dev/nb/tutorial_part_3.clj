@@ -72,7 +72,7 @@
 
 ;; In this part, we will understand how to insert historical data into XTDB.
 
-;; How does this work with an immutable database?! Let's find out together.
+;; How does this work with an immutable database!? Let's find out together.
 
 ;; Let's pretend the day today is 2024-01-01, and we insert a product:
 

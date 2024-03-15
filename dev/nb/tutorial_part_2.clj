@@ -155,7 +155,7 @@
 ;; in our database without creating any special views, audit tables or
 ;; workarounds.
 
-;; Let's move ahead to [part 3](tutorial_part_3)
+;; Let's move ahead to [part 3](tutorial_part_3).
 
 ^{::clerk/visibility {:code :hide, :result :hide}}
 (comment
