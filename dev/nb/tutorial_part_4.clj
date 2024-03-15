@@ -127,9 +127,13 @@
 ^{::clerk/no-cache true}
 (q "SELECT * FROM product FOR SYSTEM_TIME AS OF DATE '2023-01-02'")
 
+;; ## Conclusion
+
+;; We have shown in the above, the ability to update the past and see the updated changes, but also how we can query the raw, unedited past.
+
 ;; This is the concept of bitemporality: having two timelines.
 
-;; One you can update:`VALID_TIME`, and one you can only ever append to: `SYSTEM_TIME`.
+;; One timeline that you can update is: `VALID_TIME`, and one you can only ever append to: `SYSTEM_TIME`.
 
 ^{::clerk/visibility {:code :hide, :result :hide}}
 (comment
