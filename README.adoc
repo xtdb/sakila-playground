@@ -38,13 +38,3 @@ This protocol represents REST's Uniform Interface, including the various methods
 The benefits of a more accurate and faithful model of the web means that it is easier to implement HTTP as described in its specifications.
 For instance, by modelling which methods are allowed on a given resource, a user-agent can introspect these methods at run-time (inspecting the Allow header returned from an OPTIONS request).
 A user-agent might make use of this metadata, for example, to show/hide parts of its UI accordingly.
-
-== Demo'ing
-
-Edit the following in your `$HOME/.bashrc` file.
-
-[source]
-----
-alias xtdb='docker run -tip 3000:3000 ghcr.io/xtdb/xtdb-standalone-ea'
-alias xtsql='/home/mal/xtdb/docs/public/xtsql.py'
-----
