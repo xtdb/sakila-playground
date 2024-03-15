@@ -66,6 +66,10 @@
 
 ^{::clerk/no-cache true} (reset)
 
+;; In [part 3](tutorial_part_3), we learned how to insert historical data into XTDB.
+
+;; In this part, we will understand how to update past data, but we will also learn how to access the raw, un-changed data also.
+
 ;; Now show an update OVER historical data
 
 ;; THEN SHOW WITH SYSTEM_TIME, CAN GET ORIGINAL DATA BACK

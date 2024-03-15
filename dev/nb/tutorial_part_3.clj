@@ -68,7 +68,9 @@
 
 ;; # Updating the Past
 
-;; In XTDB, we allow uses to make updates into the past.
+;; In [part 2](tutorial_part_2), we queryied the historical timeline, to understand what changes were made.
+
+;; In this part, we will understand how to insert historical data into XTDB.
 
 ;; How does this work with an immutable database?! Let's find out together.
 
@@ -119,6 +121,15 @@
 
 ^{::clerk/no-cache true}
 (q "SELECT * FROM product FOR VALID_TIME AS OF DATE '2020-01-01'")
+
+;; ## Conclusion
+
+;; We've shown that it's possible to insert records into the past.
+;;
+;; What about if we want to update historial data? How does this work with
+;; an immutable database?
+
+;; Let's find out in [part 4](tutorial_part_4)
 
 ^{::clerk/visibility {:code :hide, :result :hide}}
 (comment
