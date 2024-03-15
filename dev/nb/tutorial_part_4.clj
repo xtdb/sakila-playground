@@ -66,6 +66,8 @@
 
 ^{::clerk/no-cache true} (reset)
 
+;; # Changing an immutable database
+
 ;; In [part 3](tutorial_part_3), we learned how to insert historical data into XTDB.
 
 ;; In this part, we will understand how to update past data, but we will also learn how to access the raw, un-changed data also.
