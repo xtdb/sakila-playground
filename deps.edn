@@ -26,7 +26,10 @@
         io.github.nextjournal/clerk {:mvn/version "0.15.957"}
         io.github.nextjournal/clerk-slideshow
         {:git/url "https://github.com/nextjournal/clerk-slideshow"
-         :sha "11a83fea564da04b9d17734f2031a4921d917893"}}
+         :sha "11a83fea564da04b9d17734f2031a4921d917893"}
+
+        org.asciidoctor/asciidoctorj {:mvn/version "3.0.0-alpha.2"}
+        }
 
  :aliases {:xtdb {:jvm-opts
                   ;; needed on JDK16+
