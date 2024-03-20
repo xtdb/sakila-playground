@@ -22,12 +22,13 @@
           register)
       options
       (.. (Options/builder)
+          ;;(backend "docbook")
           (build))]
 
   (.convert adoc
             "Hello World!
 
-sql::mygithubaccount/8810011364687d7bec2c[]
+sql::mygithubaccount/8810011364687d7bec2c[a=b]
 "
             options
             )
