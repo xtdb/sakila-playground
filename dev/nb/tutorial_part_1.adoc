@@ -45,17 +45,18 @@ Let's pretend the day we are inserting these records is 2024-01-01.
 
 xt::set-simulation-time[inst=2024-01-01]
 
-[xt,mode=submit]
-----
+[xtsubmit]
 INSERT INTO product (xt$id, name)
 VALUES
 (1, 'Pendleton Electric Bicycle'),
 (2, 'Bicycle Pump')
-----
 
 Let's query these products:
 
-[xt,results=table]
-----
+[xtquery,results=table]
 SELECT * FROM product
-----
+
+And another query:
+
+[xtquery,results=table]
+SELECT * FROM product
