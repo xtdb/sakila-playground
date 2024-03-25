@@ -77,17 +77,10 @@
 ^{::clerk/no-cache true}
 (e "INSERT INTO product (xt$id, name, price, xt$valid_from)"
    "VALUES "
-   "(1, 'Pendleton Electric Bicycle', 300, TIMESTAMP '2022-01-01 00:00:00')")
-
-^{::clerk/no-cache true}
-(e "INSERT INTO product (xt$id, name, price, xt$valid_from)"
-   "VALUES "
-   "(1, 'Pendleton Electric Bicycle', 400, TIMESTAMP '2023-01-01 00:00:00')")
-
-^{::clerk/no-cache true}
-(e "INSERT INTO product (xt$id, name, price, xt$valid_from)"
-   "VALUES "
+   "(1, 'Pendleton Electric Bicycle', 300, TIMESTAMP '2022-01-01 00:00:00'),"
+   "(1, 'Pendleton Electric Bicycle', 400, TIMESTAMP '2023-01-01 00:00:00'),"
    "(1, 'Pendleton Electric Bicycle', 500, TIMESTAMP '2024-01-01 00:00:00')")
+
 
 ;; Let's prove to ourselves that querying at various points in the past, gives us the correct data:
 

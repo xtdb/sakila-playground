@@ -68,7 +68,7 @@
 
 ;; # Updating the Past
 
-;; In [part 2](tutorial_part_2), we queryied the historical timeline, to understand what changes were made.
+;; In [part 2](tutorial_part_2), we queried the historical timeline, to understand what changes were made.
 
 ;; In this part, we will understand how to insert historical data into XTDB.
 
