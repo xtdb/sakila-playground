@@ -1,0 +1,62 @@
+= Avoiding a lossy database
+
+Imagine a system that stores product data.
+
+Suppose somebody decides to delete a product from our database.
+
+----
+DELETE product WHERE product.id = 1;
+----
+
+In a traditional database, this record is now gone for good, and
+unrecoverable (except for restoring from backups, which is
+expensive, time-consuming and notoriously unreliable!).
+
+One common workaround is the use of a status column:
+
+```
+UPDATE product SET status = 'UNAVAILABLE'
+WHERE product.id = 1;
+```
+
+The downside of this approach is that *all* queries to the product
+table now need to be aware of this workaround and add explicit
+clauses to their queries.
+
+----
+SELECT * FROM product WHERE status <> 'UNAVAILABLE'
+----
+
+Another downside is that we no longer have any historic record of
+when a status changed.
+
+This is a trivial example but one that clearly demonstrates the
+fragility and complexity of managing time in data systems.
+
+== Using an Immutable Database
+
+Using an immutable database we keep everything, including the
+history of any change to the database. Therefore, we can get back
+deleted data.
+
+For example, let's set up a scenario by inserting some product records:
+
+Let's pretend the day we are inserting these records is 2024-01-01.
+
+xt::set-simulation-time[inst=2024-01-01]
+
+[xtsubmit]
+INSERT INTO product (xt$id, name)
+VALUES
+(1, 'Pendleton Electric Bicycle'),
+(2, 'Bicycle Pump')
+
+Let's query these products:
+
+[xtquery,results=table]
+SELECT * FROM product
+
+And another query:
+
+[xtquery,results=table]
+SELECT * FROM product
