@@ -1,16 +1,16 @@
 (ns user
   (:require
-    [nextjournal.clerk :as clerk]
-    [xtdb.demo.web.server :refer [run-server]]
-    [xtdb.demo.web.locator :as locator]
-    [xtdb.demo.web.var-based-locator :refer [resource-tree]]
-    xtdb.demo.db
-    xtdb.demo.resources
-    xtdb.demo.sql
-    xtdb.demo.jdt-resources
-    xtdb.demo.yry.resources
-    xtdb.demo.xtsql
-    xtdb.demo.static-resources))
+   [nextjournal.clerk :as clerk]
+   [xtdb.demo.web.server :refer [run-server]]
+   [xtdb.demo.web.locator :as locator]
+   [xtdb.demo.web.var-based-locator :refer [resource-tree]]
+   #_#_#_#_#_#_#_xtdb.demo.db
+   xtdb.demo.resources
+   xtdb.demo.sql
+   xtdb.demo.jdt-resources
+   xtdb.demo.yry.resources
+   xtdb.demo.xtsql
+   xtdb.demo.static-resources))
 
 (declare http-server)
 

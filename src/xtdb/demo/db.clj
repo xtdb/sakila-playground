@@ -5,7 +5,10 @@
             [clojure.string :as str]
             [clojure.tools.logging :as log]
             [xtdb.api :as xt]
-            [xtdb.node :as xtn])
+            [xtdb.node :as xtn]
+            [xtdb.client :as client]
+            [xtdb.protocols :as xtp]
+            [xtdb.util :as util])
   (:import java.io.File
            java.time.Instant
            (java.util TimeZone)))
@@ -21,15 +24,15 @@
       (doseq [line-batch (->> (line-seq rdr)
                               (partition-all 1000))]
         (xt/submit-tx node
-          (for [line line-batch]
-            (let [data (edn/read-string {:readers {'time/instant #(Instant/parse %)}}
-                                        line)
-                  valid-from (:xt/valid-from data)
-                  valid-to (:xt/valid-to data)]
-              [:put-docs (cond-> {:into table-name}
-                           valid-from (assoc :xt/valid-from valid-from)
-                           valid-to (assoc :xt/valid-to valid-to))
-               (dissoc data :xt/valid-from :xt/valid-to)])))))))
+                      (for [line line-batch]
+                        (let [data (edn/read-string {:readers {'time/instant #(Instant/parse %)}}
+                                                    line)
+                              valid-from (:xt/valid-from data)
+                              valid-to (:xt/valid-to data)]
+                          [:put-docs (cond-> {:into table-name}
+                                       valid-from (assoc :xt/valid-from valid-from)
+                                       valid-to (assoc :xt/valid-to valid-to))
+                           (dissoc data :xt/valid-from :xt/valid-to)])))))))
 
 #_(defn submit-file! [node ^File file]
   (let [table-name (-> (.getName file)
@@ -66,19 +69,41 @@
 
 (def history-seed 42)
 
-(def xt-node
-  (let [node (xtn/start-node {})]
-    (log/info "Loading data into XTDB...")
-    (if use-history
-      ((requiring-resolve `xtdb.demo.history/setup-node) node history-seed)
-      (doseq [file (sort (.listFiles (io/file "resources/sakila")))]
-        (submit-file! node file)))
-    (log/info "Sakila playground started!")
-    {:xt-node node
-     :ids (atom (into {}
-                      (for [table [:film :customer]
-                            :let [from-clause (list 'from table '[{:xt/id id}])]]
-                        [table (-> (xt/q node (list '-> from-clause '(aggregate {:next (+ (max id) 1)}))) first :next)])))}))
+(comment
+  (def files (sort (.listFiles (io/file "resources/sakila"))))
+
+  (def node (client/start-client "http://localhost:3000"))
+
+  (defn latest-submitted-tx [node]
+    (:latest-submitted-tx (xtp/status node)))
+
+  (defn latest-complted-tx [node]
+    (:latest-completed-tx (xtp/status node)))
+
+  (defn wait-for-indexing [node]
+    (while (not (= (latest-submitted-tx node) (latest-complted-tx node)))
+      (Thread/sleep 100)))
+
+  (doseq [file files]
+    (prn (str file))
+    (submit-file! node file)
+    (wait-for-indexing node)))
+
+
+(comment
+  (def xt-node
+    (let [node (client/start-client "http://localhost:3000")]
+      (log/info "Loading data into XTDB...")
+      (if use-history
+        ((requiring-resolve `xtdb.demo.history/setup-node) node history-seed)
+        (doseq [file (sort (.listFiles (io/file "resources/sakila")))]
+          (submit-file! node file)))
+      (log/info "Sakila playground started!")
+      {:xt-node node
+       :ids (atom (into {}
+                        (for [table [:film :customer]
+                              :let [from-clause (list 'from table '[{:xt/id id}])]]
+                          [table (-> (xt/q node (list '-> from-clause '(aggregate {:next (+ (max id) 1)}))) first :next)])))})))
 
 (defn next-id [table]
   (get (swap! (:ids xt-node) update table inc) table))
